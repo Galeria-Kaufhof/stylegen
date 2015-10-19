@@ -3,7 +3,7 @@
 'use strict';
 
 var path = require('path');
-var CWD = path.resolve('..');
+var CWD = path.resolve('.');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 var argv = require('minimist')(process.argv.slice(2));
@@ -15,7 +15,7 @@ var defaults = require(path.resolve(ROOT_PATH, 'defaults.json'));
 var projectOptions = {};
 
 try {
-  projectOptions = require(path.resolve(ROOT_PATH, 'styleguide.json'));
+  projectOptions = require(path.resolve(CWD, 'styleguide.json'));
 } catch (e) {
   console.log("No project config given, running with defaults", defaults);
 }
