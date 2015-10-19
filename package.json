@@ -1,0 +1,20 @@
+{
+  "name": "upfront",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "gulp": "./bin/upfront.js"
+  },
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "handlebars": "^4.0.3",
+    "lemming": "0.0.3",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Falk Hoppe <falkhoppe81@gmail.com>",
+  "license": "MIT"
+}
