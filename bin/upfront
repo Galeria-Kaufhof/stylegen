@@ -5,13 +5,14 @@
 var path = require('path');
 var Q = require('q');
 var argv = require('minimist')(process.argv.slice(2));
-var handlebars = require('handlebars');
 
 var CWD = path.resolve('.');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 // project libraries
 var componentParser = require(path.resolve(ROOT_PATH, 'lib/component_parser'));
+
+var handlebars = require('handlebars');
 var renderer = require(path.resolve(ROOT_PATH, 'lib/renderer'))(handlebars);
 
 
@@ -37,7 +38,7 @@ var Cli = {
     options.renderer = renderer;
     console.log("Cli::run");
     console.log("with Args", args);
-    // console.log("and Options:\n", options);
+    console.log("and Options:\n", options);
     console.log("\n");
 
     componentParser.search(options)
@@ -48,13 +49,14 @@ var Cli = {
       return Q.all(components.map((component) => component.loadView(options)));
     })
     .then((components) => {
-      components.forEach((component) => {
-        var template = component.template;
 
-        if (!!template) {
-          console.log(template({}));
+      var componentList = components.map((component) => {
+        if (!!component.template) {
+          return component.template({});
         }
-      });
+      }).filter((c) => c !== undefined);
+
+      console.log(componentList);
     })
     .catch((e) => {
       console.log(e);
