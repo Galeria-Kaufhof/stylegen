@@ -6,9 +6,8 @@
     "gulp": "./bin/upfront.js"
   },
   "dependencies": {
-    "gulp": "^3.9.0",
     "handlebars": "^4.0.3",
-    "lemming": "0.0.3",
+    "lemming": "0.0.4",
     "minimist": "^1.2.0"
   },
   "devDependencies": {},

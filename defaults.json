@@ -1,3 +1,5 @@
 {
   "config": "styleguide.json"
+  , "namespace": "app"
+  , "componentPaths": ["components"]
 }
