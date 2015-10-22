@@ -1,18 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es5",
         "module": "commonjs",
         "moduleResolution": "node",
-        "isolatedModules": false,
-        "jsx": "react",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "declaration": false,
-        "noImplicitAny": false,
-        "removeComments": true,
-        "noLib": false,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "noImplicitAny": true
     },
     "filesGlob": [
         "**/*.ts",
@@ -20,8 +10,15 @@
         "!node_modules/**"
     ],
     "files": [
-        "bin/upfront.ts",
-        "src/component.ts"
+        "src/Component.ts",
+        "src/Config.ts",
+        "src/Document.ts",
+        "src/Node.ts",
+        "src/NodeListing.ts",
+        "src/Renderer.ts",
+        "src/StructureBuilder.ts",
+        "src/Styleguide.ts",
+        "src/Templating.ts"
     ],
     "exclude": []
 }
