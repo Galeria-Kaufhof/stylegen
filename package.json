@@ -1,0 +1,15 @@
+{
+  "name": "upfront",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "object-assign": "^4.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Falk Hoppe <falkhoppe81@gmail.com>",
+  "license": "MIT"
+}
