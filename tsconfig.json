@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "noImplicitAny": true
+        "moduleResolution": "classic",
+        "noImplicitAny": true,
+        "target": "ES5"
     },
     "filesGlob": [
         "**/*.ts",
@@ -10,7 +10,7 @@
         "!node_modules/**"
     ],
     "files": [
-        "src/Component.ts",
+        "src/component.ts",
         "src/Config.ts",
         "src/Document.ts",
         "src/Node.ts",
@@ -18,7 +18,9 @@
         "src/Renderer.ts",
         "src/StructureBuilder.ts",
         "src/Styleguide.ts",
-        "src/Templating.ts"
+        "src/Templating.ts",
+        "src/type_definitions/node.d.ts",
+        "src/type_definitions/object-assign.d.ts"
     ],
     "exclude": []
 }

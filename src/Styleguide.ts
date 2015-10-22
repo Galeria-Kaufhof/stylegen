@@ -1,10 +1,11 @@
-import config = require('./Config');
+import {ProjectConfig} from './Config';
 
 export class Styleguide {
-  config: config.ProjectConfig;
+  config: ProjectConfig;
 
   constructor() {
-
+    this.config = new ProjectConfig().load({});
+    console.log(this.config);
   }
 
   read() {

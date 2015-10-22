@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-var component = require('../src/component');
+var Styleguide = require('../src/Styleguide').Styleguide;
+
+new Styleguide();
