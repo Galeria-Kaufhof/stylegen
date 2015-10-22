@@ -1,6 +1,6 @@
 var objectAssign = require('object-assign');
 
-interface AbstractConfig {
+interface AbstractConfig extends Object {
   config: Object;
 
   resolve<T>(path_or_object: T):Object;
@@ -26,7 +26,8 @@ export class ProjectConfig implements AbstractConfig {
           // ok, it may be a file path
           result = require(path_or_object.toString());
         } catch(e) {
-          throw(e);
+          console.warn('ProjectConfig.load: config couldn\'t be loaded')
+          result = {};
         }
       }
     } else {
@@ -36,17 +37,24 @@ export class ProjectConfig implements AbstractConfig {
     return result;
   }
 
-  load<T,V>(options: T, defaults?: V):ProjectConfig {
+  load<T,V>(options?: T, defaults?: V):ProjectConfig {
     var _options:Object = this.resolve(options);
     var _defaults:Object;
 
     if (defaults != null) {
-       _defaults = this.resolve(options);
+       _defaults = this.resolve(defaults);
     } else {
       _defaults = {};
     }
 
-    this.config = objectAssign({}, _defaults, _options);
+    if (options != null) {
+       _options = this.resolve(options);
+    } else {
+      _options = {};
+    }
+
+    // OMG :D
+    objectAssign(this, _defaults, _options);
     return this;
   }
 }

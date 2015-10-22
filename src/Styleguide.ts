@@ -4,7 +4,7 @@ export class Styleguide {
   config: ProjectConfig;
 
   constructor() {
-    this.config = new ProjectConfig().load({});
+    this.config = new ProjectConfig().load('fdsklkhsdk', {foo: "bar"});
     console.log(this.config);
   }
 
