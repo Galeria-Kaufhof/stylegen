@@ -2,15 +2,11 @@ import * as fs from 'fs';
 import * as Q from 'q';
 
 interface AbstractConfig extends Object {
-  config: Object;
-
   resolve<T>(path_or_object: T):Object;
   load<T,V>(options: T, defaults?: V):Q.Promise<AbstractConfig>;
 }
 
 class Config implements AbstractConfig {
-  config: Object;
-
   resolve<T>(path_or_object: T):Q.Promise<{}> {
     var result:Object;
     var d:Q.Deferred<{}> = Q.defer<{}>();
