@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "object-assign": "^4.0.1"
+    "object-assign": "^4.0.1",
+    "q": "^1.4.1"
   },
   "devDependencies": {},
   "scripts": {

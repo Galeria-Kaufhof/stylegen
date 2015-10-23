@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-        "moduleResolution": "classic",
+        "module": "commonjs",
+        "moduleResolution": "node",
         "noImplicitAny": true,
         "target": "ES5"
     },
     "filesGlob": [
         "**/*.ts",
         "**/*.tsx",
-        "!node_modules/**"
+        "!node_modules/**",
+        "src/type_defs/*.ts"
     ],
     "files": [
         "src/component.ts",
@@ -19,8 +21,9 @@
         "src/StructureBuilder.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
-        "src/type_definitions/node.d.ts",
-        "src/type_definitions/object-assign.d.ts"
+        "src/type_defs/node.d.ts",
+        "src/type_defs/object-assign.d.ts",
+        "src/type_defs/Q.d.ts"
     ],
     "exclude": []
 }
