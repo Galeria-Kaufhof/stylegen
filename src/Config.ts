@@ -1,6 +1,5 @@
-import fs = require('fs');
-import objectAssign = require('object-assign');
-import Q = require('q');
+import * as fs from 'fs';
+import * as Q from 'q';
 
 interface AbstractConfig extends Object {
   config: Object;
@@ -69,7 +68,7 @@ class Config implements AbstractConfig {
 
     Q.all([_defaults, _options])
     .then(function(optionsList: [{}]) {
-      var result:ProjectConfig = objectAssign.apply(this, optionsList);
+      var result:ProjectConfig = Object.assign.apply(this, optionsList);
       d.resolve(result);
     })
     .catch(function(e) {

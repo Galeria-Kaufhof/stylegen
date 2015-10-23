@@ -1,8 +1,8 @@
-import Q = require('q');
-import config = require('./Config');
+import * as Q from 'q';
+import {ProjectConfig} from './Config';
 
 export class StructureBuilder {
-  constructor(conf:config.ProjectConfig) {
+  constructor(conf:ProjectConfig) {
 
   }
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
+
 var path = require('path');
-var Styleguide = require('../src/Styleguide').Styleguide;
+var Styleguide = require('../dist/styleguide.js').Styleguide;
 
 new Styleguide()
 .initialize(process.cwd(), path.resolve(__dirname, '..'))

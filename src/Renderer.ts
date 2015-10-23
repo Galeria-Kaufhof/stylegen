@@ -1,9 +1,9 @@
-import templating = require('./templating');
+import {Partial,Template} from './Templating';
 
 interface EngineWrapper {
   engine: any;
-  registerPartial(partial: templating.Partial): boolean;
-  compileTemplate(template: templating.Template): boolean;
+  registerPartial(partial: Partial): boolean;
+  compileTemplate(template: Template): boolean;
 }
 
 export class Renderer implements EngineWrapper {
@@ -11,11 +11,11 @@ export class Renderer implements EngineWrapper {
 
   }
 
-  registerPartial(partial: templating.Partial) {
+  registerPartial(partial: Partial) {
     return true;
   }
 
-  compileTemplate(partial: templating.Template) {
+  compileTemplate(partial: Template) {
     return true;
   }
 }
