@@ -31,7 +31,7 @@ export class Styleguide {
     var d:Q.Deferred<{}> = Q.defer<{}>();
 
     // new StructureBuilder(this.config)
-    // .build()
+    // .collect()
     // .then(function(obj:{}) {
     //   d.resolve(this);
     // })

@@ -6,7 +6,7 @@ export class StructureBuilder {
 
   }
 
-  build():Q.Promise<{}> {
+  collect():Q.Promise<{}> {
     var d:Q.Deferred<{}> = Q.defer<{}>();
     return d.promise;
   }
