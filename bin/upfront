@@ -3,8 +3,6 @@
 var path = require('path');
 var Styleguide = require('../src/Styleguide').Styleguide;
 
-// var CWD = path.resolve('.');
-
 new Styleguide()
 .initialize(process.cwd(), path.resolve(__dirname, '..'))
 .then(function(styleguide) {
