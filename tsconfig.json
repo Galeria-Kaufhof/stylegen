@@ -3,7 +3,8 @@
         "module": "commonjs",
         "moduleResolution": "classic",
         "noImplicitAny": true,
-        "target": "ES6"
+        "target": "ES6",
+        "removeComments": false
     },
     "filesGlob": [
         "**/*.ts",
