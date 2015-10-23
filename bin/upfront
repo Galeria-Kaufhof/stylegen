@@ -1,18 +1,7 @@
 #!/usr/bin/env node
 
+var Cli = require('../dist/Cli.js');
 
-var path = require('path');
-var Styleguide = require('../dist/styleguide.js').Styleguide;
-
-new Styleguide()
-.initialize(process.cwd(), path.resolve(__dirname, '..'))
-.then(function(styleguide) {
-  return styleguide.read();
-})
-.then(function(styleguide) {
-  console.log(styleguide.config);
-})
-.catch(function(e) {
-  console.log(e);
-  throw(e);
-});
+// TODO: implement args
+// TODO: implement help arg
+Cli.command();

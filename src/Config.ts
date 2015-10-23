@@ -34,7 +34,10 @@ class Config implements AbstractConfig {
               d.reject(e);
             }
           })
-          .catch(function(e) { d.reject(e); });
+          .catch(function(e) {
+            console.log("Config.resolve:readFile:", path_or_object);
+            d.reject(e);
+          });
         } catch(e) {
           console.warn(e)
           // result = {};

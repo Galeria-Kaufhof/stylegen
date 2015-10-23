@@ -5,6 +5,9 @@ import {StructureBuilder} from './StructureBuilder';
 
 export class Styleguide {
   config: ProjectConfig;
+  getConfig():ProjectConfig {
+    return this.config;
+  }
 
   // Styleguide setup method to collect and merge configurations,
   // to set defaults and allow to overwrite them in the styleguide.json
@@ -32,7 +35,7 @@ export class Styleguide {
   read():Q.Promise<{}> {
     var d:Q.Deferred<{}> = Q.defer<{}>();
 
-    new StructureBuilder(this.config)
+    new StructureBuilder(this)
     .collect()
     .then(function(obj:{}) {
       d.resolve(this);

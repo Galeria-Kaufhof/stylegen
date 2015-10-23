@@ -13,17 +13,17 @@
         "src/type_defs/*.ts"
     ],
     "files": [
+        "src/Cli.ts",
         "src/Component.ts",
         "src/Config.ts",
         "src/Document.ts",
         "src/Node.ts",
         "src/NodeListing.ts",
         "src/Renderer.ts",
-        "src/StructureBuilder.ts",
+        "src/StructureParsing.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
         "src/type_defs/node.d.ts",
-        "src/type_defs/object-assign.d.ts",
         "src/type_defs/Q.d.ts"
     ],
     "exclude": []
