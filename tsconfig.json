@@ -20,7 +20,7 @@
         "src/Node.ts",
         "src/NodeListing.ts",
         "src/Renderer.ts",
-        "src/StructureParsing.ts",
+        "src/StructureBuilder.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
         "src/type_defs/node.d.ts",
