@@ -11,6 +11,9 @@ export interface ProjectConfig {
   name?:string;
 }
 
+export interface ComponentConfig {
+}
+
 export class Config implements AbstractConfig {
   resolve<T>(path_or_object: T):Q.Promise<{}> {
     var result:Object;
@@ -70,18 +73,18 @@ export class Config implements AbstractConfig {
        _options = this.resolve(options);
     }
 
-    Q.all([_defaults, _options])
+    var promises = [_defaults, _options].filter((x) => !!x);
+
+    Q.all(promises)
     .then(function(configs: [{}]) {
       var result:Config = Object.assign.apply(this, configs);
       d.resolve(result);
     })
     .catch(function(e) {
-      console.log(e);
+      console.log("Config.load", e);
       throw(e);
     });
 
     return d.promise;
   }
 }
-
-// export class ComponentConfig extends Config {}
