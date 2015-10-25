@@ -12,20 +12,20 @@ export class Styleguide {
   // to set defaults and allow to overwrite them in the styleguide.json
   initialize(cwd: string, upfrontRoot: string):Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
-    var self:Styleguide = this;
+
     this.nodes = [];
 
     new Config()
     .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'styleguide-defaults.json'))
-    .then(function(mergedConfig: Config) {
-      self.config = mergedConfig;
-      self.config.cwd = cwd;
+    .then((mergedConfig: Config) => {
+      this.config = mergedConfig;
+      this.config.cwd = cwd;
 
-      if (!self.config.name) {
-        
+      if (!this.config.name) {
+        this.config.name = path.basename(this.config.cwd);
       }
 
-      d.resolve(self);
+      d.resolve(this);
     })
     .catch(function(e) {
       console.log("Styleguide.initialize:",e);
