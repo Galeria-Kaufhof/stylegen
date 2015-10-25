@@ -37,13 +37,12 @@ export class Styleguide {
 
   // walk the configured styleguide folders and read in the several components, pages, navigation, etc.,
   // and store the information inside the styleguide properties.
-  read():Q.Promise<{}> {
-    var d:Q.Deferred<{}> = Q.defer<{}>();
+  read():Q.Promise<Styleguide> {
+    var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
 
     new StructureBuilder(this)
     .collect()
     .then((obj:{}) => {
-      // console.log(this);
       d.resolve(this);
     })
     .catch(function(e) {

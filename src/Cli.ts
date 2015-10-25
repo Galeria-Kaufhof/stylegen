@@ -9,6 +9,7 @@ export function build() {
   })
   .then(function(styleguide) {
     console.log("READ FINISHED");
+    console.log(styleguide.config);
   })
   .catch(function(e) {
     console.log(e);
