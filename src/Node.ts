@@ -29,7 +29,7 @@ export class Node {
     var componentConfig:string = this.files.find((x) => x == 'component.json');
 
     if (componentConfig) {
-      
+
     };
 
     d.resolve(this);

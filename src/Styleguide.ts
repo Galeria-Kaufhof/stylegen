@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as Q from 'q';
-import {ProjectConfig} from './Config';
+import {Config,ProjectConfig} from './Config';
 import {StructureBuilder} from './StructureBuilder';
 import {Node} from './Node';
 
@@ -15,11 +15,16 @@ export class Styleguide {
     var self:Styleguide = this;
     this.nodes = [];
 
-    new ProjectConfig()
-    .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'defaults.json'))
-    .then(function(mergedConfig: ProjectConfig) {
+    new Config()
+    .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'styleguide-defaults.json'))
+    .then(function(mergedConfig: Config) {
       self.config = mergedConfig;
-      self.config["cwd"] = cwd;
+      self.config.cwd = cwd;
+
+      if (!self.config.name) {
+        
+      }
+
       d.resolve(self);
     })
     .catch(function(e) {

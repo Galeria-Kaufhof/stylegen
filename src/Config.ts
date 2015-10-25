@@ -1,12 +1,17 @@
 import * as fs from 'fs';
 import * as Q from 'q';
 
-interface AbstractConfig extends Object {
+interface AbstractConfig {
   resolve<T>(path_or_object: T):Object;
   load<T,V>(options: T, defaults?: V):Q.Promise<AbstractConfig>;
 }
 
-class Config implements AbstractConfig {
+export interface ProjectConfig {
+  cwd?:string;
+  name?:string;
+}
+
+export class Config implements AbstractConfig {
   resolve<T>(path_or_object: T):Q.Promise<{}> {
     var result:Object;
     var d:Q.Deferred<{}> = Q.defer<{}>();
@@ -51,11 +56,11 @@ class Config implements AbstractConfig {
     return d.promise;
   }
 
-  load<T,V>(options?: T, defaults?: V):Q.Promise<ProjectConfig> {
+  load<T,V>(options?: T, defaults?: V):Q.Promise<Config> {
     var _options:Q.Promise<{}> = this.resolve(options);
     var _defaults:Q.Promise<{}>;
 
-    var d:Q.Deferred<ProjectConfig> = Q.defer<ProjectConfig>();
+    var d:Q.Deferred<Config> = Q.defer<Config>();
 
     if (defaults != null) {
        _defaults = this.resolve(defaults);
@@ -66,8 +71,8 @@ class Config implements AbstractConfig {
     }
 
     Q.all([_defaults, _options])
-    .then(function(optionsList: [{}]) {
-      var result:ProjectConfig = Object.assign.apply(this, optionsList);
+    .then(function(configs: [{}]) {
+      var result:Config = Object.assign.apply(this, configs);
       d.resolve(result);
     })
     .catch(function(e) {
@@ -79,4 +84,4 @@ class Config implements AbstractConfig {
   }
 }
 
-export class ProjectConfig extends Config {}
+// export class ComponentConfig extends Config {}
