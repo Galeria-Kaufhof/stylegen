@@ -1,3 +1,5 @@
+"use strict";
+
 import * as fs from 'fs';
 import * as Q from 'q';
 
@@ -9,6 +11,7 @@ interface AbstractConfig {
 export interface ProjectConfig {
   cwd?:string;
   name?:string;
+  upfrontRoot?:string;
 }
 
 export interface ComponentConfig {

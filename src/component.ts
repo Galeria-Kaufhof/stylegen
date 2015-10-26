@@ -1,4 +1,6 @@
-// "use strict";
+"use strict";
+
+import {ComponentConfig} from './Config';
 //
 // import templating = require('./templating');
 //
@@ -6,10 +8,12 @@
 //   [index: number]: templating.Partial;
 // }
 //
-// export class Component {
-//   partials: PartialList;
-//
-//   constructor() {
-//     console.log(templating.Partial);
-//   }
-// }
+
+export class Component {
+  // partials: PartialList;
+
+  constructor(config:ComponentConfig) {
+    // console.log(templating.Partial);
+
+  }
+}

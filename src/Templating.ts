@@ -1,3 +1,5 @@
+"use strict";
+
 export interface Template {
   path: string;
   raw: string;

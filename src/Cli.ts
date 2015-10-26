@@ -1,3 +1,5 @@
+"use strict";
+
 import * as path from 'path';
 import {Styleguide} from './Styleguide';
 
@@ -8,8 +10,8 @@ export function build() {
     return styleguide.read();
   })
   .then(function(styleguide) {
-    console.log("READ FINISHED");
-    console.log(styleguide.config);
+    console.log("\n\nREAD FINISHED:\n");
+    console.log(styleguide);
   })
   .catch(function(e) {
     console.log(e);

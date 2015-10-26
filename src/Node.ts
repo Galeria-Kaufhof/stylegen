@@ -1,12 +1,18 @@
+"use strict";
+
 import * as path from 'path';
 import * as Q from 'q';
 import * as fs from 'fs';
+
+import {Config,ComponentConfig} from './Config';
+import {Component} from './Component';
 
 export class Node {
   id: string;
   path: string;
   files: string[];
   children: Node[];
+  config: ComponentConfig;
 
   constructor(nodePath:string, files:[string], parent?:Node, options?:{}) {
     var parentPath:string;
@@ -21,18 +27,28 @@ export class Node {
 
     this.id = nodeName;
     this.files = files;
+    this.path = nodePath;
   }
 
   resolveComponent():Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
 
-    var componentConfig:string = this.files.find((x) => x == 'component.json');
+    var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
-    if (componentConfig) {
-
+    if (componentConfigPath) {
+      // TODO: merge in default configuration
+      new Config().load(path.resolve(this.path, componentConfigPath))
+      .then((config) => {
+        return new Component(config).build();
+        // d.resolve(this);
+      })
+      .catch((e) => {
+        console.log("Node.resolveComponent", e);
+        d.reject(e);
+      });
+    } else {
+      d.resolve(this);
     };
-
-    d.resolve(this);
 
     return d.promise;
   }
