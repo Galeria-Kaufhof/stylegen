@@ -1,14 +1,18 @@
 import {Partial,Template} from './Templating';
 
-interface EngineWrapper {
+export interface IEngineWrapper {
   engine: any;
+  setEngine<T>(engine: T): IEngineWrapper;
   registerPartial(partial: Partial): boolean;
   compileTemplate(template: Template): boolean;
 }
 
-export class Renderer implements EngineWrapper {
-  constructor(public engine:any) {
-
+export class HandlebarsRenderer implements IEngineWrapper {
+  engine: any;
+  
+  setEngine<Handlebars>(engine: Handlebars) {
+    this.engine = engine;
+    return this;
   }
 
   registerPartial(partial: Partial) {

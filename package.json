@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "object-assign": "^4.0.1",
+    "handlebars": "^4.0.3",
     "q": "^1.4.1"
   },
   "devDependencies": {

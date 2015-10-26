@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as Q from 'q';
 import * as fs from 'fs';
 
-import {Config,ComponentConfig} from './Config';
+import {Config,IComponentConfig} from './Config';
 import {Component} from './Component';
 
 export class Node {
@@ -12,7 +12,8 @@ export class Node {
   path: string;
   files: string[];
   children: Node[];
-  config: ComponentConfig;
+  config: IComponentConfig;
+  component: Component;
 
   constructor(nodePath:string, files:[string], parent?:Node, options?:{}) {
     var parentPath:string;
@@ -38,9 +39,16 @@ export class Node {
     if (componentConfigPath) {
       // TODO: merge in default configuration
       new Config().load(path.resolve(this.path, componentConfigPath))
-      .then((config) => {
-        return new Component(config).build();
-        // d.resolve(this);
+      .then((config:IComponentConfig) => {
+        config.path = this.path;
+
+        new Component(config).build()
+        .then((component) => {
+          this.component = component;
+          // console.log(this);
+          d.resolve(this);
+        })
+        .catch((e) => { d.reject(e); });
       })
       .catch((e) => {
         console.log("Node.resolveComponent", e);

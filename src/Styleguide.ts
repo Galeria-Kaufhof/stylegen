@@ -2,19 +2,26 @@
 
 import * as path from 'path';
 import * as Q from 'q';
-import {Config,ProjectConfig} from './Config';
+import * as Handlebars from 'handlebars';
+import {Config,IProjectConfig} from './Config';
 import {StructureBuilder} from './StructureBuilder';
 import {Node} from './Node';
+import {IEngineWrapper, HandlebarsRenderer} from './Renderer';
+
+interface IStyleguideOptions {
+  renderer?: IEngineWrapper;
+}
 
 export class Styleguide {
-  public config: ProjectConfig;
+  public config: IProjectConfig;
+  public renderer: IEngineWrapper;
   public nodes: Node[];
 
   /*
    * Styleguide setup method to collect and merge configurations,
    * to set defaults and allow to overwrite them in the styleguide.json
    */
-  initialize(cwd: string, upfrontRoot: string):Q.Promise<Styleguide> {
+  initialize(cwd: string, upfrontRoot: string, options?: IStyleguideOptions):Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
 
     this.nodes = [];
@@ -25,6 +32,12 @@ export class Styleguide {
       this.config = mergedConfig;
       this.config.cwd = cwd;
       this.config.upfrontRoot = upfrontRoot;
+
+      if (options.renderer) {
+        this.renderer = options.renderer;
+      } else {
+        this.renderer = new HandlebarsRenderer().setEngine(Handlebars);
+      }
 
       if (!this.config.name) {
         this.config.name = path.basename(this.config.cwd);

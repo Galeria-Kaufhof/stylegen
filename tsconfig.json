@@ -23,6 +23,7 @@
         "src/StructureBuilder.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
+        "src/type_defs/handlebars.d.ts",
         "src/type_defs/node.d.ts",
         "src/type_defs/Q.d.ts"
     ],

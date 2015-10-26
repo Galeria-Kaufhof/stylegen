@@ -3,8 +3,9 @@
 import * as path from 'path';
 import * as Q from 'q';
 import {Styleguide} from './Styleguide';
-import {ProjectConfig} from './Config';
+import {IProjectConfig} from './Config';
 import {Node} from './Node';
+
 
 export class StructureBuilder {
   styleguide:Styleguide;

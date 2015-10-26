@@ -3,21 +3,26 @@
 import * as fs from 'fs';
 import * as Q from 'q';
 
-interface AbstractConfig {
-  resolve<T>(path_or_object: T):Object;
-  load<T,V>(options: T, defaults?: V):Q.Promise<AbstractConfig>;
+import {PartialList} from './Templating';
+
+
+interface IAbstractConfig {
+  resolve<T>(path_or_object: T):Q.Promise<{}>;
+  load<T,V>(options: T, defaults?: V):Q.Promise<IAbstractConfig>;
 }
 
-export interface ProjectConfig {
+export interface IProjectConfig {
   cwd?:string;
   name?:string;
   upfrontRoot?:string;
 }
 
-export interface ComponentConfig {
+export interface IComponentConfig {
+  partials?: PartialList;
+  path?: string;
 }
 
-export class Config implements AbstractConfig {
+export class Config implements IAbstractConfig {
   resolve<T>(path_or_object: T):Q.Promise<{}> {
     var result:Object;
     var d:Q.Deferred<{}> = Q.defer<{}>();
@@ -56,7 +61,7 @@ export class Config implements AbstractConfig {
         }
       }
     } else {
-      d.reject("ProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
+      d.reject("IProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
     }
 
     return d.promise;
