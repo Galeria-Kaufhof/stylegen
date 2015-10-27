@@ -33,13 +33,13 @@ export class StructureBuilder {
   collect():Q.Promise<{}> {
     var d:Q.Deferred<{}> = Q.defer<{}>();
     var componentPaths:[string] = this.styleguide.config["componentPaths"];
-    
+
     /**
      * a node is a sub entry in our component hierarchy, which may be a component or
      * just a category folder (or maybe just empty :/)
      */
     var nodeLookups = componentPaths.map((p) => {
-      return Node.fromPath(this.fileInCWD(p));
+      return new Node(this.fileInCWD(p)).resolve();
     });
 
     /**

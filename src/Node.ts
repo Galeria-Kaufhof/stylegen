@@ -16,7 +16,8 @@ export class Node {
   config: IComponentConfig;
   component: Component;
 
-  constructor(nodePath:string, files:[string], parent?:Node, options?:{}) {
+  // , files:[string]
+  constructor(nodePath:string, parent?:Node, options?:{}) {
     var parentPath:string;
 
     if (!parent) {
@@ -28,7 +29,7 @@ export class Node {
     var nodeName:string = nodePath.slice(parentPath.length + 1);
 
     this.id = nodeName;
-    this.files = files;
+    // this.files = files;
     this.path = nodePath;
   }
 
@@ -86,18 +87,18 @@ export class Node {
     var d:Q.Deferred<Node> = Q.defer<Node>();
 
     /**
-     * We now check first if the current node is a component, or just a folder/category.
-     * BUSINESS_ASSUMPTION: If it is a component, descendent components are sub components
-     *
-     * ├── component
-     * │   ├── component-sub-1
-     * │   │   ├── sub-1-sub-1
-     * │   │   ├── sub-1-sub-2
-     * │   │   ├── sub-1-sub-3
-     * │   ├── component-sub-2
-     *
+     * get all files inside this node, and go on.
      */
-    this.resolveComponent()
+    Q.nfcall(fs.readdir, this.path)
+    .then((files:[string]) => {
+      this.files = files;
+
+      /**
+       * lets resolve the component parts of this node, like component.json
+       * and referenced partials, etc.
+       */
+      return this.resolveComponent();
+    })
     .then((node) => {
       /**
        * because we have handled the current levels component.json already,
@@ -121,30 +122,12 @@ export class Node {
 
       Q.all(filePromises)
       .then((results) => {
-        // console.log(results);
+        d.resolve(node);
       })
       .catch((e) => d.reject(e));
 
-      d.resolve(node);
     })
     .catch((e) => d.reject(e));
-    return d.promise;
-  }
-
-  public static fromPath(nodePath:string):Q.Promise<Node> {
-    var d:Q.Deferred<Node> = Q.defer<Node>();
-
-    Q.nfcall(fs.readdir, nodePath)
-    .then((files:[string]) => {
-      return new Node(nodePath, files).resolve()
-      .then((node) => d.resolve(node))
-      .catch((e) => d.reject(e));
-    })
-    .catch((e) => {
-      console.log("Node.fromPath:", nodePath, "failed");
-      throw(e);
-    });
-
     return d.promise;
   }
 }
