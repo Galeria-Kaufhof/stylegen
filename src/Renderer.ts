@@ -1,15 +1,22 @@
 import {Partial,Template} from './Templating';
 
-export interface IEngineWrapper {
+/**
+ * Interface that new Renderers should implement.
+ * As an example implementation look for the HandlebarsRenderer.
+ */
+export interface IRenderer {
   engine: any;
-  setEngine<T>(engine: T): IEngineWrapper;
+  setEngine<T>(engine: T): IRenderer;
   registerPartial(partial: Partial): boolean;
   compileTemplate(template: Template): boolean;
 }
 
-export class HandlebarsRenderer implements IEngineWrapper {
+/**
+ * Build in renderer, that is taken as default if no external is given.
+ */
+export class HandlebarsRenderer implements IRenderer {
   engine: any;
-  
+
   setEngine<Handlebars>(engine: Handlebars) {
     this.engine = engine;
     return this;

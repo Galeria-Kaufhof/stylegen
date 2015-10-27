@@ -19,7 +19,8 @@ export class Component {
 
     if(!!this.config.partials) {
       var partialPromises:Q.Promise<Partial>[] = this.config.partials.map((partialName:Partial) => {
-        return new Partial(path.resolve(this.config.path, partialName)).load();
+        var p = path.resolve(this.config.path, partialName);
+        return new Partial(p).load();
       });
 
       Q.all(partialPromises)
@@ -46,9 +47,11 @@ export class Component {
     var d:Q.Deferred<Component> = Q.defer<Component>();
 
     Q.all([this.buildPartials()])
-    .then((fubar) => {
+    // TODO: finish component building
+    .then((ignore) => {
       d.resolve(this);
     })
+    .catch((e) => d.reject(e));
     return d.promise;
   }
 }
