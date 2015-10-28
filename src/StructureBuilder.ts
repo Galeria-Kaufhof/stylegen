@@ -30,8 +30,8 @@ export class StructureBuilder {
   /**
    * Collect all the little things, that represent out styleguide, e.g. components and pages
    */
-  collect():Q.Promise<{}> {
-    var d:Q.Deferred<{}> = Q.defer<{}>();
+  collect():Q.Promise<StructureBuilder> {
+    var d:Q.Deferred<StructureBuilder> = Q.defer<StructureBuilder>();
     var componentPaths:[string] = this.styleguide.config["componentPaths"];
 
     /**

@@ -10,6 +10,9 @@ export function build() {
     return styleguide.read();
   })
   .then(function(styleguide) {
+    return styleguide.write();
+  })
+  .then(function(styleguide) {
     console.log("\n\nREAD FINISHED:\n");
     // console.log(styleguide);
   })

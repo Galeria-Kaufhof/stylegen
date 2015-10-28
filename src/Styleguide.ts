@@ -79,7 +79,7 @@ export class Styleguide {
      * to proceed with the information we collected in the read step.
      */
     new StructureBuilder(this).collect()
-    .then((obj:{}) => { d.resolve(this); })
+    .then((builder:StructureBuilder) => { d.resolve(this); })
     .catch(function(e) {
       console.log("Styleguide.read:", e);
       d.reject(e);
@@ -91,7 +91,9 @@ export class Styleguide {
   /*
    * write down, what was read
    */
-  write() {
-
+  write():Q.Promise<Styleguide> {
+    var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
+    d.resolve(this);
+    return d.promise;
   }
 }
