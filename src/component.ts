@@ -51,7 +51,7 @@ export class Component {
     .then((ignore) => {
       d.resolve(this);
     })
-    .catch((e) => d.reject(e));
+    .catch(e => d.reject(e));
     return d.promise;
   }
 }

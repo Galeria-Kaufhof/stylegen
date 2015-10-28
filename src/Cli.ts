@@ -14,7 +14,7 @@ export function build() {
     // console.log(styleguide);
   })
   .catch(function(e) {
-    console.log(e);
+    console.log(e.stack);
     throw(e);
   });
 };

@@ -51,7 +51,7 @@ export class StructureBuilder {
       this.styleguide.nodes = nodes;
       d.resolve(this);
     })
-    .catch((e) => d.reject(e));
+    .catch(e => d.reject(e));
 
     return d.promise;
   }

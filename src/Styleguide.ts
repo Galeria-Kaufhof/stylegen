@@ -76,13 +76,13 @@ export class Styleguide {
      * so lets start to fill it.
      *
      * A successful collect promise just resolves to `this`, so that we are able
-     * to proceed with the information we collected in the read step. 
+     * to proceed with the information we collected in the read step.
      */
     new StructureBuilder(this).collect()
     .then((obj:{}) => { d.resolve(this); })
     .catch(function(e) {
       console.log("Styleguide.read:", e);
-      throw(e);
+      d.reject(e);
     });
 
     return d.promise;

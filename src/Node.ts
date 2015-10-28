@@ -33,11 +33,32 @@ export class Node {
     this.path = nodePath;
   }
 
-  isComponent():boolean {
+  private isComponent():boolean {
     return !!this.component;
   }
 
-  resolveComponent():Q.Promise<Node> {
+  private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
+    var d:Q.Deferred<Node> = Q.defer<Node>();
+    var filePath = path.resolve(this.path, file);
+
+    fs.stat(filePath, (err, stat) => {
+      if (err) {
+        d.reject(err);
+      } else {
+        if (stat && stat.isDirectory()) {
+          /** so, ok, we have a directory, so lets build the sub tree  */
+          new Node(filePath, parent).resolve()
+          .then(node => d.resolve(node))
+          .catch(e => d.reject(e));
+          // d.resolve();
+        } else { d.resolve(null); }
+      }
+    });
+
+    return d.promise;
+  }
+
+  private resolveComponent():Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
 
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
@@ -53,7 +74,7 @@ export class Node {
           this.component = component;
           d.resolve(this);
         })
-        .catch((e) => d.reject(e));
+        .catch(e => d.reject(e));
       })
       .catch((e) => {
         console.log("Node.resolveComponent", e);
@@ -64,26 +85,41 @@ export class Node {
     return d.promise;
   }
 
-  handleFileByType(file:string, parent:Node):Q.Promise<Node> {
+  private resolveChildren():Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
+    /**
+     * because we have handled the current levels component.json already,
+     * lets handle the other files without taking it into account again.
+     */
+    var alreadyProcessed = ['component.json'];
+    /**
+     * add partials to those files, which are already handled in the beforehand component lookup
+     */
+    if (this.isComponent() && !!this.component.partials) {
+      var partialNames = this.component.partials.map((p:Partial) => p.name);
+      [].push.apply(alreadyProcessed, this.component.partials.map((p:Partial) => p.name));
+    }
 
-    fs.stat(path.resolve(this.path, file), (err, stat) => {
-      if (err) {
-        d.reject(err);
-      } else {
-        if (stat && stat.isDirectory()) {
-          /** so, ok, we have a directory, so lets build the sub tree  */
+    /**
+     * Lets handle the leftover files, (at the moment it should only be sub folders, that may be child nodes)
+     */
+    var filePromises = this.files
+    // remove the processed files
+    .filter((f) => { return alreadyProcessed.indexOf(f) < 0 })
+    // collect the others
+    .map((f) => { return this.nodesForDirectories(f, this); });
 
-          d.resolve(this);
-        } else {
-          d.resolve(this);
-        }
-      }
-    });
+    Q.all(filePromises)
+    .then((childNodes) => {
+      this.children = childNodes.filter(n => n !== null);
+      d.resolve(this);
+    })
+    .catch(e => d.reject(e));
+
     return d.promise;
   }
 
-  resolve():Q.Promise<Node> {
+  public resolve():Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
 
     /**
@@ -100,34 +136,12 @@ export class Node {
       return this.resolveComponent();
     })
     .then((node) => {
-      /**
-       * because we have handled the current levels component.json already,
-       * lets handle the other files without taking it into account again.
-       */
-      var alreadyProcessed = ['component.json'];
-      /**
-       * add partials to those files, which are already handled in the beforehand component lookup
-       */
-      var partialNames = this.component.partials.map((p:Partial) => p.name);
-      [].push.apply(alreadyProcessed, this.component.partials.map((p:Partial) => p.name));
-
-      /**
-       * Lets handle the leftover files, (at the moment it should only be sub folders, that may be child nodes)
-       */
-      var filePromises = this.files
-      // remove the processed files
-      .filter((f) => { return alreadyProcessed.indexOf(f) < 0 })
-      // collect the others
-      .map((f) => { return this.handleFileByType(f, node); });
-
-      Q.all(filePromises)
-      .then((results) => {
-        d.resolve(node);
-      })
-      .catch((e) => d.reject(e));
-
+      return this.resolveChildren();
     })
-    .catch((e) => d.reject(e));
+    .then((node) => d.resolve(this))
+    .catch(e => d.reject(e));
+
+
     return d.promise;
   }
 }
