@@ -4,10 +4,10 @@ import * as path from 'path';
 import * as Q from 'q';
 
 import {IComponentConfig} from './Config';
-import {Partial, PartialList} from './Templating';
+import {Partial} from './Templating';
 
 export class Component {
-  partials: PartialList;
+  partials: Partial[];
   config: IComponentConfig;
 
   constructor(config:IComponentConfig) {
@@ -24,7 +24,7 @@ export class Component {
       });
 
       Q.all(partialPromises)
-      .then((partials:PartialList) => {
+      .then((partials:Partial[]) => {
         this.partials = partials;
         d.resolve(this);
       })

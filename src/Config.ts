@@ -2,9 +2,7 @@
 
 import * as fs from 'fs';
 import * as Q from 'q';
-
-import {PartialList} from './Templating';
-
+import {Partial} from './Templating';
 
 interface IAbstractConfig {
   resolve<T>(path_or_object: T):Q.Promise<{}>;
@@ -18,7 +16,7 @@ export interface IProjectConfig {
 }
 
 export interface IComponentConfig {
-  partials?: PartialList;
+  partials?: Partial[];
   path?: string;
 }
 

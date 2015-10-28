@@ -89,7 +89,7 @@ export class Styleguide {
   }
 
   /*
-   * write down, what was read
+   * write down, what was read, so make sure you read before :)
    */
   write():Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();

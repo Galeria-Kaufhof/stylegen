@@ -13,11 +13,6 @@ export interface Template {
   load():Q.Promise<Template>;
 }
 
-export interface PartialList {
-  [index: number]: Partial;
-  map(p:any):any[];
-}
-
 export class Partial implements Template {
   raw: string;
   compiled: string;
