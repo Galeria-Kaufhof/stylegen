@@ -34,12 +34,10 @@ export class HandlebarsRenderer implements IRenderer {
   private registerPartial(partial: Partial):void {
     var partialName = `${this.config.modulePrefix}.${partial.name}`;
     partial.compiled = this.engine.precompile(partial.raw);
-
     this.engine.registerPartial(partialName, partial.raw);
   }
 
   private registerView(view: View):void {
-    // var viewName = `${this.config.modulePrefix}.${view.name}`;
     view.template = this.engine.compile(view.raw);
   }
 

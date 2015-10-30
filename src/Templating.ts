@@ -37,7 +37,7 @@ export class Partial implements Template {
 
 export class View implements Template {
   raw: string;
-  template: HandlebarsTemplates;
+  template: HandlebarsTemplateDelegate;
   name: string;
 
   constructor(public filePath: string) {
