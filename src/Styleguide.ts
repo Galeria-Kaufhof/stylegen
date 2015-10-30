@@ -3,10 +3,11 @@
 import * as path from 'path';
 import * as Q from 'q';
 import * as Handlebars from 'handlebars';
-import {Config,IProjectConfig} from './Config';
+import {Config,IProjectConfig,IRendererConfig} from './Config';
 import {StructureBuilder} from './StructureBuilder';
 import {Node} from './Node';
 import {IRenderer, HandlebarsRenderer} from './Renderer';
+import {ComponentWriter} from './ComponentWriter';
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
@@ -20,14 +21,6 @@ export class Styleguide {
   constructor(options?: IStyleguideOptions) {
     // nodes build the structure of our styleguide
     this.nodes = [];
-
-    /** if a renderer is configured in the initialize options, lets take it. */
-    if (!!options && !!options.renderer) {
-      this.renderer = options.renderer;
-    } else {
-      /** otherwise take the build in handlebars engine */
-      this.renderer = new HandlebarsRenderer().setEngine(Handlebars);
-    }
   }
 
   /*
@@ -53,6 +46,17 @@ export class Styleguide {
       if (!this.config.name) {
         this.config.name = path.basename(this.config.cwd);
       }
+
+      // TODO: think about configurability of the renderer, and how to apply constructor options
+      /** if a renderer is configured in the initialize options, lets take it. */
+      // if (!!options && !!options.renderer) {
+      //   this.renderer = options.renderer;
+      // } else {
+        /** otherwise take the build in handlebars engine */
+      var rendererConfig:IRendererConfig = {};
+      rendererConfig.modulePrefix = this.config.namespace;
+      this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
+      // }
 
       d.resolve(this);
     })
@@ -93,7 +97,14 @@ export class Styleguide {
    */
   write():Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
-    d.resolve(this);
+
+    new ComponentWriter(this.renderer, this.nodes)
+    .setup()
+    .then((result) => {
+      d.resolve(this)}
+    )
+    .catch(e => d.reject(e));
+
     return d.promise;
   }
 }

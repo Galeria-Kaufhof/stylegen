@@ -15,10 +15,10 @@
     "files": [
         "src/Cli.ts",
         "src/Component.ts",
+        "src/ComponentWriter.ts",
         "src/Config.ts",
         "src/Document.ts",
         "src/Node.ts",
-        "src/NodeListing.ts",
         "src/Renderer.ts",
         "src/StructureBuilder.ts",
         "src/Styleguide.ts",

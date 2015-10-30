@@ -2,7 +2,7 @@
 
 import * as fs from 'fs';
 import * as Q from 'q';
-import {Partial} from './Templating';
+import {Partial, View} from './Templating';
 
 interface IAbstractConfig {
   resolve<T>(path_or_object: T):Q.Promise<{}>;
@@ -10,14 +10,20 @@ interface IAbstractConfig {
 }
 
 export interface IProjectConfig {
-  cwd?:string;
-  name?:string;
-  upfrontRoot?:string;
+  cwd?: string;
+  name?: string;
+  upfrontRoot?: string;
+  namespace?: string;
 }
 
 export interface IComponentConfig {
   partials?: Partial[];
+  view?: View;
   path?: string;
+}
+
+export interface IRendererConfig {
+  modulePrefix?: string;
 }
 
 export class Config implements IAbstractConfig {

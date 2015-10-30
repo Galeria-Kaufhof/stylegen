@@ -8,7 +8,6 @@ export interface Template {
   name:string;
   filePath: string;
   raw: string;
-  compiled?: string;
 
   load():Q.Promise<Template>;
 }
@@ -19,7 +18,8 @@ export class Partial implements Template {
   name: string;
 
   constructor(public filePath: string) {
-    this.name = path.basename(filePath);
+    // TODO: make template extension configurable
+    this.name = path.basename(filePath, '_partial.hbs');
   }
 
   load():Q.Promise<Partial> {
@@ -37,7 +37,7 @@ export class Partial implements Template {
 
 export class View implements Template {
   raw: string;
-  compiled: string;
+  template: HandlebarsTemplates;
   name: string;
 
   constructor(public filePath: string) {

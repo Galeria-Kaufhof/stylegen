@@ -1,4 +1,6 @@
-import {Partial,Template} from './Templating';
+import {Partial,Template,View} from './Templating';
+import {Node} from './Node';
+import {IRendererConfig} from './Config';
 
 /**
  * Interface that new Renderers should implement.
@@ -6,9 +8,9 @@ import {Partial,Template} from './Templating';
  */
 export interface IRenderer {
   engine: any;
+  config: IRendererConfig;
   setEngine<T>(engine: T): IRenderer;
-  registerPartial(partial: Partial): boolean;
-  compileTemplate(template: Template): boolean;
+  registerComponent(node: Node): void;
 }
 
 /**
@@ -16,17 +18,42 @@ export interface IRenderer {
  */
 export class HandlebarsRenderer implements IRenderer {
   engine: any;
+  config: IRendererConfig;
+
+  constructor(config?: IRendererConfig) {
+    if (!!config) {
+      this.config = config;
+    }
+  }
 
   setEngine<Handlebars>(engine: Handlebars) {
     this.engine = engine;
     return this;
   }
 
-  registerPartial(partial: Partial) {
-    return true;
+  private registerPartial(partial: Partial):void {
+    var partialName = `${this.config.modulePrefix}.${partial.name}`;
+    partial.compiled = this.engine.precompile(partial.raw);
+
+    this.engine.registerPartial(partialName, partial.raw);
   }
 
-  compileTemplate(partial: Template) {
-    return true;
+  private registerView(view: View):void {
+    // var viewName = `${this.config.modulePrefix}.${view.name}`;
+    view.template = this.engine.compile(view.raw);
+  }
+
+  registerComponent(node: Node):void {
+    if (node.isComponent()) {
+      if (!!node.component.partials) {
+        node.component.partials.forEach((partial) => {
+          this.registerPartial(partial);
+        });
+      }
+
+      if (!!node.component.view) {
+        this.registerView(node.component.view);
+      }
+    }
   }
 }

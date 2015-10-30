@@ -15,30 +15,28 @@ export class Node {
   children: Node[];
   config: IComponentConfig;
   component: Component;
+  parent: Node;
 
   // , files:[string]
   constructor(nodePath:string, parent?:Node, options?:{}) {
-    var parentPath:string;
+    var nodeName:string = path.basename(nodePath);
 
-    if (!parent) {
-      parentPath = path.resolve(nodePath, '..');
-    } else {
-      parentPath = parent.path;
+    if (!!parent) {
+      this.parent = parent;
     }
-
-    var nodeName:string = nodePath.slice(parentPath.length + 1);
 
     this.id = nodeName;
     // this.files = files;
     this.path = nodePath;
   }
 
-  private isComponent():boolean {
+  public isComponent():boolean {
     return !!this.component;
   }
 
   private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
+
     var filePath = path.resolve(this.path, file);
 
     fs.stat(filePath, (err, stat) => {
@@ -50,7 +48,7 @@ export class Node {
           new Node(filePath, parent).resolve()
           .then(node => d.resolve(node))
           .catch(e => d.reject(e));
-          // d.resolve();
+
         } else { d.resolve(null); }
       }
     });
@@ -69,7 +67,17 @@ export class Node {
       .then((config:IComponentConfig) => {
         config.path = this.path;
 
-        new Component(config).build()
+        var parentComponent:Component;
+
+        /**
+         * if the parent node is also a component, lets handle this node
+         * as sub component to the parent one.
+         */
+        if (!!this.parent && this.parent.isComponent()) {
+          parentComponent = this.parent.component;
+        }
+
+        new Component(config, parentComponent).build()
         .then((component) => {
           this.component = component;
           d.resolve(this);

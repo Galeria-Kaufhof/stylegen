@@ -14,7 +14,7 @@ export function build() {
   })
   .then(function(styleguide) {
     console.log("\n\nREAD FINISHED:\n");
-    // console.log(styleguide);
+    console.log(styleguide);
   })
   .catch(function(e) {
     console.log(e.stack);

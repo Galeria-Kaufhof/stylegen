@@ -4,14 +4,18 @@ import * as path from 'path';
 import * as Q from 'q';
 
 import {IComponentConfig} from './Config';
-import {Partial} from './Templating';
+import {Partial, View} from './Templating';
 
 export class Component {
+  id: string;
   partials: Partial[];
+  view: View;
   config: IComponentConfig;
 
-  constructor(config:IComponentConfig) {
+  constructor(config:IComponentConfig, parent?: Component) {
     this.config = config;
+    // TODO: build id from basename and maybe its parent component
+    this.id = path.basename(config.path);
   }
 
   buildPartials():Q.Promise<Component> {
@@ -36,7 +40,28 @@ export class Component {
       d.resolve(this);
     } else {
       this.partials = [];
-      console.warn("Component.build", "Did not found any partials for Component", this)
+      console.warn("Component.buildPartials", "Did not found any partials for Component", this.id);
+      d.resolve(this);
+    }
+
+    return d.promise;
+  }
+
+  buildView():Q.Promise<Component> {
+    var d:Q.Deferred<Component> = Q.defer<Component>();
+
+    if(!!this.config.view) {
+      var p = path.resolve(this.config.path, this.config.view);
+      new View(p).load()
+      .then((view) => {
+        this.view = view;
+        d.resolve(this)
+      });
+    } else if(!!this.config.view) {
+      // TODO: try to find  *_view files in component path (this.config.path)
+      d.resolve(this);
+    } else {
+      console.warn("Component.buildView", "Did not found a view for Component", this.id);
       d.resolve(this);
     }
 
@@ -46,10 +71,13 @@ export class Component {
   build():Q.Promise<Component> {
     var d:Q.Deferred<Component> = Q.defer<Component>();
 
-    Q.all([this.buildPartials()])
+    this.buildPartials()
     // TODO: finish component building
-    .then((ignore) => {
-      d.resolve(this);
+    .then(() => {
+      return this.buildView();
+    })
+    .then((component) => {
+      d.resolve(component);
     })
     .catch(e => d.reject(e));
     return d.promise;
