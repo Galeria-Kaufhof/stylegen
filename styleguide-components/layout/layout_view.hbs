@@ -3,14 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Components</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 </head>
 <body>
-  <ul class="components">
-    {{#each components}}
-      <li>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          Upfront
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content container-fluid">
+    <div class="component-nav col-md-3"></div>
+    <ul class="components list-unstyled col-md-9">
+      {{#each components}}
+        <li>
 {{{this}}}
-      </li>
-    {{/each}}
-  </ul>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 </body>
 </html>

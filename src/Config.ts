@@ -23,6 +23,7 @@ export interface IComponentConfig {
   view?: View;
   path?: string;
   namespace?: string;
+  label?: string;
 }
 
 export interface IRendererConfig {

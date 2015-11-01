@@ -32,17 +32,13 @@ export class ComponentWriter {
   buildComponent(component:Component):string {
     if (!!component.view && !!component.view.template) {
       var context = {
-        headline: component.id,
+        headline: component.config.label || component.id,
 
         // TODO: insert component.context as context
         template: component.view.template({})
       };
 
-      try {
-        var compTemplate = this.styleguide.components['sg.component'].view.template;
-      } catch(e) {
-        console.log(this.styleguide.components['sg.component']);
-      }
+      var compTemplate = this.styleguide.components['sg.component'].view.template;
 
       return compTemplate(context);
     } else {
@@ -62,14 +58,16 @@ export class ComponentWriter {
 
   write():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
+    try {
+      var components:string[] = Object.keys(this.styleguide.components)
+      .map(key => this.styleguide.components[key])
+      // TODO: filter for app namespaced components
 
-    var components:string[] = Object.keys(this.styleguide.components)
-    .map(key => this.styleguide.components[key])
-    // TODO: filter for app namespaced components
-
-    .map(component => this.buildComponent(component))
-    .filter(c => c !== null);
-
+      .map(component => this.buildComponent(component))
+      .filter(c => c !== null);
+    } catch(e) {
+      d.reject(e);
+    }
     var context = { components: components };
 
     var compListTemplate = this.styleguide.components['sg.layout'].view.template;

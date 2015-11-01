@@ -57,7 +57,8 @@ export class Component {
       .then((view) => {
         this.view = view;
         d.resolve(this)
-      });
+      })
+      .catch(e => d.reject(e));
     } else if(!!this.config.view) {
       // TODO: try to find  *_view files in component path (this.config.path)
       d.resolve(this);
