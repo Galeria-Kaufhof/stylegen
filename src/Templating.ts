@@ -29,7 +29,8 @@ export class Partial implements Template {
       var content:string = buffer.toString();
       this.raw = content;
       d.resolve(this);
-    });
+    })
+    .catch(e => d.reject(e));
 
     return d.promise;
   }
@@ -51,7 +52,8 @@ export class View implements Template {
       var content:string = fileBuffer.toString();
       this.raw = content;
       d.resolve(this);
-    });
+    })
+    .catch(e => d.reject(e));
 
     return d.promise;
   }

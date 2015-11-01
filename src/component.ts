@@ -59,7 +59,7 @@ export class Component {
         d.resolve(this)
       })
       .catch(e => d.reject(e));
-    } else if(!!this.config.view) {
+    } else if(!this.config.view) {
       // TODO: try to find  *_view files in component path (this.config.path)
       d.resolve(this);
     } else {
@@ -72,7 +72,7 @@ export class Component {
 
   build():Q.Promise<Component> {
     var d:Q.Deferred<Component> = Q.defer<Component>();
-
+    
     this.buildPartials()
     // TODO: finish component building
     .then(() => {
@@ -82,6 +82,7 @@ export class Component {
       d.resolve(component);
     })
     .catch(e => d.reject(e));
+
     return d.promise;
   }
 }

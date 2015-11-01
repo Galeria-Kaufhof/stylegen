@@ -14,7 +14,7 @@
     ],
     "files": [
         "src/Cli.ts",
-        "src/component.ts",
+        "src/Component.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
         "src/Document.ts",

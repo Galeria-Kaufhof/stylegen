@@ -61,7 +61,7 @@ export class Node {
 
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
-    if (componentConfigPath) {
+    if (!!componentConfigPath) {
       // TODO: merge in default configuration for components
       new Config().load(path.resolve(this.path, componentConfigPath))
       .then((config:IComponentConfig) => {
@@ -82,7 +82,8 @@ export class Node {
           this.component = component;
           d.resolve(this);
         })
-        .catch(e => d.reject(e));
+        .catch(e => {
+          d.reject(e)});
       })
       .catch((e) => {
         console.log("Node.resolveComponent", e);
