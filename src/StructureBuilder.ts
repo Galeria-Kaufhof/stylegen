@@ -5,6 +5,7 @@ import * as Q from 'q';
 import {Styleguide} from './Styleguide';
 import {IProjectConfig} from './Config';
 import {Node} from './Node';
+import {Component} from './Component';
 
 /**
  * The StructureBuilder class serves as orchestrator to our styleguide class,
@@ -27,12 +28,24 @@ export class StructureBuilder {
     return path.resolve(this.styleguide.config["cwd"], p);
   }
 
+  buildComponentDictionary(nodes: Node[], dict: {[s: string]: Component}) {
+    nodes.forEach((node) => {
+      if (node.isComponent()) {
+        dict[node.component.id] = node.component;
+      }
+
+      if (!!node.children) {
+        this.buildComponentDictionary(node.children, dict);
+      }
+    });
+  }
+
   /**
    * Collect all the little things, that represent out styleguide, e.g. components and pages
    */
   collect():Q.Promise<StructureBuilder> {
     var d:Q.Deferred<StructureBuilder> = Q.defer<StructureBuilder>();
-    var componentPaths:[string] = this.styleguide.config["componentPaths"];
+    var componentPaths:string[] = this.styleguide.config["componentPaths"];
 
     /**
      * a node is a sub entry in our component hierarchy, which may be a component or
@@ -49,6 +62,7 @@ export class StructureBuilder {
     .then((nodes) => {
       /** assign nodes to the parent styleguide */
       this.styleguide.nodes = nodes;
+      this.buildComponentDictionary(nodes, this.styleguide.components);
       d.resolve(this);
     })
     .catch(e => d.reject(e));

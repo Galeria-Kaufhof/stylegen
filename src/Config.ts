@@ -14,12 +14,14 @@ export interface IProjectConfig {
   name?: string;
   upfrontRoot?: string;
   namespace?: string;
+  componentPaths?: string[];
 }
 
 export interface IComponentConfig {
   partials?: Partial[];
   view?: View;
   path?: string;
+  namespace?: string;
 }
 
 export interface IRendererConfig {

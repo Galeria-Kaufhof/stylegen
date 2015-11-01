@@ -6,6 +6,7 @@ import * as Handlebars from 'handlebars';
 import {Config,IProjectConfig,IRendererConfig} from './Config';
 import {StructureBuilder} from './StructureBuilder';
 import {Node} from './Node';
+import {Component} from './Component';
 import {IRenderer, HandlebarsRenderer} from './Renderer';
 import {ComponentWriter} from './ComponentWriter';
 
@@ -17,10 +18,12 @@ export class Styleguide {
   public config: IProjectConfig;
   public renderer: IRenderer;
   public nodes: Node[];
+  public components: {[s: string]:Component }
 
   constructor(options?: IStyleguideOptions) {
     // nodes build the structure of our styleguide
     this.nodes = [];
+    this.components = {};
   }
 
   /*
@@ -41,7 +44,7 @@ export class Styleguide {
       this.config.cwd = cwd;
       /** we sometimes need the upfront root, e.g. for file resolvement */
       this.config.upfrontRoot = upfrontRoot;
-
+      this.config.componentPaths.push(path.resolve(upfrontRoot, "styleguide-components"));
       /** each and every styleguide should have a name ;) */
       if (!this.config.name) {
         this.config.name = path.basename(this.config.cwd);
@@ -98,8 +101,11 @@ export class Styleguide {
   write():Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
 
-    new ComponentWriter(this.renderer, this.nodes)
+    new ComponentWriter(this.renderer, this.nodes, this)
     .setup()
+    .then((componentWriter) => {
+      return componentWriter.write();
+    })
     .then((result) => {
       d.resolve(this)}
     )
