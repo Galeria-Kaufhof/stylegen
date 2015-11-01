@@ -31,7 +31,13 @@ export class StructureBuilder {
   buildComponentDictionary(nodes: Node[], dict: {[s: string]: Component}) {
     nodes.forEach((node) => {
       if (node.isComponent()) {
-        dict[node.component.id] = node.component;
+        var namespace:string = this.styleguide.config.namespace;
+
+        if (!!node.component.config.namespace) {
+          namespace = node.component.config.namespace;
+        }
+
+        dict[namespace + "." + node.component.id] = node.component;
       }
 
       if (!!node.children) {

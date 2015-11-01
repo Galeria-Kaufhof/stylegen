@@ -1,5 +1,5 @@
 import {Partial,Template,View} from './Templating';
-import {Node} from './Node';
+import {Component} from './Component';
 import {IRendererConfig} from './Config';
 
 /**
@@ -10,7 +10,7 @@ export interface IRenderer {
   engine: any;
   config: IRendererConfig;
   setEngine<T>(engine: T): IRenderer;
-  registerComponent(node: Node): void;
+  registerComponent(component: Component): void;
 }
 
 /**
@@ -31,8 +31,9 @@ export class HandlebarsRenderer implements IRenderer {
     return this;
   }
 
-  private registerPartial(partial: Partial):void {
-    var partialName = `${this.config.modulePrefix}.${partial.name}`;
+  private registerPartial(partial: Partial, namespace?: string):void {
+    namespace = namespace || this.config.modulePrefix;
+    var partialName = `${namespace}.${partial.name}`;
     partial.compiled = this.engine.precompile(partial.raw);
     this.engine.registerPartial(partialName, partial.raw);
   }
@@ -41,17 +42,20 @@ export class HandlebarsRenderer implements IRenderer {
     view.template = this.engine.compile(view.raw);
   }
 
-  registerComponent(node: Node):void {
-    if (node.isComponent()) {
-      if (!!node.component.partials) {
-        node.component.partials.forEach((partial) => {
-          this.registerPartial(partial);
-        });
-      }
+  registerComponent(component: Component):void {
+    var namespace:string;
+    if (component.config.namespace) {
+      namespace = component.config.namespace;
+    }
 
-      if (!!node.component.view) {
-        this.registerView(node.component.view);
-      }
+    if (!!component.partials) {
+      component.partials.forEach((partial, namespace) => {
+        this.registerPartial(partial);
+      });
+    }
+
+    if (!!component.view) {
+      this.registerView(component.view);
     }
   }
 }

@@ -17,7 +17,9 @@ export class ComponentWriter {
 
   private registerComponents(nodes: Node[]) {
     nodes.forEach((node) => {
-      this.renderer.registerComponent(node);
+      if (node.isComponent()) {
+        this.renderer.registerComponent(node.component);
+      }
 
       if (!!node.children) {
         this.registerComponents(node.children);
@@ -32,8 +34,8 @@ export class ComponentWriter {
       // TODO: insert component.context as context
       template: component.view.template({})
     }
-    var compTemplate = this.styleguide.components['styleguide-component'].view.template;
-    
+    var compTemplate = this.styleguide.components['sg.styleguide-component'].view.template;
+
     console.log(compTemplate(context));
     // var view:string = component.view.template({name:"Fubar"});
     // var template:string = "{{#> app.component }}" + view + "{{/app.component}}";
