@@ -14,7 +14,8 @@ export class Component {
 
   constructor(config:IComponentConfig, parent?: Component) {
     this.config = config;
-    // TODO: build id from basename and maybe its parent component
+
+    // TODO: add namespace to id
     this.id = path.basename(config.path);
   }
 

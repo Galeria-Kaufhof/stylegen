@@ -1,3 +1,5 @@
+import * as path from 'path';
+import * as fs from 'fs';
 import * as Q from 'q';
 import {Node} from './Node';
 import {IRenderer} from './Renderer';
@@ -27,21 +29,25 @@ export class ComponentWriter {
     });
   }
 
-  buildComponentBlock(component:Component) {
-    var context = {
-      headline: "Fubar Headline",
+  buildComponent(component:Component):string {
+    if (!!component.view && !!component.view.template) {
+      var context = {
+        headline: component.id,
 
-      // TODO: insert component.context as context
-      template: component.view.template({})
+        // TODO: insert component.context as context
+        template: component.view.template({})
+      };
+
+      try {
+        var compTemplate = this.styleguide.components['sg.component'].view.template;
+      } catch(e) {
+        console.log(this.styleguide.components['sg.component']);
+      }
+
+      return compTemplate(context);
+    } else {
+      return null;
     }
-    var compTemplate = this.styleguide.components['sg.styleguide-component'].view.template;
-
-    console.log(compTemplate(context));
-    // var view:string = component.view.template({name:"Fubar"});
-    // var template:string = "{{#> app.component }}" + view + "{{/app.component}}";
-    // console.log(this.renderer.engine.partials['app.component']);
-    // var c = this.renderer.engine.compile(template);
-    // console.log(c({}));
   }
 
   setup():Q.Promise<ComponentWriter> {
@@ -57,9 +63,32 @@ export class ComponentWriter {
   write():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
 
-    this.buildComponentBlock(this.nodes[0].component);
+    var components:string[] = Object.keys(this.styleguide.components)
+    .map(key => this.styleguide.components[key])
+    // TODO: filter for app namespaced components
 
-    d.resolve(this);
+    .map(component => this.buildComponent(component))
+    .filter(c => c !== null);
+
+    var context = { components: components };
+
+    var compListTemplate = this.styleguide.components['sg.layout'].view.template;
+
+    var config = this.styleguide.config;
+
+    Q.nfcall(fs.mkdir, config.target)
+    .then(() => Q.nfcall(fs.writeFile, path.resolve(config.cwd, config.target, "components.html"),  compListTemplate(context)))
+    .then(() => d.resolve(this))
+    .catch(e => d.reject(e));
+
+    // fs.writeFile(path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context), (err) => {
+    //   if (!!err) {
+    //     d.reject(err);
+    //   } else {
+    //     d.resolve(this);
+    //   }
+    // });
+
 
     return d.promise;
   }

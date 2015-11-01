@@ -15,6 +15,7 @@ export interface IProjectConfig {
   upfrontRoot?: string;
   namespace?: string;
   componentPaths?: string[];
+  target?: string[];
 }
 
 export interface IComponentConfig {
