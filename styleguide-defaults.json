@@ -1,0 +1,6 @@
+{
+  "namespace": "app"
+  , "componentPaths": ["components"]
+  , "target": "styleguide-dist"
+  , "namespace": "app"
+}

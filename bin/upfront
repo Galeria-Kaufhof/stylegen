@@ -1,68 +1,7 @@
 #!/usr/bin/env node
 
-'use strict';
+var Cli = require('../dist/Cli.js');
 
-var path = require('path');
-var Q = require('q');
-var argv = require('minimist')(process.argv.slice(2));
-
-var CWD = path.resolve('.');
-var ROOT_PATH = path.resolve(__dirname, '..');
-
-// project libraries
-var componentParser = require(path.resolve(ROOT_PATH, 'lib/component_parser'));
-
-var handlebars = require('handlebars');
-var renderer = require(path.resolve(ROOT_PATH, 'lib/renderer'))(handlebars);
-
-
-
-var Cli = {
-  loadOptions() {
-    var defaults = require(path.resolve(ROOT_PATH, 'defaults.json'));
-    var projectOptions = {};
-
-    try {
-      projectOptions = require(path.resolve(CWD, 'styleguide.json'));
-    } catch (e) {
-      console.log("No project config given, running with defaults", defaults);
-    }
-
-    return Object.assign({
-      cwd: CWD
-    }, defaults, projectOptions);
-  },
-
-  run(args) {
-    var options = this.loadOptions();
-    options.renderer = renderer;
-    console.log("Cli::run");
-    console.log("with Args", args);
-    console.log("and Options:\n", options);
-    console.log("\n");
-
-    componentParser.search(options)
-    .then((components) => {
-      return Q.all(components.map((component) => component.loadPartials(options)));
-    })
-    .then((components) => {
-      return Q.all(components.map((component) => component.loadView(options)));
-    })
-    .then((components) => {
-
-      var componentList = components.map((component) => {
-        if (!!component.template) {
-          return component.template({});
-        }
-      }).filter((c) => c !== undefined);
-
-      console.log(componentList);
-    })
-    .catch((e) => {
-      console.log(e);
-      process.exit(1);
-    });
-  }
-};
-
-Cli.run(argv._);
+// TODO: implement args
+// TODO: implement help arg
+Cli.command();
