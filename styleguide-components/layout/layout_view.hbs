@@ -18,11 +18,19 @@
   </nav>
 
   <div class="content container-fluid">
-    <div class="component-nav col-md-3"></div>
+    <nav class="component-nav col-md-3">
+      <ul>
+        {{#each components}}
+          <li>
+            <a href="#{{component.id}}">{{component.config.label}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </nav>
     <ul class="components list-unstyled col-md-9">
       {{#each components}}
         <li>
-{{{this}}}
+{{{compiled}}}
         </li>
       {{/each}}
     </ul>

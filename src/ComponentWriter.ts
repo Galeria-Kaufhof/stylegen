@@ -8,6 +8,11 @@ import {IRenderer} from './Renderer';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 
+interface ViewComponent {
+  component: Component;
+  compiled?: string;
+}
+
 export class ComponentWriter {
   nodes: Node[];
   renderer: IRenderer;
@@ -31,7 +36,11 @@ export class ComponentWriter {
     });
   }
 
-  buildComponent(component:Component):string {
+  buildComponent(component:Component):ViewComponent {
+    var viewComponent:ViewComponent = {
+      component: component
+    };
+
     if (!!component.view && !!component.view.template) {
       var context = {
         id: component.id,
@@ -43,8 +52,9 @@ export class ComponentWriter {
 
       // TODO: handle/secure this law of demeter disaster :D
       var compTemplate = this.styleguide.components['sg.component'].view.template;
+      viewComponent.compiled = compTemplate(context);
 
-      return compTemplate(context);
+      return viewComponent;
     } else {
       return null;
     }
@@ -63,8 +73,9 @@ export class ComponentWriter {
   write():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
     try {
-      var components:string[] = Object.keys(this.styleguide.components)
+      var components:ViewComponent[] = Object.keys(this.styleguide.components)
       .map(key => this.styleguide.components[key])
+      .filter(c => c.config.namespace !== 'sg')
       // TODO: filter for 'app' namespaced components
 
       .map(component => this.buildComponent(component))
