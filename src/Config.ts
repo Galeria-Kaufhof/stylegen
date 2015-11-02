@@ -26,6 +26,10 @@ export interface IComponentConfig {
   label?: string;
 }
 
+export interface INodeConfig {
+  namespace?: string;
+}
+
 export interface IRendererConfig {
   modulePrefix?: string;
 }

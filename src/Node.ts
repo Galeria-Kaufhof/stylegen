@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as Q from 'q';
 import * as fs from 'fs';
 
-import {Config, IComponentConfig} from './Config';
+import {Config, INodeConfig, IComponentConfig} from './Config';
 import {Component} from './Component';
 import {Partial} from './Templating';
 
@@ -14,15 +14,10 @@ export class Node {
   files: string[];
   children: Node[];
   component: Component;
-  parent: Node;
 
   // , files:[string]
-  constructor(nodePath:string, parent?:Node) {
+  constructor(nodePath:string, public parent?:Node, public config?:INodeConfig) {
     var nodeName:string = path.basename(nodePath);
-
-    if (!!parent) {
-      this.parent = parent;
-    }
 
     this.id = nodeName;
     // this.files = files;
@@ -44,7 +39,7 @@ export class Node {
       } else {
         if (stat && stat.isDirectory()) {
           /** so, ok, we have a directory, so lets build the sub tree  */
-          new Node(filePath, parent).resolve()
+          new Node(filePath, parent, this.config).resolve()
           .then(node => d.resolve(node))
           .catch(e => d.reject(e));
 

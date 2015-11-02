@@ -3,7 +3,7 @@
 import * as path from 'path';
 import * as Q from 'q';
 import {Styleguide} from './Styleguide';
-import {IProjectConfig} from './Config';
+import {IProjectConfig, INodeConfig} from './Config';
 import {Node} from './Node';
 import {Component} from './Component';
 
@@ -58,7 +58,13 @@ export class StructureBuilder {
      * just a category folder (or maybe just empty :/)
      */
     var nodeLookups = componentPaths.map((p) => {
-      return new Node(this.fileInCWD(p)).resolve();
+      var nodeConfig:INodeConfig = {};
+
+      if (!!this.styleguide.config.namespace) {
+        nodeConfig.namespace = this.styleguide.config.namespace;
+      }
+
+      return new Node(this.fileInCWD(p), null, nodeConfig).resolve();
     });
 
     /**
