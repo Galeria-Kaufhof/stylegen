@@ -59,6 +59,12 @@ export class Node {
       // TODO: merge in default configuration for components
       new Config().load(path.resolve(this.path, componentConfigPath))
       .then((config:IComponentConfig) => {
+        var parentComponent:Component;
+
+        /**
+         * attach the current path to the config, to make it
+         * available to the component.
+         */
         config.path = this.path;
 
         /**
@@ -71,8 +77,6 @@ export class Node {
         } else if (!config.namespace) {
           config.namespace = 'app';
         }
-
-        var parentComponent:Component;
 
         /**
          * if the parent node is also a component, lets handle this node
