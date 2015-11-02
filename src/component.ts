@@ -15,7 +15,6 @@ export class Component {
   constructor(config:IComponentConfig, parent?: Component) {
     this.config = config;
 
-    // TODO: add namespace to id
     this.id = path.basename(config.path);
   }
 
@@ -72,7 +71,7 @@ export class Component {
 
   build():Q.Promise<Component> {
     var d:Q.Deferred<Component> = Q.defer<Component>();
-    
+
     this.buildPartials()
     // TODO: finish component building
     .then(() => {

@@ -7,13 +7,6 @@
     "handlebars": "^4.0.3",
     "q": "^1.4.1"
   },
-  "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.3.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-plumber": "^1.0.1",
-    "gulp-util": "^3.0.7"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

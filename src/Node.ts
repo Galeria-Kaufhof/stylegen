@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as Q from 'q';
 import * as fs from 'fs';
 
-import {Config,IComponentConfig} from './Config';
+import {Config, IComponentConfig} from './Config';
 import {Component} from './Component';
 import {Partial} from './Templating';
 
@@ -13,12 +13,11 @@ export class Node {
   path: string;
   files: string[];
   children: Node[];
-  config: IComponentConfig;
   component: Component;
   parent: Node;
 
   // , files:[string]
-  constructor(nodePath:string, parent?:Node, options?:{}) {
+  constructor(nodePath:string, parent?:Node) {
     var nodeName:string = path.basename(nodePath);
 
     if (!!parent) {
@@ -66,6 +65,11 @@ export class Node {
       new Config().load(path.resolve(this.path, componentConfigPath))
       .then((config:IComponentConfig) => {
         config.path = this.path;
+
+        /** setting default namespace for a component */
+        if (!config.namespace) {
+          config.namespace = 'app';
+        }
 
         var parentComponent:Component;
 

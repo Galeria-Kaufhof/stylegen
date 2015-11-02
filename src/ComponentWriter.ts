@@ -1,3 +1,5 @@
+"use strict";
+
 import * as path from 'path';
 import * as fs from 'fs';
 import * as Q from 'q';
@@ -32,12 +34,14 @@ export class ComponentWriter {
   buildComponent(component:Component):string {
     if (!!component.view && !!component.view.template) {
       var context = {
+        id: component.id,
         headline: component.config.label || component.id,
 
         // TODO: insert component.context as context
         template: component.view.template({})
       };
 
+      // TODO: handle/secure this law of demeter disaster :D
       var compTemplate = this.styleguide.components['sg.component'].view.template;
 
       return compTemplate(context);
@@ -61,7 +65,7 @@ export class ComponentWriter {
     try {
       var components:string[] = Object.keys(this.styleguide.components)
       .map(key => this.styleguide.components[key])
-      // TODO: filter for app namespaced components
+      // TODO: filter for 'app' namespaced components
 
       .map(component => this.buildComponent(component))
       .filter(c => c !== null);
@@ -70,6 +74,7 @@ export class ComponentWriter {
     }
     var context = { components: components };
 
+    // TODO: handle/secure this law of demeter disaster :D
     var compListTemplate = this.styleguide.components['sg.layout'].view.template;
 
     var config = this.styleguide.config;
@@ -78,15 +83,6 @@ export class ComponentWriter {
     .then(() => Q.nfcall(fs.writeFile, path.resolve(config.cwd, config.target, "components.html"),  compListTemplate(context)))
     .then(() => d.resolve(this))
     .catch(e => d.reject(e));
-
-    // fs.writeFile(path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context), (err) => {
-    //   if (!!err) {
-    //     d.reject(err);
-    //   } else {
-    //     d.resolve(this);
-    //   }
-    // });
-
 
     return d.promise;
   }

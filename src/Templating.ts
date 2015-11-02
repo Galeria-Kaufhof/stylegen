@@ -24,7 +24,7 @@ export class Partial implements Template {
 
   load():Q.Promise<Partial> {
     var d:Q.Deferred<Partial> = Q.defer<Partial>();
-    
+
     Q.nfcall(fs.readFile, this.filePath)
     .then((buffer) => {
       var content:string = buffer.toString();

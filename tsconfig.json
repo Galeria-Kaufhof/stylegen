@@ -1,10 +1,12 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "moduleResolution": "classic",
+        "moduleResolution": "node",
         "noImplicitAny": true,
         "target": "ES6",
-        "removeComments": false
+        "removeComments": false,
+        "outDir": "dist",
+        "sourceMap": true
     },
     "filesGlob": [
         "**/*.ts",
@@ -27,5 +29,7 @@
         "src/type_defs/node.d.ts",
         "src/type_defs/Q.d.ts"
     ],
-    "exclude": []
+    "exclude": [
+        "node_modules"
+    ]
 }

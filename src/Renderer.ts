@@ -1,3 +1,5 @@
+"use strict";
+
 import {Partial,Template,View} from './Templating';
 import {Component} from './Component';
 import {IRendererConfig} from './Config';
