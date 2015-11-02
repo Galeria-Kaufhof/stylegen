@@ -76,7 +76,6 @@ export class ComponentWriter {
       var components:ViewComponent[] = Object.keys(this.styleguide.components)
       .map(key => this.styleguide.components[key])
       .filter(c => c.config.namespace !== 'sg')
-      // TODO: filter for 'app' namespaced components
 
       .map(component => this.buildComponent(component))
       .filter(c => c !== null);
