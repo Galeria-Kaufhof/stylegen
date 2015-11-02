@@ -14,8 +14,7 @@ export class Component {
 
   constructor(config:IComponentConfig, parent?: Component) {
     this.config = config;
-
-    this.id = path.basename(config.path);
+    this.id = `${this.config.namespace}.${path.basename(config.path)}`;
   }
 
   buildPartials():Q.Promise<Component> {

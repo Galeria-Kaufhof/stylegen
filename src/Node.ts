@@ -61,8 +61,14 @@ export class Node {
       .then((config:IComponentConfig) => {
         config.path = this.path;
 
-        /** setting default namespace for a component */
-        if (!config.namespace) {
+        /**
+         * namespace can be configured in component.json,
+         * if it is not, take the configured namespace of the project config.
+         * If it is also  not set, take app as default.
+         */
+        if (!config.namespace && !!this.config.namespace) {
+          config.namespace = this.config.namespace;
+        } else if (!config.namespace) {
           config.namespace = 'app';
         }
 
