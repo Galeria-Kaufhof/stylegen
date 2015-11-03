@@ -8,6 +8,13 @@ import {Config, INodeConfig, IComponentConfig} from './Config';
 import {Component} from './Component';
 import {Partial} from './Templating';
 
+/**
+ * a Node represents a folder-node inside of the configured component paths.
+ * It may have a Component (1-to-1), but maybe it is just a container for
+ * child nodes, that are components.
+ *
+ * TODO: i guess nodes may also be pages
+ */
 export class Node {
   id: string;
   path: string;
@@ -15,15 +22,16 @@ export class Node {
   children: Node[];
   component: Component;
 
-  // , files:[string]
   constructor(nodePath:string, public parent?:Node, public config?:INodeConfig) {
     var nodeName:string = path.basename(nodePath);
 
     this.id = nodeName;
-    // this.files = files;
     this.path = nodePath;
   }
 
+  /**
+   * recursive node lookup for a component path.
+   */
   private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
     var filePath = path.resolve(this.path, file);
 
@@ -38,6 +46,9 @@ export class Node {
     });
   }
 
+  /**
+   * Find out if a node has a component configurations and create a Component, if it is so.
+   */
   private resolveComponent():Q.Promise<Node> {
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
