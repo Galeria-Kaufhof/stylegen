@@ -64,26 +64,22 @@ export class Config implements IAbstractConfig {
         d.resolve(result);
       } catch (e) {
 
-        try {
-          /** ok, it may be a file path, so lets resolve the file and return it as json object */
-          Q.nfcall(fs.readFile, path_or_object)
-          .then(function(buffer:Buffer) {
-            /** catch and return json parsing errors */
-            try {
-              var result:string = JSON.parse(buffer.toString());
-              d.resolve(result);
-            } catch(e) {
-              d.reject(e);
-            }
-          })
-          .catch(function(e) {
-            console.log("Config.resolve:readFile:", path_or_object);
+        /** ok, it may be a file path, so lets resolve the file and return it as json object */
+        Q.nfcall(fs.readFile, path_or_object)
+        .then(function(buffer:Buffer) {
+          /** catch and return json parsing errors */
+          try {
+            var result:string = JSON.parse(buffer.toString());
+            d.resolve(result);
+          } catch(e) {
             d.reject(e);
-          });
-        } catch(e) {
-          /** no config given, so return blank object */
-          d.resolve({});
-        }
+          }
+        })
+        .catch(function(e) {
+          console.log("Config.resolve:readFile:", path_or_object);
+          d.reject(e);
+        });
+
       }
     } else {
       d.reject("IProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
