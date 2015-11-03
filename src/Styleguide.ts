@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as Q from 'q';
 import * as Handlebars from 'handlebars';
 import {Config,IProjectConfig,IRendererConfig} from './Config';
-import {StructureBuilder} from './StructureBuilder';
+import {StructureReader} from './StructureReader';
 import {Node} from './Node';
 import {Component} from './Component';
 import {IRenderer, HandlebarsRenderer} from './Renderer';
@@ -85,8 +85,8 @@ export class Styleguide {
      * A successful collect promise just resolves to `this`, so that we are able
      * to proceed with the information we collected in the read step.
      */
-    new StructureBuilder(this).collect()
-    .then((builder:StructureBuilder) => { d.resolve(this); })
+    new StructureReader(this).collect()
+    .then((builder:StructureReader) => { d.resolve(this); })
     .catch(function(e) {
       console.log("Styleguide.read:", e);
       d.reject(e);

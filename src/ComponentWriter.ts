@@ -8,7 +8,11 @@ import {IRenderer} from './Renderer';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 
-interface ViewComponent {
+/**
+ * describes an app.component that has been wrapped in the component view,
+ * and holds a reference to the Component itself and the compiled output.
+ */
+interface IViewComponent {
   component: Component;
   compiled?: string;
 }
@@ -36,8 +40,8 @@ export class ComponentWriter {
     });
   }
 
-  buildComponent(component:Component):ViewComponent {
-    var viewComponent:ViewComponent = {
+  buildComponent(component:Component):IViewComponent {
+    var viewComponent:IViewComponent = {
       component: component
     };
 
@@ -73,7 +77,7 @@ export class ComponentWriter {
   write():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
     try {
-      var components:ViewComponent[] = Object.keys(this.styleguide.components)
+      var components:IViewComponent[] = Object.keys(this.styleguide.components)
       .map(key => this.styleguide.components[key])
       .filter(c => c.config.namespace !== 'sg')
 

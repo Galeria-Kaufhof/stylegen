@@ -22,7 +22,7 @@
         "src/Document.ts",
         "src/Node.ts",
         "src/Renderer.ts",
-        "src/StructureBuilder.ts",
+        "src/StructureReader.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
         "src/type_defs/handlebars.d.ts",

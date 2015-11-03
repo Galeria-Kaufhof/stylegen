@@ -8,10 +8,10 @@ import {Node} from './Node';
 import {Component} from './Component';
 
 /**
- * The StructureBuilder class serves as orchestrator to our styleguide class,
+ * The StructureReader class serves as orchestrator to our styleguide class,
  * so that we can chain up the necessary steps which fill our styleguide structure appropriatly.
  */
-export class StructureBuilder {
+export class StructureReader {
   styleguide:Styleguide;
 
   constructor(styleguide:Styleguide) {
@@ -43,8 +43,8 @@ export class StructureBuilder {
   /**
    * Collect all the little things, that represent out styleguide, e.g. components and pages
    */
-  collect():Q.Promise<StructureBuilder> {
-    var d:Q.Deferred<StructureBuilder> = Q.defer<StructureBuilder>();
+  collect():Q.Promise<StructureReader> {
+    var d:Q.Deferred<StructureReader> = Q.defer<StructureReader>();
     var componentPaths:string[] = this.styleguide.config["componentPaths"];
 
     /**
