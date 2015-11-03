@@ -25,25 +25,17 @@ export class Node {
   }
 
   private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
-    var d:Q.Deferred<Node> = Q.defer<Node>();
-
     var filePath = path.resolve(this.path, file);
 
-    fs.stat(filePath, (err, stat) => {
-      if (err) {
-        d.reject(err);
+    return Q.nfcall(fs.stat, filePath)
+    .then((stats:fs.Stats) => {
+      if (stats && stats.isDirectory()) {
+        /** so, ok, we have a directory, so lets build the sub tree  */
+        return new Node(filePath, parent, this.config).resolve();
       } else {
-        if (stat && stat.isDirectory()) {
-          /** so, ok, we have a directory, so lets build the sub tree  */
-          new Node(filePath, parent, this.config).resolve()
-          .then(node => d.resolve(node))
-          .catch(e => d.reject(e));
-
-        } else { d.resolve(null); }
+        return null;
       }
     });
-
-    return d.promise;
   }
 
   private resolveComponent():Q.Promise<Node> {
@@ -86,7 +78,7 @@ export class Node {
           return this;
         });
       });
-      
+
     } else { return Q(this); };
 
   }
