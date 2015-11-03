@@ -47,13 +47,11 @@ export class Node {
   }
 
   private resolveComponent():Q.Promise<Node> {
-    var d:Q.Deferred<Node> = Q.defer<Node>();
-
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
     if (!!componentConfigPath) {
       // TODO: merge in default configuration for components
-      new Config().load(path.resolve(this.path, componentConfigPath))
+      return new Config().load(path.resolve(this.path, componentConfigPath))
       .then((config:IComponentConfig) => {
         var parentComponent:Component;
 
@@ -82,25 +80,18 @@ export class Node {
           parentComponent = this.parent.component;
         }
 
-        new Component(config, parentComponent).build()
+        return new Component(config, parentComponent).build()
         .then((component) => {
           this.component = component;
-          d.resolve(this);
-        })
-        .catch(e => {
-          d.reject(e)});
-      })
-      .catch((e) => {
-        console.log("Node.resolveComponent", e);
-        d.reject(e);
+          return this;
+        });
       });
-    } else { d.resolve(this); };
+      
+    } else { return Q(this); };
 
-    return d.promise;
   }
 
   private resolveChildren():Q.Promise<Node> {
-    var d:Q.Deferred<Node> = Q.defer<Node>();
     /**
      * because we have handled the current levels component.json already,
      * lets handle the other files without taking it into account again.
@@ -123,14 +114,11 @@ export class Node {
     // collect the others
     .map((f) => { return this.nodesForDirectories(f, this); });
 
-    Q.all(filePromises)
+    return Q.all(filePromises)
     .then((childNodes) => {
       this.children = childNodes.filter(n => n !== null);
-      d.resolve(this);
-    })
-    .catch(e => d.reject(e));
-
-    return d.promise;
+      return this;
+    });
   }
 
   public isComponent():boolean {
@@ -138,12 +126,10 @@ export class Node {
   }
 
   public resolve():Q.Promise<Node> {
-    var d:Q.Deferred<Node> = Q.defer<Node>();
-
     /**
      * get all files inside this node, and go on.
      */
-    Q.nfcall(fs.readdir, this.path)
+    return Q.nfcall(fs.readdir, this.path)
     .then((files:[string]) => {
       this.files = files;
 
@@ -155,11 +141,6 @@ export class Node {
     })
     .then((node) => {
       return this.resolveChildren();
-    })
-    .then((node) => d.resolve(this))
-    .catch(e => d.reject(e));
-
-
-    return d.promise;
+    });
   }
 }
