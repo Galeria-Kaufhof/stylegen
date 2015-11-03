@@ -27,11 +27,19 @@ export class Component {
     this.id = `${this.config.namespace}.${path.basename(config.path)}`;
   }
 
+  /**
+   * a component may have several partials, that are component related view snippets,
+   * that are reusable by other partials or view components.
+   */
   buildPartials():Q.Promise<Component> {
     if(!!this.config.partials) {
 
+      /**
+       * load all Partials
+       */
       var partialPromises:Q.Promise<Partial>[] = this.config.partials.map((partialName:Partial) => {
         var p = path.resolve(this.config.path, partialName);
+        /** add partial loading promise to promise collection */
         return new Partial(p).load();
       });
 
@@ -41,10 +49,13 @@ export class Component {
         return this;
       });
 
+    /** when no partials are configured, look for _partial.hbs files in the current path */
     } else if(!this.config.partials) {
       // TODO: try to find  *_partial files in component path (this.config.path)
       this.partials = [];
       return Q(this);
+
+    /** no partials configured, no problem.  */
     } else {
       this.partials = [];
       console.warn("Component.buildPartials", "Did not found any partials for Component", this.id);
@@ -68,9 +79,13 @@ export class Component {
         this.view = view;
         return this;
       });
+
+    /** no view configured, ok, lets look inside the current path for _view.hbs files */
     } else if(!this.config.view) {
       // TODO: try to find  *_view files in component path (this.config.path)
       return Q(this);
+
+    /** no view found, no problem :) */
     } else {
       console.warn("Component.buildView", "Did not found a view for Component", this.id);
       return Q(this);
