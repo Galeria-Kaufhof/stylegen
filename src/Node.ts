@@ -1,12 +1,15 @@
 "use strict";
 
 import * as path from 'path';
-import * as Q from 'q';
 import * as fs from 'fs';
+import * as denodeify from 'denodeify';
 
 import {Config, INodeConfig, IComponentConfig} from './Config';
 import {Component} from './Component';
 import {Partial} from './Templating';
+
+var fsstat = denodeify(fs.stat);
+var fsreaddir = denodeify(fs.readdir);
 
 /**
  * a Node represents a folder-node inside of the configured component paths.
@@ -32,10 +35,10 @@ export class Node {
   /**
    * recursive node lookup for a component path.
    */
-  private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
+  private nodesForDirectories(file:string, parent:Node):Promise<Node> {
     var filePath = path.resolve(this.path, file);
 
-    return Q.nfcall(fs.stat, filePath)
+    return fsstat(filePath)
     .then((stats:fs.Stats) => {
       if (stats && stats.isDirectory()) {
         /** so, ok, we have a directory, so lets build the sub tree  */
@@ -49,7 +52,7 @@ export class Node {
   /**
    * Find out if a node has a component configurations and create a Component, if it is so.
    */
-  private resolveComponent():Q.Promise<Node> {
+  private resolveComponent():Promise<Node> {
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
     if (!!componentConfigPath) {
@@ -90,11 +93,11 @@ export class Node {
         });
       });
 
-    } else { return Q(this); };
+    } else { return new Promise((resolve) => resolve(this)); };
 
   }
 
-  private resolveChildren():Q.Promise<Node> {
+  private resolveChildren():Promise<Node> {
     /**
      * because we have handled the current levels component.json already,
      * lets handle the other files without taking it into account again.
@@ -117,7 +120,7 @@ export class Node {
     // collect the others
     .map((f) => { return this.nodesForDirectories(f, this); });
 
-    return Q.all(filePromises)
+    return Promise.all(filePromises)
     .then((childNodes) => {
       this.children = childNodes.filter(n => n !== null);
       return this;
@@ -128,11 +131,11 @@ export class Node {
     return !!this.component;
   }
 
-  public resolve():Q.Promise<Node> {
+  public resolve():Promise<Node> {
     /**
      * get all files inside this node, and go on.
      */
-    return Q.nfcall(fs.readdir, this.path)
+    return fsreaddir(this.path)
     .then((files:[string]) => {
       this.files = files;
 

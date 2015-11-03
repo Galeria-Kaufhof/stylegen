@@ -1,12 +1,14 @@
 "use strict";
 
 import * as fs from 'fs';
-import * as Q from 'q';
+import * as denodeify from 'denodeify';
 import {Partial, View} from './Templating';
+
+var fsreadfile = denodeify(fs.readFile);
 
 /** general setup for configuration file loaders  */
 interface IAbstractConfig {
-  load<T,V>(options: T, defaults?: V):Q.Promise<IAbstractConfig>;
+  load<T,V>(options: T, defaults?: V):Promise<IAbstractConfig>;
 }
 
 /** configuration structure for the general styleguide settings, aka. styleguide.json */
@@ -47,45 +49,45 @@ export class Config implements IAbstractConfig {
    * If it is a file, load the file, if it is a string containing
    * a json string parse it, and if it is an object it is already fine.
    */
-  private resolve<T>(path_or_object: T):Q.Promise<{}> {
+  private resolve<T>(path_or_object: T):Promise<{}> {
     var result:Object;
-    var d:Q.Deferred<{}> = Q.defer<{}>();
+    return new Promise((resolve, reject) => {
 
-    if (typeof(path_or_object) == 'object') {
-      /** argument is a plain object */
-      result = path_or_object;
-      d.resolve(result);
+      if (typeof(path_or_object) == 'object') {
+        /** argument is a plain object */
+        result = path_or_object;
+        resolve(result);
 
-    } else if (typeof(path_or_object) == "string") {
-      /** argument is a string, so lets try to figure out what it is */
-      try {
-        /** lets see if the string contains a json object */
-        result = JSON.parse(path_or_object.toString());
-        d.resolve(result);
-      } catch (e) {
+      } else if (typeof(path_or_object) == "string") {
+        /** argument is a string, so lets try to figure out what it is */
+        try {
+          /** lets see if the string contains a json object */
+          result = JSON.parse(path_or_object.toString());
+          resolve(result);
+        } catch (e) {
 
-        /** ok, it may be a file path, so lets resolve the file and return it as json object */
-        Q.nfcall(fs.readFile, path_or_object)
-        .then(function(buffer:Buffer) {
-          /** catch and return json parsing errors */
-          try {
-            var result:string = JSON.parse(buffer.toString());
-            d.resolve(result);
-          } catch(e) {
-            d.reject(e);
-          }
-        })
-        .catch(function(e) {
-          console.log("Config.resolve:readFile:", path_or_object);
-          d.reject(e);
-        });
+          /** ok, it may be a file path, so lets resolve the file and return it as json object */
+          fsreadfile(path_or_object.toString())
+          .then(function(buffer:Buffer) {
+            /** catch and return json parsing errors */
+            try {
+              var result:string = JSON.parse(buffer.toString());
+              resolve(result);
+            } catch(e) {
+              reject(e);
+            }
+          })
+          .catch((e) => {
+            console.log("Config.resolve:readFile:", path_or_object);
+            reject(e);
+          });
 
+        }
+      } else {
+        reject("IProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
       }
-    } else {
-      d.reject("IProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
-    }
 
-    return d.promise;
+    });
   }
 
   /**
@@ -94,9 +96,9 @@ export class Config implements IAbstractConfig {
    * or the may also be an options hash,
    * or even a string containing json content.
    */
-  load<T,V>(options: T, defaults?: V):Q.Promise<Config> {
-    var _options:Q.Promise<{}> = this.resolve(options);
-    var _defaults:Q.Promise<{}>;
+  load<T,V>(options: T, defaults?: V):Promise<Config> {
+    var _options:Promise<{}> = this.resolve(options);
+    var _defaults:Promise<{}>;
 
     if (defaults != null) {
        _defaults = this.resolve(defaults);
@@ -106,7 +108,7 @@ export class Config implements IAbstractConfig {
     var promises = [_defaults, _options].filter((x) => !!x);
 
     /** resolve config files */
-    return Q.all(promises)
+    return Promise.all(promises)
     .then(function(configs: [{}]) {
 
       /** return merged configuration */

@@ -1,7 +1,6 @@
 "use strict";
 
 import * as path from 'path';
-import * as Q from 'q';
 import {Styleguide} from './Styleguide';
 import {IProjectConfig, INodeConfig} from './Config';
 import {Node} from './Node';
@@ -43,8 +42,7 @@ export class StructureReader {
   /**
    * Collect all the little things, that represent out styleguide, e.g. components and pages
    */
-  public collect():Q.Promise<StructureReader> {
-    var d:Q.Deferred<StructureReader> = Q.defer<StructureReader>();
+  public collect():Promise<StructureReader> {
     var componentPaths:string[] = this.styleguide.config["componentPaths"];
 
     /**
@@ -64,15 +62,12 @@ export class StructureReader {
     /**
      * Take all the root nodes and look forward to collect components and similar.
      */
-    Q.all(nodeLookups)
+    return Promise.all(nodeLookups)
     .then((nodes) => {
       /** assign nodes to the parent styleguide */
       this.styleguide.nodes = nodes;
       this.buildComponentDictionary(nodes, this.styleguide.components);
-      d.resolve(this);
-    })
-    .catch(e => d.reject(e));
-
-    return d.promise;
+      return this;
+    });
   }
 };
