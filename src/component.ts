@@ -32,7 +32,7 @@ export class Component {
    * a component may have several partials, that are component related view snippets,
    * that are reusable by other partials or view components.
    */
-  buildPartials():Q.Promise<Component> {
+  private buildPartials():Q.Promise<Component> {
     if(!!this.config.partials) {
 
       /**
@@ -71,7 +71,7 @@ export class Component {
    * A view is not reusable directly in other views,
    * to have a reusable snippet, register a Partial instead.
    */
-  buildView():Q.Promise<Component> {
+  private buildView():Q.Promise<Component> {
     if(!!this.config.view) {
       var p = path.resolve(this.config.path, this.config.view);
 
@@ -100,7 +100,7 @@ export class Component {
    *
    * --> Its Partials, its View, and later all other related stuff.
    */
-  build():Q.Promise<Component> {
+  public build():Q.Promise<Component> {
     /** resolve the component partials at first */
     return this.buildPartials()
     /** after that lets read and build its view */
