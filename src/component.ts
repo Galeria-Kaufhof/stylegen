@@ -25,6 +25,7 @@ export class Component {
     this.config = config;
     /** TODO: handle parent resolution and sub component naming, atm. it is useless */
     this.id = `${this.config.namespace}.${path.basename(config.path)}`;
+    console.log('Component:', this.id);
   }
 
   /**
