@@ -23,17 +23,12 @@ export class Partial implements Template {
   }
 
   load():Q.Promise<Partial> {
-    var d:Q.Deferred<Partial> = Q.defer<Partial>();
-
-    Q.nfcall(fs.readFile, this.filePath)
+    return Q.nfcall(fs.readFile, this.filePath)
     .then((buffer) => {
       var content:string = buffer.toString();
       this.raw = content;
-      d.resolve(this);
-    })
-    .catch(e => d.reject(e));
-
-    return d.promise;
+      return this;
+    });
   }
 }
 
@@ -47,15 +42,11 @@ export class View implements Template {
   }
 
   load():Q.Promise<View> {
-    var d:Q.Deferred<View> = Q.defer<View>();
-    Q.nfcall(fs.readFile, this.filePath)
+    return Q.nfcall(fs.readFile, this.filePath)
     .then((fileBuffer) => {
       var content:string = fileBuffer.toString();
       this.raw = content;
-      d.resolve(this);
-    })
-    .catch(e => d.reject(e));
-
-    return d.promise;
+      return this;
+    });
   }
 }
