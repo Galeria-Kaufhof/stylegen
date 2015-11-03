@@ -28,11 +28,6 @@ export class HandlebarsRenderer implements IRenderer {
     }
   }
 
-  setEngine<Handlebars>(engine: Handlebars) {
-    this.engine = engine;
-    return this;
-  }
-
   private registerPartial(partial: Partial, namespace?: string):void {
     namespace = namespace || this.config.modulePrefix;
     var partialName = `${namespace}.${partial.name}`;
@@ -44,7 +39,12 @@ export class HandlebarsRenderer implements IRenderer {
     view.template = this.engine.compile(view.raw);
   }
 
-  registerComponent(component: Component):void {
+  public setEngine<Handlebars>(engine: Handlebars) {
+    this.engine = engine;
+    return this;
+  }
+
+  public registerComponent(component: Component):void {
     var namespace:string;
     if (component.config.namespace) {
       namespace = component.config.namespace;

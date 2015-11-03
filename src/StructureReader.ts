@@ -24,11 +24,11 @@ export class StructureReader {
    * are realtive to the current working directory of the user, we need a little helper,
    * to look at the right place.
    */
-  fileInCWD(p:string):string {
+  private fileInCWD(p:string):string {
     return path.resolve(this.styleguide.config["cwd"], p);
   }
 
-  buildComponentDictionary(nodes: Node[], dict: {[s: string]: Component}) {
+  private buildComponentDictionary(nodes: Node[], dict: {[s: string]: Component}) {
     nodes.forEach((node) => {
       if (node.isComponent()) {
         dict[node.component.id] = node.component;
@@ -43,7 +43,7 @@ export class StructureReader {
   /**
    * Collect all the little things, that represent out styleguide, e.g. components and pages
    */
-  collect():Q.Promise<StructureReader> {
+  public collect():Q.Promise<StructureReader> {
     var d:Q.Deferred<StructureReader> = Q.defer<StructureReader>();
     var componentPaths:string[] = this.styleguide.config["componentPaths"];
 

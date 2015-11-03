@@ -75,7 +75,7 @@ export class Styleguide {
    * walk the configured styleguide folders and read in the several components, pages, navigation, etc.,
    * and store the information inside the styleguide properties.
    */
-  read():Q.Promise<Styleguide> {
+  public read():Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
 
     /**
@@ -98,7 +98,7 @@ export class Styleguide {
   /*
    * write down, what was read, so make sure you read before :)
    */
-  write():Q.Promise<Styleguide> {
+  public write():Q.Promise<Styleguide> {
     var d:Q.Deferred<Styleguide> = Q.defer<Styleguide>();
 
     new ComponentWriter(this.renderer, this.nodes, this)
