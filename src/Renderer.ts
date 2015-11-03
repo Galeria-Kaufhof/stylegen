@@ -29,7 +29,7 @@ export class HandlebarsRenderer implements IRenderer {
   }
 
   private registerPartial(partial: Partial, namespace?: string):void {
-    namespace = namespace || this.config.modulePrefix;
+    namespace = namespace || this.config.namespace;
     var partialName = `${namespace}.${partial.name}`;
     partial.compiled = this.engine.precompile(partial.raw);
     this.engine.registerPartial(partialName, partial.raw);

@@ -57,7 +57,7 @@ export class Styleguide {
       // } else {
         /** otherwise take the build in handlebars engine */
       var rendererConfig:IRendererConfig = {};
-      rendererConfig.modulePrefix = this.config.namespace;
+      rendererConfig.namespace = this.config.namespace;
       this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
       // }
 

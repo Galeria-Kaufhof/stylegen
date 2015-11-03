@@ -24,10 +24,6 @@ export class Node {
     this.path = nodePath;
   }
 
-  public isComponent():boolean {
-    return !!this.component;
-  }
-
   private nodesForDirectories(file:string, parent:Node):Q.Promise<Node> {
     var d:Q.Deferred<Node> = Q.defer<Node>();
 
@@ -135,6 +131,10 @@ export class Node {
     .catch(e => d.reject(e));
 
     return d.promise;
+  }
+
+  public isComponent():boolean {
+    return !!this.component;
   }
 
   public resolve():Q.Promise<Node> {
