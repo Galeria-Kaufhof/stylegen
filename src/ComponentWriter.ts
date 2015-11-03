@@ -2,13 +2,16 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as Q from 'q';
+import * as denodeify from 'denodeify';
 import * as mkdirp from 'mkdirp';
 
 import {Node} from './Node';
 import {IRenderer} from './Renderer';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
+
+var _mkdirp = denodeify(mkdirp);
+var fswritefile = denodeify(fs.writeFile);
 
 /**
  * describes an app.component that has been wrapped in the component view,
@@ -102,67 +105,70 @@ export class ComponentWriter {
    * before we start to write the styleguide components, we will do the necessary setup tasks,
    * like renderer setup and anything else, that has to be done in beforehand.
    */
-  public setup():Q.Promise<ComponentWriter> {
-    var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
-
-    this.registerComponents(this.nodes)
-
-    d.resolve(this);
-
-    return d.promise;
+  public setup():Promise<ComponentWriter> {
+    // TODO: ghost promise! is there a method like Q() in node promises?
+    return new Promise((resolve, reject) => {
+      try {
+        this.registerComponents(this.nodes)
+        resolve(this);
+      } catch(e) {
+        reject(e);
+      }
+    });
   }
 
   /**
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  public write():Q.Promise<ComponentWriter> {
-    var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
+  public write():Promise<ComponentWriter> {
+    return new Promise((resolve, reject) => {
 
-    var context:{} = {};
-    // TODO: move this clatter to plain component listing method
-    try {
-      /** get all all components, registered in the styleguide */
-      var components:IViewComponent[] = Object.keys(this.styleguide.components)
-      .map(key => this.styleguide.components[key])
+      var context:{} = {};
+      // TODO: move this clatter to plain component listing method
+      try {
+        /** get all all components, registered in the styleguide */
+        var components:IViewComponent[] = Object.keys(this.styleguide.components)
+        .map(key => this.styleguide.components[key])
 
-      /** remove components not element of this styleguide configuration */
-      .filter(c => c.config.namespace === this.styleguide.config.namespace)
+        /** remove components not element of this styleguide configuration */
+        .filter(c => c.config.namespace === this.styleguide.config.namespace)
 
-      /** build the collected IViewComponents */
-      .map(component => this.buildViewComponent(component))
+        /** build the collected IViewComponents */
+        .map(component => this.buildViewComponent(component))
 
-      /** remove components that had no view */
-      .filter(c => c !== null);
+        /** remove components that had no view */
+        .filter(c => c !== null);
 
-      /** set context for rendering the component list */
-      context = { components: components };
+        /** set context for rendering the component list */
+        context = { components: components };
 
-    } catch(e) {
-      /** if some of the above fails, go to hell!! :) */
-      d.reject(e);
-    }
+      } catch(e) {
+        /** if some of the above fails, go to hell!! :) */
+        reject(e);
+      }
 
-    // TODO: handle/secure this law of demeter disaster :D
-    var compListTemplate = this.styleguide.components['sg.layout'].view.template;
+      // TODO: handle/secure this law of demeter disaster :D
+      var compListTemplate = this.styleguide.components['sg.layout'].view.template;
 
-    /** shorthand to the styleguide config */
-    var config = this.styleguide.config;
+      /** shorthand to the styleguide config */
+      var config = this.styleguide.config;
 
-    /** creating the target folder path (like mkdir -p), if it doesn't exist */
-    Q.nfcall(mkdirp, config.target)
+      /** creating the target folder path (like mkdir -p), if it doesn't exist */
+      _mkdirp(config.target.toString())
 
-    /** create the plain component list */
-    .then(() => Q.nfcall(
-      fs.writeFile,
-      /** to the target root at the moment */
-      path.resolve(config.cwd, config.target, "components.html"),
-      /** apply the layout template with the components context */
-      compListTemplate(context))
-    )
-    .then(() => d.resolve(this))
-    .catch(e => d.reject(e));
+      /** create the plain component list */
+      .then(() => {
+        return fswritefile(
+          /** to the target root at the moment */
+          path.resolve(config.cwd, config.target, "components.html"),
+          /** apply the layout template with the components context */
+          compListTemplate(context)
+        );
+      })
+      .then(() => resolve(this))
+      .catch((e:Error) => reject(e));
 
-    return d.promise;
+    });
   }
 }

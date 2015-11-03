@@ -5,8 +5,7 @@
         "noImplicitAny": true,
         "target": "ES6",
         "removeComments": false,
-        "outDir": "dist",
-        "sourceMap": true
+        "outDir": "dist"
     },
     "filesGlob": [
         "**/*.ts",
@@ -19,16 +18,15 @@
         "src/Component.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
-        "src/Document.ts",
         "src/Node.ts",
         "src/Renderer.ts",
         "src/StructureReader.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
+        "src/type_defs/denodeify.d.ts",
         "src/type_defs/handlebars.d.ts",
         "src/type_defs/mkdirp.d.ts",
-        "src/type_defs/node.d.ts",
-        "src/type_defs/Q.d.ts"
+        "src/type_defs/node.d.ts"
     ],
     "exclude": [
         "node_modules"

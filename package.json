@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "denodeify": "^1.2.1",
     "handlebars": "^4.0.3",
     "mkdirp": "^0.5.1",
     "q": "^1.4.1"

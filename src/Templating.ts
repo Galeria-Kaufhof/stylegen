@@ -2,14 +2,16 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as Q from 'q';
+import * as denodeify from 'denodeify';
+
+var fsreadfile = denodeify(fs.readFile);
 
 export interface Template {
   name:string;
   filePath: string;
   raw: string;
 
-  load():Q.Promise<Template>;
+  load():Promise<Template>;
 }
 
 export class Partial implements Template {
@@ -22,8 +24,8 @@ export class Partial implements Template {
     this.name = path.basename(filePath, '_partial.hbs');
   }
 
-  load():Q.Promise<Partial> {
-    return Q.nfcall(fs.readFile, this.filePath)
+  load():Promise<Partial> {
+    return fsreadfile(this.filePath.toString())
     .then((buffer) => {
       var content:string = buffer.toString();
       this.raw = content;
@@ -41,8 +43,8 @@ export class View implements Template {
     this.name = path.basename(filePath);
   }
 
-  load():Q.Promise<View> {
-    return Q.nfcall(fs.readFile, this.filePath)
+  load():Promise<View> {
+    return fsreadfile(this.filePath.toString())
     .then((fileBuffer) => {
       var content:string = fileBuffer.toString();
       this.raw = content;
