@@ -40,24 +40,43 @@ export class ComponentWriter {
     this.styleguide = styleguide;
   }
 
+  /**
+   * to have the components ready to be build,
+   * we have to announce them to the renderer, so that the resolution
+   * of partials, etc. works as expected.
+   */
   private registerComponents(nodes: Node[]) {
     nodes.forEach((node) => {
       if (node.isComponent()) {
+        /** register current node */
         this.renderer.registerComponent(node.component);
       }
 
+      /** run through the node tree and register childrens, and childrens childrent, and ... */
       if (!!node.children) {
         this.registerComponents(node.children);
       }
     });
   }
 
-  buildComponent(component:Component):IViewComponent {
+  /**
+   * view component building is the process of wrapping
+   * a component inside the styleguides component view,
+   * so that we may render it inside a component listing,
+   * with the meta information etc. displayed as well,
+   * as the compiled component view itself.
+   */
+  private buildViewComponent(component:Component):IViewComponent {
     var viewComponent:IViewComponent = {
       component: component
     };
 
+    /**
+     * If the component has a view, we will render it to the list of components.
+     * In case it has no view, we will not display the component for now.
+     */
     if (!!component.view && !!component.view.template) {
+      /** build the render context for the current component */
       var context = {
         id: component.id,
         headline: component.config.label || component.id,
@@ -66,8 +85,11 @@ export class ComponentWriter {
         template: component.view.template({})
       };
 
+      /** lookup the styleguide component template */
       // TODO: handle/secure this law of demeter disaster :D
       var compTemplate = this.styleguide.components['sg.component'].view.template;
+
+      /** build the representation of the current component for the styleguide */
       viewComponent.compiled = compTemplate(context);
 
       return viewComponent;
@@ -76,7 +98,11 @@ export class ComponentWriter {
     }
   }
 
-  setup():Q.Promise<ComponentWriter> {
+  /**
+   * before we start to write the styleguide components, we will do the necessary setup tasks,
+   * like renderer setup and anything else, that has to be done in beforehand.
+   */
+  public setup():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
 
     this.registerComponents(this.nodes)
@@ -90,7 +116,7 @@ export class ComponentWriter {
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  write():Q.Promise<ComponentWriter> {
+  public write():Q.Promise<ComponentWriter> {
     var d:Q.Deferred<ComponentWriter> = Q.defer<ComponentWriter>();
 
     var context:{} = {};
@@ -104,7 +130,7 @@ export class ComponentWriter {
       .filter(c => c.config.namespace === this.styleguide.config.namespace)
 
       /** build the collected IViewComponents */
-      .map(component => this.buildComponent(component))
+      .map(component => this.buildViewComponent(component))
 
       /** remove components that had no view */
       .filter(c => c !== null);
