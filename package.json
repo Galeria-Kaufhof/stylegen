@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "handlebars": "^4.0.3",
+    "mkdirp": "^0.5.1",
     "q": "^1.4.1"
   },
   "scripts": {
