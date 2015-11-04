@@ -105,10 +105,10 @@ export class Styleguide {
    * write down, what was read, so make sure you read before :)
    */
   public write():Promise<Styleguide> {
-    return new ComponentWriter(this.renderer, this.nodes, this)
+    return new StructureWriter(this.renderer, this.nodes, this)
     .setup()
-    .then((componentWriter) => {
-      return componentWriter.write();
+    .then((structureWriter) => {
+      return structureWriter.write();
     })
     .then((result) => this);
   }
