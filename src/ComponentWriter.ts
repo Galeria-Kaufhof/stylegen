@@ -29,6 +29,7 @@ interface IViewComponent {
  * So in here it is declared how components are wrapped into
  * the delivered styleguide components.
  */
+
 export class ComponentWriter {
   /** all nodes of the styleguide */
   nodes: Node[];
@@ -159,12 +160,8 @@ export class ComponentWriter {
 
       /** create the plain component list */
       .then(() => {
-        return fswritefile(
-          /** to the target root at the moment */
-          path.resolve(config.cwd, config.target, "components.html"),
-          /** apply the layout template with the components context */
-          compListTemplate(context)
-        );
+        /** applying here, because of stupid method defintion with multiargs :/ */
+        return fswritefile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
       })
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
