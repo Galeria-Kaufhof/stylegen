@@ -10,7 +10,9 @@ What **Upfront** ships is an executable that parses your project for **Upfront**
 
 install the tool, with `npm install -g upfront`
 
-- add a project json
+- add a styleguide.json to your project
+- add component.json files to your components
+- run `upfront`
 
 ## Contribution / Development
 
