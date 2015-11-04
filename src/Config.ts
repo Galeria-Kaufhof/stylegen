@@ -11,35 +11,6 @@ interface IAbstractConfig {
   load<T,V>(options: T, defaults?: V):Promise<IAbstractConfig>;
 }
 
-/** configuration structure for the general styleguide settings, aka. styleguide.json */
-export interface IProjectConfig {
-  cwd?: string;
-  name?: string;
-  upfrontRoot?: string;
-  namespace?: string;
-  componentPaths?: string[];
-  target?: string[];
-}
-
-/** configuration structure for the component settings, aka. component.json */
-export interface IComponentConfig {
-  partials?: Partial[];
-  view?: View;
-  path?: string;
-  namespace?: string;
-  label?: string;
-}
-
-/** config, that is handed to nodes */
-export interface INodeConfig {
-  namespace?: string;
-}
-
-/** config for the renderer object */
-export interface IRendererConfig {
-  namespace?: string;
-}
-
 /**
  * Config resolver for conveniant merging of configuration options and defaults.
  */

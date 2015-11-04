@@ -2,8 +2,16 @@
 
 import * as path from 'path';
 
-import {IComponentConfig} from './Config';
 import {Partial, View} from './Templating';
+
+/** configuration structure for the component settings, aka. component.json */
+export interface IComponentConfig {
+  partials?: Partial[];
+  view?: View;
+  path?: string;
+  namespace?: string;
+  label?: string;
+}
 
 /**
  * Components are the representation of the real asset components,

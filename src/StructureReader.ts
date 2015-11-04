@@ -1,9 +1,8 @@
 "use strict";
 
 import * as path from 'path';
-import {Styleguide} from './Styleguide';
-import {IProjectConfig, INodeConfig} from './Config';
-import {Node} from './Node';
+import {Styleguide, IProjectConfig} from './Styleguide';
+import {Node, INodeOptions} from './Node';
 import {Component} from './Component';
 
 /**
@@ -50,7 +49,7 @@ export class StructureReader {
      * just a category folder (or maybe just empty :/)
      */
     var nodeLookups = componentPaths.map((p) => {
-      var nodeConfig:INodeConfig = {};
+      var nodeConfig:INodeOptions = {};
 
       if (!!this.styleguide.config.namespace) {
         nodeConfig.namespace = this.styleguide.config.namespace;

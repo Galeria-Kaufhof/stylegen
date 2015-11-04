@@ -4,12 +4,19 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as denodeify from 'denodeify';
 
-import {Config, INodeConfig, IComponentConfig} from './Config';
+import {Config} from './Config';
+import {IComponentConfig} from './Component';
 import {Component} from './Component';
 import {Partial} from './Templating';
 
 var fsstat = denodeify(fs.stat);
 var fsreaddir = denodeify(fs.readdir);
+
+
+/** options, that can be handed to nodes */
+export interface INodeOptions {
+  namespace?: string;
+}
 
 /**
  * a Node represents a folder-node inside of the configured component paths.
@@ -25,7 +32,7 @@ export class Node {
   children: Node[];
   component: Component;
 
-  constructor(nodePath:string, public parent?:Node, public config?:INodeConfig) {
+  constructor(nodePath:string, public parent?:Node, public options?:INodeOptions) {
     var nodeName:string = path.basename(nodePath);
 
     this.id = nodeName;
@@ -42,7 +49,7 @@ export class Node {
     .then((stats:fs.Stats) => {
       if (stats && stats.isDirectory()) {
         /** so, ok, we have a directory, so lets build the sub tree  */
-        return new Node(filePath, parent, this.config).resolve();
+        return new Node(filePath, parent, this.options).resolve();
       } else {
         return null;
       }
@@ -72,8 +79,8 @@ export class Node {
          * if it is not, take the configured namespace of the project config.
          * If it is also  not set, take app as default.
          */
-        if (!config.namespace && !!this.config.namespace) {
-          config.namespace = this.config.namespace;
+        if (!config.namespace && !!this.options.namespace) {
+          config.namespace = this.options.namespace;
         } else if (!config.namespace) {
           config.namespace = 'app';
         }

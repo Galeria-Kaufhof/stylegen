@@ -2,34 +2,32 @@
 
 import {Partial,Template,View} from './Templating';
 import {Component} from './Component';
-import {IRendererConfig} from './Config';
 
 /**
  * Interface that new Renderers should implement.
  * As an example implementation look for the HandlebarsRenderer.
  */
 export interface IRenderer {
-  engine: any;
-  config: IRendererConfig;
   setEngine<T>(engine: T): IRenderer;
   registerComponent(component: Component): void;
+}
+
+/** config for the renderer object */
+export interface IRendererOptions {
+  namespace?: string;
 }
 
 /**
  * Build in renderer, that is taken as default if no external is given.
  */
 export class HandlebarsRenderer implements IRenderer {
-  engine: any;
-  config: IRendererConfig;
+  private engine: any;
 
-  constructor(config?: IRendererConfig) {
-    if (!!config) {
-      this.config = config;
-    }
+  constructor(private options?: IRendererOptions) {
   }
 
   private registerPartial(partial: Partial, namespace?: string):void {
-    namespace = namespace || this.config.namespace;
+    namespace = namespace || this.options.namespace;
     var partialName = `${namespace}.${partial.name}`;
     partial.compiled = this.engine.precompile(partial.raw);
     this.engine.registerPartial(partialName, partial.raw);

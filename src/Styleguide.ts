@@ -2,15 +2,26 @@
 
 import * as path from 'path';
 import * as Handlebars from 'handlebars';
-import {Config,IProjectConfig,IRendererConfig} from './Config';
+import {Config} from './Config';
 import {StructureReader} from './StructureReader';
+import {StructureWriter} from './StructureWriter';
 import {Node} from './Node';
 import {Component} from './Component';
-import {IRenderer, HandlebarsRenderer} from './Renderer';
+import {IRenderer, IRendererOptions, HandlebarsRenderer} from './Renderer';
 import {ComponentWriter} from './ComponentWriter';
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
+}
+
+/** configuration structure for the general styleguide settings, aka. styleguide.json */
+export interface IProjectConfig {
+  cwd?: string;
+  name?: string;
+  upfrontRoot?: string;
+  namespace?: string;
+  componentPaths?: string[];
+  target?: string[];
 }
 
 export class Styleguide {
@@ -55,7 +66,7 @@ export class Styleguide {
         //   this.renderer = options.renderer;
         // } else {
           /** otherwise take the build in handlebars engine */
-        var rendererConfig:IRendererConfig = {};
+        var rendererConfig:IRendererOptions = {};
         rendererConfig.namespace = this.config.namespace;
         this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
         // }
