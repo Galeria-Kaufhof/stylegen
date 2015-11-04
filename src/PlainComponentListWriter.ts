@@ -55,7 +55,7 @@ export class PlainComponentListWriter implements IComponentWriter {
 
       /** lookup the styleguide component template */
       // TODO: handle/secure this law of demeter disaster :D
-      var compTemplate = this.styleguide.components['sg.component'].view.template;
+      var compTemplate = this.styleguide.components['sg.plain-list-component'].view.template;
 
       /** build the representation of the current component for the styleguide */
       viewComponent.compiled = compTemplate(context);
@@ -98,7 +98,7 @@ export class PlainComponentListWriter implements IComponentWriter {
       }
 
       // TODO: handle/secure this law of demeter disaster :D
-      var compListTemplate = this.styleguide.components['sg.layout'].view.template;
+      var compListTemplate = this.styleguide.components['sg.plain-list-layout'].view.template;
 
       /** shorthand to the styleguide config */
       var config = this.styleguide.config;

@@ -1,5 +1,5 @@
 {
-  "id": "component"
+  "id": "plain-list-component"
   , "view": "component_view.hbs"
   , "namespace": "sg"
 }

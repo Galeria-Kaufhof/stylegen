@@ -25,6 +25,9 @@ export interface IComponentWriter {
 export class ComponentWriter {
   constructor(private type: string, private nodes: Node[], private styleguide: Styleguide) {}
 
+  /**
+   * scheduler to the different ComponentWriters
+   */
   write():Promise<IComponentWriter> {
     var result:Promise<IComponentWriter>
 

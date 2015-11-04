@@ -6,6 +6,7 @@ import {Partial, View} from './Templating';
 
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
+  id?: string;
   partials?: Partial[];
   view?: View;
   path?: string;
@@ -31,7 +32,8 @@ export class Component {
   constructor(config:IComponentConfig, parent?: Component) {
     this.config = config;
     /** TODO: handle parent resolution and sub component naming, atm. it is useless */
-    this.id = `${this.config.namespace}.${path.basename(config.path)}`;
+    this.id = this.config.id || path.basename(config.path);
+    this.id = `${this.config.namespace}.${this.id}`;
     console.log('Component:', this.id);
   }
 

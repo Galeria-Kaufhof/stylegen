@@ -1,5 +1,5 @@
 {
-  "id": "layout"
+  "id": "plain-list-layout"
   , "view": "layout_view.hbs"
   , "namespace": "sg"
 }
