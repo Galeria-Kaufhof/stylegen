@@ -6,7 +6,7 @@
  */
 export interface IRenderer {
   setEngine<T>(engine: T): IRenderer;
-  render(component: Component): Component;
+  render<T>(object: T): T;
 }
 
 /** config for the renderer object */
