@@ -5,18 +5,27 @@
         <h2 class="mdl-card__title-text">{{headline}}</h2>
       </div>
       <div class="mdl-card__supporting-text mdl-cell mdl-cell--12-col">
-        <ul class="docs">
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+          <div class="mdl-tabs__tab-bar">
+            {{#each docs}}
+              <a href="#{{label}}" class="mdl-tabs__tab">{{label}}</a>
+            {{/each}}
+          </div>
+
           {{#each docs}}
-            <li>
-              {{{this}}}
-            </li>
+            <div class="mdl-tabs__panel is-active" id="{{label}}">
+                {{{content}}}
+            </div>
           {{/each}}
-        </ul>
+
+        </div>
       </div>
     </div>
 
     <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--6-col">
-      {{{template}}}
+      <div class="template">
+        {{{template}}}
+      </div>
     </div>
 
     <div class="mdl-card mdl-shadow--2d  mdl-cell mdl-cell--6-col">
