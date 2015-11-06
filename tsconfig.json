@@ -19,6 +19,7 @@
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
+        "src/HandlebarsRenderer.ts",
         "src/Node.ts",
         "src/PlainComponentListWriter.ts",
         "src/Renderer.ts",

@@ -1,3 +1,5 @@
+"use strict";
+
 import {IRenderer, IRendererOptions} from './Renderer';
 import {Partial,Template,View} from './Templating';
 import {Component} from './Component';
