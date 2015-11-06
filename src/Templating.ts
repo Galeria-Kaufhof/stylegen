@@ -7,10 +7,8 @@ export class Partial extends ComponentFile {
   public name: string;
 
   constructor(filePath: string) {
-    super(filePath);
-
     // TODO: make template extension configurable
-    this.name = path.basename(filePath, '_partial.hbs');
+    super(filePath, path.basename(filePath, '_partial.hbs'));
   }
 }
 
@@ -19,9 +17,9 @@ export class View extends ComponentFile {
   public template: HandlebarsTemplateDelegate;
 
   constructor(filePath: string) {
-    super(filePath);
-
-    // TODO: make template extension configurable
-    this.name = path.basename(filePath, '_partial.hbs');
+    super(filePath, path.basename(filePath, '_view.hbs'));
   }
+
+  // changing return type, because View has additional properties
+  load():Promise<View> { return super.load(); }
 }

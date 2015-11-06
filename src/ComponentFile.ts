@@ -5,17 +5,17 @@ import * as denodeify from 'denodeify';
 
 var fsreadfile = denodeify(fs.readFile);
 
-
-interface IComponentFile {
+export interface IComponentFile {
   raw: string;
+  name: string;
 
   load():Promise<IComponentFile>;
 }
 
-export class ComponentFile implements IComponentFile {
+export class ComponentFile {
   raw: string;
 
-  constructor(private filePath: string) {}
+  constructor(private filePath: string, public name: string) {}
 
   load():Promise<IComponentFile> {
     return fsreadfile(this.filePath.toString())
