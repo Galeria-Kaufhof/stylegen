@@ -1,16 +1,26 @@
-<article class="sg-component panel panel-default" id="{{id}}">
-  <header class="panel-heading">
-    {{headline}}
-  </header>
-  <div class="panel-body">
-    <ul class="docs">
-      {{#each docs}}
-        <li>
-{{{this}}}
-        </li>
-      {{/each}}
-    </ul>
 
-{{{template}}}
-  </div>
-</article>
+  <article class="mdl-grid" id="{{id}}">
+    <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--12-col">
+      <div class="mdl-card__title mdl-cell">
+        <h2 class="mdl-card__title-text">{{headline}}</h2>
+      </div>
+      <div class="mdl-card__supporting-text mdl-cell mdl-cell--12-col">
+        <ul class="docs">
+          {{#each docs}}
+            <li>
+              {{{this}}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--6-col">
+      {{{template}}}
+    </div>
+
+    <div class="mdl-card mdl-shadow--2d  mdl-cell mdl-cell--6-col">
+      <code class="language-markup">{{template}}</code>
+    </div>
+
+  </article>

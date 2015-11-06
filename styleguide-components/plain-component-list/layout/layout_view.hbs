@@ -3,37 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <title>Components</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-</head>
-<body>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">
-          Upfront
-        </a>
-      </div>
-    </div>
-  </nav>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="content container-fluid">
-    <nav class="component-nav col-md-3">
-      <ul>
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css">
+
+
+</head>
+<body class="mdl-color--grey-100">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+              mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                    mdl-textfield--floating-label mdl-textfield--align-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon"
+                 for="fixed-header-drawer-exp">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="sample"
+                   id="fixed-header-drawer-exp">
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Title</span>
+      <nav class="mdl-navigation">
         {{#each components}}
-          <li>
-            <a href="#{{component.id}}">{{component.config.label}}</a>
-          </li>
+          <a class="mdl-navigation__link" href="{{component.id}}">{{component.config.label}}</a>
         {{/each}}
-      </ul>
-    </nav>
-    <ul class="components list-unstyled col-md-9">
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+
       {{#each components}}
-        <li>
-{{{compiled}}}
-        </li>
+        {{{compiled}}}
       {{/each}}
-    </ul>
+
+      </div>
+    </main>
   </div>
+
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.js"></script>
 </body>
 </html>
