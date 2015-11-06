@@ -9,7 +9,7 @@ import {Component} from './Component';
  */
 export interface IRenderer {
   setEngine<T>(engine: T): IRenderer;
-  registerComponent(component: Component): void;
+  render(component: Component): Component;
 }
 
 /** config for the renderer object */
@@ -33,8 +33,8 @@ export class HandlebarsRenderer implements IRenderer {
     this.engine.registerPartial(partialName, partial.raw);
   }
 
-  private registerView(view: View):void {
-    view.template = this.engine.compile(view.raw);
+  private compileView(view: View):HandlebarsTemplateDelegate {
+    return this.engine.compile(view.raw);
   }
 
   public setEngine<Handlebars>(engine: Handlebars) {
@@ -42,8 +42,10 @@ export class HandlebarsRenderer implements IRenderer {
     return this;
   }
 
-  public registerComponent(component: Component):void {
+  public render(component: Component):Component {
     var namespace:string;
+    component = Object.assign({}, component);
+
     if (component.config.namespace) {
       namespace = component.config.namespace;
     }
@@ -55,7 +57,9 @@ export class HandlebarsRenderer implements IRenderer {
     }
 
     if (!!component.view) {
-      this.registerView(component.view);
+      component.view.template = this.compileView(component.view);
     }
+
+    return component;
   }
 }

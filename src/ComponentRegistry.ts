@@ -22,7 +22,7 @@ export class ComponentRegistry {
     nodes.forEach((node) => {
       if (node.isComponent()) {
         /** register current node */
-        this.renderer.registerComponent(node.component);
+        node.component = this.renderer.render(node.component);
       }
 
       /** run through the node tree and register childrens, and childrens childrent, and ... */

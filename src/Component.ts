@@ -102,6 +102,38 @@ export class Component {
     }
   }
 
+  /**
+   */
+  // private buildDocs():Promise<Component> {
+  //   if(!!this.config.pages) {
+  //     /**
+  //      * load all Docs
+  //      */
+  //     var docPromises:Promise<Partial>[] = this.config.docs.map((doc:{}) => {
+  //       var p = path.resolve(this.config.path, doc);
+  //       /** add partial loading promise to promise collection */
+  //       // return new Partial(p).load();
+  //     });
+  //
+  //     // return Promise.all(partialPromises)
+  //     // .then((partials:Partial[]) => {
+  //     //   this.partials = partials;
+  //     //   return this;
+  //     // });
+  //
+  // /** when no partials are configured, look for _partial.hbs files in the current path */
+  // } else if(!this.config.docs) {
+  //     // TODO: try to find  *.md files in component path (this.config.path)
+  //     this.docs = [];
+  //     return new Promise((resolve) => resolve(this));
+  //
+  //   /** no partials configured, no problem.  */
+  //   } else {
+  //     this.docs = [];
+  //     console.warn("Component.buildPartials", "Did not found any partials for Component", this.id);
+  //     return new Promise((resolve) => resolve(this));;
+  //   }
+  // }
 
   /**
    * building a component means to retrieve the flesh and bones of the component,
