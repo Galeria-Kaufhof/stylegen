@@ -16,10 +16,13 @@
     "files": [
         "src/Cli.ts",
         "src/Component.ts",
+        "src/ComponentFile.ts",
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
+        "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
+        "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/PlainComponentListWriter.ts",
         "src/Renderer.ts",
