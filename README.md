@@ -26,7 +26,7 @@ npm install tsd -g
 tsd install
 ```
 
-To work with upfront, it may make sense to link the executable bin/upfront into your PATH, so that you may call it also in other directories,
+To work with upfronti, it may make sense to link the executable bin/upfront into your PATH, so that you may call it also in other directories,
 without having the need to call everytime for the absolute or relative path.
 
 To develop new features you may want to add a file structure e.g. like that:
