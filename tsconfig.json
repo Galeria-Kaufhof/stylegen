@@ -11,7 +11,7 @@
         "**/*.ts",
         "**/*.tsx",
         "!node_modules/**",
-        "src/type_defs/*.ts"
+        "typings/*.d.ts"
     ],
     "files": [
         "src/Cli.ts",
@@ -32,6 +32,7 @@
         "src/Templating.ts",
         "src/type_defs/denodeify.d.ts",
         "src/type_defs/handlebars.d.ts",
+        "src/type_defs/markdown-it.d.ts",
         "src/type_defs/mkdirp.d.ts",
         "src/type_defs/node.d.ts"
     ],
