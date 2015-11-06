@@ -3,6 +3,14 @@
     {{headline}}
   </header>
   <div class="panel-body">
+    <ul class="docs">
+      {{#each docs}}
+        <li>
+{{{this}}}
+        </li>
+      {{/each}}
+    </ul>
+
 {{{template}}}
   </div>
 </article>

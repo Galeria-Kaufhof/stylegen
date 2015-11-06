@@ -19,6 +19,9 @@
     },
     "node/node.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
+    },
+    "marked/marked.d.ts": {
+      "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
     }
   }
 }

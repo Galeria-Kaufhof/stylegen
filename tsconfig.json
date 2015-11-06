@@ -30,11 +30,13 @@
         "src/StructureWriter.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
-        "src/type_defs/denodeify.d.ts",
-        "src/type_defs/handlebars.d.ts",
-        "src/type_defs/markdown-it.d.ts",
-        "src/type_defs/mkdirp.d.ts",
-        "src/type_defs/node.d.ts"
+        "typings/denodeify/denodeify.d.ts",
+        "typings/es6-promise/es6-promise.d.ts",
+        "typings/handlebars/handlebars.d.ts",
+        "typings/marked/marked.d.ts",
+        "typings/mkdirp/mkdirp.d.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ],
     "exclude": [
         "node_modules"

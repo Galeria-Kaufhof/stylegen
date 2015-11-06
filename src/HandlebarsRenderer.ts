@@ -3,6 +3,10 @@
 import {IRenderer, IRendererOptions} from './Renderer';
 import {Partial,View} from './Templating';
 import {Component} from './Component';
+import {Doc} from './Doc';
+
+// TODO: move this and HB rendering to Component Renderer
+import {MarkdownRenderer} from './MarkdownRenderer';
 
 /**
  * Build in renderer, that is taken as default if no external is given.
@@ -18,6 +22,11 @@ export class HandlebarsRenderer implements IRenderer {
     var partialName = `${namespace}.${partial.name}`;
     partial.compiled = this.engine.precompile(partial.raw);
     this.engine.registerPartial(partialName, partial.raw);
+  }
+
+  private compileDoc(doc: Doc):Doc {
+    // TODO: Move this to a more generic ComponentRenderer
+    return new MarkdownRenderer().render(doc);
   }
 
   private compileView(view: View):HandlebarsTemplateDelegate {
@@ -38,13 +47,18 @@ export class HandlebarsRenderer implements IRenderer {
     }
 
     if (!!component.partials) {
-      component.partials.forEach((partial, namespace) => {
-        this.registerPartial(partial);
+      component.partials.forEach((partial) => {
+        this.registerPartial(partial, namespace);
       });
     }
 
     if (!!component.view) {
       component.view.template = this.compileView(component.view);
+    }
+
+    // TODO: see TODO in imports about ComponentRenderer
+    if (!!component.docs) {
+      component.docs = component.docs.map(doc => this.compileDoc(doc));
     }
 
     return component;

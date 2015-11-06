@@ -50,7 +50,8 @@ export class PlainComponentListWriter implements IComponentWriter {
         headline: component.config.label || component.id,
 
         // TODO: insert component.context as context
-        template: component.view.template({})
+        template: component.view.template({}),
+        docs: component.docs.map(d => d.compiled)
       };
 
       /** lookup the styleguide component template */
