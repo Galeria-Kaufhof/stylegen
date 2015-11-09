@@ -21,8 +21,11 @@ export class ComponentRegistry {
   private registerComponents(nodes: Node[]) {
     nodes.forEach((node) => {
       if (node.isComponent()) {
-        /** register current node */
-        this.renderer.registerComponent(node.component);
+        /**
+         * rendering the views and partials included in the component,
+         * and apply those changes to given View and Partial Objects.
+         */
+        node.component = this.renderer.render(node.component);
       }
 
       /** run through the node tree and register childrens, and childrens childrent, and ... */

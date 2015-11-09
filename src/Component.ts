@@ -3,6 +3,7 @@
 import * as path from 'path';
 
 import {Partial, View} from './Templating';
+import {Doc} from './Doc';
 
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
@@ -12,6 +13,7 @@ export interface IComponentConfig {
   path?: string;
   namespace?: string;
   label?: string;
+  docs?: Doc[];
 }
 
 /**
@@ -24,6 +26,7 @@ export class Component {
   partials: Partial[];
   view: View;
   config: IComponentConfig;
+  docs: Doc[];
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
@@ -69,7 +72,7 @@ export class Component {
     } else {
       this.partials = [];
       console.warn("Component.buildPartials", "Did not found any partials for Component", this.id);
-      return new Promise((resolve) => resolve(this));;
+      return new Promise((resolve) => resolve(this));
     }
   }
 
@@ -93,15 +96,42 @@ export class Component {
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
     } else if(!this.config.view) {
       // TODO: try to find  *_view files in component path (this.config.path)
-      return new Promise((resolve) => resolve(this));;
+      return new Promise((resolve) => resolve(this));
 
     /** no view found, no problem :) */
     } else {
       console.warn("Component.buildView", "Did not found a view for Component", this.id);
-      return new Promise((resolve) => resolve(this));;
+      return new Promise((resolve) => resolve(this));
     }
   }
 
+  /**
+   */
+  private buildDocs():Promise<Component> {
+    if(!!this.config.docs) {
+      /**
+       * load all Docs
+       */
+      var docs = this.config.docs;
+      var docPromises:Promise<Doc>[] = Object.keys(docs).map((doc:string) => {
+        var p = path.resolve(this.config.path, docs[doc]);
+        /** add partial loading promise to promise collection */
+        return new Doc(p, doc).load();
+      });
+
+      return Promise.all(docPromises)
+      .then((loadedDocs:Doc[]) => {
+        this.docs = loadedDocs;
+        return this;
+      });
+
+    /** no partials configured, no problem.  */
+    } else {
+      this.docs = [];
+      console.warn("Component.buildDocs", "Did not found any docs for Component", this.id);
+      return new Promise((resolve) => resolve(this));
+    }
+  }
 
   /**
    * building a component means to retrieve the flesh and bones of the component,
@@ -113,6 +143,7 @@ export class Component {
     /** resolve the component partials at first */
     return this.buildPartials()
     /** after that lets read and build its view */
-    .then(() => this.buildView());
+    .then(() => this.buildView())
+    .then(() => this.buildDocs());
   }
 }

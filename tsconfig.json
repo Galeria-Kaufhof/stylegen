@@ -11,14 +11,18 @@
         "**/*.ts",
         "**/*.tsx",
         "!node_modules/**",
-        "src/type_defs/*.ts"
+        "typings/*.d.ts"
     ],
     "files": [
         "src/Cli.ts",
         "src/Component.ts",
+        "src/ComponentFile.ts",
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
+        "src/Doc.ts",
+        "src/HandlebarsRenderer.ts",
+        "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/PlainComponentListWriter.ts",
         "src/Renderer.ts",
@@ -26,10 +30,13 @@
         "src/StructureWriter.ts",
         "src/Styleguide.ts",
         "src/Templating.ts",
-        "src/type_defs/denodeify.d.ts",
-        "src/type_defs/handlebars.d.ts",
-        "src/type_defs/mkdirp.d.ts",
-        "src/type_defs/node.d.ts"
+        "typings/denodeify/denodeify.d.ts",
+        "typings/es6-promise/es6-promise.d.ts",
+        "typings/handlebars/handlebars.d.ts",
+        "typings/marked/marked.d.ts",
+        "typings/mkdirp/mkdirp.d.ts",
+        "typings/node/node.d.ts",
+        "typings/tsd.d.ts"
     ],
     "exclude": [
         "node_modules"

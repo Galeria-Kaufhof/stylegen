@@ -7,7 +7,8 @@ import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
 import {Node} from './Node';
 import {Component} from './Component';
-import {IRenderer, IRendererOptions, HandlebarsRenderer} from './Renderer';
+import {IRenderer, IRendererOptions} from './Renderer';
+import {HandlebarsRenderer} from './HandlebarsRenderer';
 import {ComponentWriter} from './ComponentWriter';
 
 interface IStyleguideOptions {
