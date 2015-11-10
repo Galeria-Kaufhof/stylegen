@@ -1,6 +1,7 @@
 "use strict";
 
 import * as path from 'path';
+import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
@@ -50,42 +51,47 @@ export class Styleguide {
    */
   initialize(cwd: string, upfrontRoot: string):Promise<Styleguide> {
     return new Promise<Styleguide>((resolve, reject) => {
+      var jsonConfig = path.resolve(cwd, 'styleguide.json');
+      var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
 
-      /**
-       * retrieve the config and bootstrap the styleguide object.
-       */
-      new Config()
-      .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'styleguide-defaults.yaml'))
-      .then((mergedConfig: Config) => {
-        this.config = mergedConfig;
-        /** lets assure, that we have the current working directory in reach for later access */
-        this.config.cwd = cwd;
-        /** we sometimes need the upfront root, e.g. for file resolvement */
-        this.config.upfrontRoot = upfrontRoot;
-        this.config.componentPaths.push(path.resolve(upfrontRoot, "styleguide-components"));
-        /** each and every styleguide should have a name ;) */
-        if (!this.config.name) {
-          this.config.name = path.basename(this.config.cwd);
-        }
+      fs.exists(jsonConfig, (exists) => {
+        var configPath:string = exists ? jsonConfig : yamlConfig;
 
-        // TODO: think about configurability of the renderer, and how to apply constructor options
-        /** if a renderer is configured in the initialize options, lets take it. */
-        // if (!!options && !!options.renderer) {
-        //   this.renderer = options.renderer;
-        // } else {
-          /** otherwise take the build in handlebars engine */
-        var rendererConfig:IRendererOptions = {};
-        rendererConfig.namespace = this.config.namespace;
-        this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
-        // }
+        /**
+         * retrieve the config and bootstrap the styleguide object.
+         */
+        new Config()
+        .load(configPath, path.resolve(upfrontRoot, 'styleguide-defaults.yaml'))
+        .then((mergedConfig: Config) => {
+          this.config = mergedConfig;
+          /** lets assure, that we have the current working directory in reach for later access */
+          this.config.cwd = cwd;
+          /** we sometimes need the upfront root, e.g. for file resolvement */
+          this.config.upfrontRoot = upfrontRoot;
+          this.config.componentPaths.push(path.resolve(upfrontRoot, "styleguide-components"));
+          /** each and every styleguide should have a name ;) */
+          if (!this.config.name) {
+            this.config.name = path.basename(this.config.cwd);
+          }
 
-        resolve(this);
-      })
-      .catch(function(e) {
-        console.log("Styleguide.initialize:", e);
-        reject(e);
+          // TODO: think about configurability of the renderer, and how to apply constructor options
+          /** if a renderer is configured in the initialize options, lets take it. */
+          // if (!!options && !!options.renderer) {
+          //   this.renderer = options.renderer;
+          // } else {
+            /** otherwise take the build in handlebars engine */
+          var rendererConfig:IRendererOptions = {};
+          rendererConfig.namespace = this.config.namespace;
+          this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
+          // }
+
+          resolve(this);
+        })
+        .catch(function(e) {
+          console.log("Styleguide.initialize:", e);
+          reject(e);
+        });
       });
-
     });
   }
 
