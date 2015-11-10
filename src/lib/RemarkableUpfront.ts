@@ -80,7 +80,6 @@ function upfrontBlock(engine) {
     state.tokens.push({
       type: 'htmlblock',
       params: params,
-      content: state.getLines(startLine + 1, nextLine, len, true),
       content: engine.compile(state.getLines(startLine + 1, nextLine -1, len, true))({}),
       lines: [ startLine, state.line ],
       level: state.level
