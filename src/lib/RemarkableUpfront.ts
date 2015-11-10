@@ -89,9 +89,6 @@ function upfrontBlock(engine) {
   }
 }
 
-
-
-
 function upfrontInline(engine) {
   return function (state, silent) {
     var start, max, marker, matchStart, matchEnd,
