@@ -12,4 +12,5 @@ export interface IRenderer {
 /** config for the renderer object */
 export interface IRendererOptions {
   namespace?: string;
+  htmlEngine?: IRenderer;
 }

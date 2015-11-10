@@ -2,7 +2,6 @@
     "compilerOptions": {
         "module": "commonjs",
         "moduleResolution": "node",
-        "noImplicitAny": true,
         "target": "ES6",
         "removeComments": false,
         "outDir": "dist"
@@ -22,6 +21,7 @@
         "src/Config.ts",
         "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
+        "src/lib/RemarkableUpfront.ts",
         "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/PlainComponentListWriter.ts",
