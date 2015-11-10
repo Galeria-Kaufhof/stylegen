@@ -2,7 +2,6 @@
     "compilerOptions": {
         "module": "commonjs",
         "moduleResolution": "node",
-        "noImplicitAny": true,
         "target": "ES6",
         "removeComments": false,
         "outDir": "dist"
