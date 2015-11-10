@@ -118,7 +118,7 @@ function upfrontInline(engine) {
     // closed brackets found, lets look for the prefix
     if (!!closed) {
       marker = state.src.slice(start+1, pos);
-      var upfrontTag = marker.trim().match(/^upl\ (.+)/)''
+      var upfrontTag = marker.trim().match(/^upl\ (.+)/);
       if (upfrontTag) {
 
         if (!silent) {
