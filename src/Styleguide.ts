@@ -55,7 +55,7 @@ export class Styleguide {
        * retrieve the config and bootstrap the styleguide object.
        */
       new Config()
-      .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'styleguide-defaults.json'))
+      .load(path.resolve(cwd, 'styleguide.json'), path.resolve(upfrontRoot, 'styleguide-defaults.yaml'))
       .then((mergedConfig: Config) => {
         this.config = mergedConfig;
         /** lets assure, that we have the current working directory in reach for later access */

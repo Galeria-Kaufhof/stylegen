@@ -6,6 +6,7 @@
   "dependencies": {
     "denodeify": "^1.2.1",
     "handlebars": "^4.0.3",
+    "js-yaml": "^3.4.3",
     "mkdirp": "^0.5.1",
     "remarkable": "^1.6.0"
   },

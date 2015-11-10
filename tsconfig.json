@@ -35,6 +35,7 @@
         "typings/denodeify/denodeify.d.ts",
         "typings/es6-promise/es6-promise.d.ts",
         "typings/handlebars/handlebars.d.ts",
+        "typings/js-yaml/js-yaml.d.ts",
         "typings/marked/marked.d.ts",
         "typings/mkdirp/mkdirp.d.ts",
         "typings/node/node.d.ts",
