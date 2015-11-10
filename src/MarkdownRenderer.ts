@@ -5,7 +5,8 @@ import {Doc} from './Doc';
 
 import * as Remarkable from 'remarkable';
 import {RemarkableUpfront} from './lib/RemarkableUpfront';
-var md = new Remarkable();
+var md = new Remarkable({ quotes: ''});
+
 
 /**
  * Build in renderer, that is taken as default if no external is given.

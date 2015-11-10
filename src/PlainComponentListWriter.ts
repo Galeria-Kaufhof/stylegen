@@ -46,14 +46,15 @@ export class PlainComponentListWriter implements IComponentWriter {
     if (!!component.view && !!component.view.template) {
       /** build the render context for the current component */
       var context = {
-        id: component.id,
+        id: component.slug,
         headline: component.config.label || component.id,
 
         // TODO: insert component.context as context
         template: component.view.template({}),
         docs: component.docs.map(d => {
           return { "label": d.name, "content": d.compiled };
-        })
+        }),
+        component: component
       };
 
       /** lookup the styleguide component template */
