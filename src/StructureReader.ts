@@ -4,6 +4,7 @@ import * as path from 'path';
 import {Styleguide, IProjectConfig} from './Styleguide';
 import {Node, INodeOptions} from './Node';
 import {Component} from './Component';
+import {ComponentList} from './ComponentList';
 
 /**
  * The StructureReader class serves as orchestrator to our styleguide class,
@@ -26,10 +27,10 @@ export class StructureReader {
     return path.resolve(this.styleguide.config["cwd"], p);
   }
 
-  private buildComponentDictionary(nodes: Node[], dict: {[s: string]: Component}) {
+  private buildComponentDictionary(nodes: Node[], dict: ComponentList) {
     nodes.forEach((node) => {
       if (node.isComponent()) {
-        dict[node.component.id] = node.component;
+        dict.set(node.component.id, node.component);
       }
 
       if (!!node.children) {

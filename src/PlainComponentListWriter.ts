@@ -59,7 +59,7 @@ export class PlainComponentListWriter implements IComponentWriter {
 
       /** lookup the styleguide component template */
       // TODO: handle/secure this law of demeter disaster :D
-      var compTemplate = this.styleguide.components['sg.plain-list-component'].view.template;
+      var compTemplate = this.styleguide.components.find('sg.plain-list-component').view.template;
 
       /** build the representation of the current component for the styleguide */
       viewComponent.compiled = compTemplate(context);
@@ -81,8 +81,8 @@ export class PlainComponentListWriter implements IComponentWriter {
       // TODO: move this clatter to plain component listing method
       try {
         /** get all all components, registered in the styleguide */
-        var components:IViewComponent[] = Object.keys(this.styleguide.components)
-        .map(key => this.styleguide.components[key])
+        var components:IViewComponent[] = this.styleguide.components.keys()
+        .map(key => this.styleguide.components.find(key))
 
         /** remove components not element of this styleguide configuration */
         .filter(c => c.config.namespace === this.styleguide.config.namespace)
@@ -102,7 +102,7 @@ export class PlainComponentListWriter implements IComponentWriter {
       }
 
       // TODO: handle/secure this law of demeter disaster :D
-      var compListTemplate = this.styleguide.components['sg.plain-list-layout'].view.template;
+      var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
 
       /** shorthand to the styleguide config */
       var config = this.styleguide.config;

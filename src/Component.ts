@@ -14,6 +14,7 @@ export interface IComponentConfig {
   namespace?: string;
   label?: string;
   docs?: Doc[];
+  tags?: string[];
 }
 
 /**
@@ -28,6 +29,7 @@ export class Component {
   config: IComponentConfig;
   docs: Doc[];
   slug: string;
+  tags: string[];
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
@@ -39,6 +41,7 @@ export class Component {
     this.id = this.config.id || path.basename(config.path);
     this.slug = `${this.config.namespace}-${this.id}`;
     this.id = `${this.config.namespace}.${this.id}`;
+    this.tags = this.config.tags;
   }
 
   /**

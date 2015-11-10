@@ -16,6 +16,7 @@
         "src/Cli.ts",
         "src/Component.ts",
         "src/ComponentFile.ts",
+        "src/ComponentList.ts",
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",

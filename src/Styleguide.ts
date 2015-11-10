@@ -7,8 +7,10 @@ import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
 import {Node} from './Node';
 import {Component} from './Component';
+import {ComponentList} from './ComponentList';
 import {IRenderer, IRendererOptions} from './Renderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
+import {ComponentRegistry} from './ComponentRegistry';
 import {ComponentWriter} from './ComponentWriter';
 
 Handlebars.registerHelper("pp", function(object){
@@ -33,12 +35,12 @@ export class Styleguide {
   public config: IProjectConfig;
   public renderer: IRenderer;
   public nodes: Node[];
-  public components: {[s: string]:Component }
+  public components: ComponentList;
 
   constructor(options?: IStyleguideOptions) {
     // nodes build the structure of our styleguide
     this.nodes = [];
-    this.components = {};
+    this.components = new ComponentList();
   }
 
   /*
