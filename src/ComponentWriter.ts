@@ -8,6 +8,7 @@ import {Styleguide} from './Styleguide';
 
 
 import {PlainComponentListWriter} from './PlainComponentListWriter';
+import {TagListWriter} from './TagListWriter';
 
 
 /**

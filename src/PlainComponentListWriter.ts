@@ -24,8 +24,7 @@ interface IViewComponent {
 }
 
 export class PlainComponentListWriter implements IComponentWriter {
-  constructor(private styleguide: Styleguide) {
-  }
+  constructor(private styleguide: Styleguide) {}
 
   /**
    * view component building is the process of wrapping
@@ -76,8 +75,8 @@ export class PlainComponentListWriter implements IComponentWriter {
    */
   public write():Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
-
       var context:{} = {};
+
       try {
         /** get all all components, registered in the styleguide */
         var components:IViewComponent[] = this.styleguide.components.all()

@@ -41,6 +41,7 @@ export class Styleguide {
     // nodes build the structure of our styleguide
     this.nodes = [];
     this.components = new ComponentList();
+    console.log(this.components);
   }
 
   /*

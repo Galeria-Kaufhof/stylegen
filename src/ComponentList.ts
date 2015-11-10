@@ -22,6 +22,6 @@ export class ComponentList {
   }
 
   all():Component[] {
-    return this.keys().map(key => this.styleguide.components.find(key));
+    return this.keys().map(key => this.find(key));
   }
 }
