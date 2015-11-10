@@ -23,9 +23,8 @@ interface IViewComponent {
   compiled?: string;
 }
 
-export class PlainComponentListWriter implements IComponentWriter {
-  constructor(private styleguide: Styleguide) {
-  }
+export class TagListWriter implements IComponentWriter {
+  constructor(private styleguide: Styleguide) {}
 
   /**
    * view component building is the process of wrapping
@@ -83,13 +82,13 @@ export class PlainComponentListWriter implements IComponentWriter {
         var components:IViewComponent[] = this.styleguide.components.all()
 
         /** remove components not element of this styleguide configuration */
-        .filter(c => c.config.namespace === this.styleguide.config.namespace)
+        // .filter(c => c.config.namespace === this.styleguide.config.namespace)
 
         /** build the collected IViewComponents */
         .map(component => this.buildViewComponent(component))
 
         /** remove components that had no view */
-        .filter(c => c !== null);
+        // .filter(c => c !== null);
 
         /** set context for rendering the component list */
         context = { components: components };
