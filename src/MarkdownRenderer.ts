@@ -12,7 +12,7 @@ var md = new Remarkable();
  */
 export class MarkdownRenderer implements IRenderer {
   private engine: any;
-  private htmlEngine: any;
+  private htmlEngine: IRenderer;
 
   constructor(private options?: IRendererOptions) {
     if (!!options && !!options.htmlEngine) {
