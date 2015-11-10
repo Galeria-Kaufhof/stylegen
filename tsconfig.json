@@ -22,6 +22,7 @@
         "src/Config.ts",
         "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
+        "src/lib/RemarkableUpfront.ts",
         "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/PlainComponentListWriter.ts",

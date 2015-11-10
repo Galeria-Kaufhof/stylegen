@@ -26,7 +26,8 @@ export class HandlebarsRenderer implements IRenderer {
 
   private compileDoc(doc: Doc):Doc {
     // TODO: Move this to a more generic ComponentRenderer
-    return new MarkdownRenderer().render(doc);
+    // TODO: don't initialize for each doc!
+    return new MarkdownRenderer({"htmlEngine": this.engine}).render(doc);
   }
 
   private compileView(view: View):HandlebarsTemplateDelegate {
