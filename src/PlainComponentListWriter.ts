@@ -74,15 +74,13 @@ export class PlainComponentListWriter implements IComponentWriter {
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  public write():Promise<PlainComponentListWriter> {
+  public write():Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
 
       var context:{} = {};
-      // TODO: move this clatter to plain component listing method
       try {
         /** get all all components, registered in the styleguide */
-        var components:IViewComponent[] = this.styleguide.components.keys()
-        .map(key => this.styleguide.components.find(key))
+        var components:IViewComponent[] = this.styleguide.components.all()
 
         /** remove components not element of this styleguide configuration */
         .filter(c => c.config.namespace === this.styleguide.config.namespace)

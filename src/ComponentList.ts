@@ -20,4 +20,8 @@ export class ComponentList {
   keys():string[] {
     return Object.keys(this.components);
   }
+
+  all():Component[] {
+    return this.keys().map(key => this.styleguide.components.find(key));
+  }
 }
