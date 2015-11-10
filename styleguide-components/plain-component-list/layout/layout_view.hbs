@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css">
-
+  <style>
+  </style>
 
 </head>
 <body class="mdl-color--grey-100">
@@ -34,7 +35,7 @@
       <span class="mdl-layout-title">Title</span>
       <nav class="mdl-navigation">
         {{#each components}}
-          <a class="mdl-navigation__link" href="{{component.id}}">{{component.config.label}}</a>
+          <a class="mdl-navigation__link" href="/components.html#component-{{component.slug}}">{{component.config.label}}</a>
         {{/each}}
       </nav>
     </div>
@@ -43,6 +44,8 @@
 
       {{#each components}}
         {{{compiled}}}
+
+        <hr>
       {{/each}}
 
       </div>

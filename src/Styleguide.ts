@@ -11,6 +11,10 @@ import {IRenderer, IRendererOptions} from './Renderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
 import {ComponentWriter} from './ComponentWriter';
 
+Handlebars.registerHelper("pp", function(object){
+  return new Handlebars.SafeString(JSON.stringify(object));
+});
+
 interface IStyleguideOptions {
   renderer?: IRenderer;
 }

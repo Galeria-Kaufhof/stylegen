@@ -1,5 +1,5 @@
 
-  <article class="mdl-grid" id="{{id}}">
+  <article class="mdl-grid" id="component-{{id}}">
     <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--12-col">
       <div class="mdl-card__title mdl-cell">
         <h2 class="mdl-card__title-text">{{headline}}</h2>
@@ -8,28 +8,43 @@
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
           <div class="mdl-tabs__tab-bar">
             {{#each docs}}
-              <a href="#{{label}}" class="mdl-tabs__tab">{{label}}</a>
+              <a href="#{{../id}}-{{label}}" class="mdl-tabs__tab {{#if @first}}is-active{{/if}}">{{label}}</a>
             {{/each}}
+            <a href="#{{id}}-config" class="mdl-tabs__tab">Config</a>
           </div>
 
           {{#each docs}}
-            <div class="mdl-tabs__panel is-active" id="{{label}}">
+            <div class="mdl-tabs__panel {{#if @first}}is-active{{/if}}" id="{{../id}}-{{label}}">
                 {{{content}}}
             </div>
           {{/each}}
+
+          <div class="mdl-tabs__panel" id="{{id}}-config">
+            <dl class="mdl-grid">
+              <dd class="mdl-cell mdl-cell--3-col">ID:</dd>
+              <dt class="mdl-cell mdl-cell--9-col">{{component.id}}</dt>
+
+              <dd class="mdl-cell mdl-cell--3-col">Partials:</dd>
+              <dt class="mdl-cell mdl-cell--9-col">
+                {{#each component.partials}}{{this.name}}{{#unless @last}},{{/unless}}{{/each}}
+              </dt>
+            </dl>
+          </div>
 
         </div>
       </div>
     </div>
 
     <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--6-col">
-      <div class="template">
+      <div class="mdl-card__supporting-text">
         {{{template}}}
       </div>
     </div>
 
     <div class="mdl-card mdl-shadow--2d  mdl-cell mdl-cell--6-col">
-      <code class="language-markup">{{template}}</code>
+      <div class="mdl-card__supporting-text">
+        <code class="language-markup">{{template}}</code>
+      </div>
     </div>
 
   </article>

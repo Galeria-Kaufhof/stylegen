@@ -27,6 +27,7 @@ export class Component {
   view: View;
   config: IComponentConfig;
   docs: Doc[];
+  slug: string;
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
@@ -36,8 +37,8 @@ export class Component {
     this.config = config;
     /** TODO: handle parent resolution and sub component naming, atm. it is useless */
     this.id = this.config.id || path.basename(config.path);
+    this.slug = `${this.config.namespace}-${this.id}`;
     this.id = `${this.config.namespace}.${this.id}`;
-    console.log('Component:', this.id);
   }
 
   /**
