@@ -8,6 +8,7 @@ import {Styleguide} from './Styleguide';
 
 
 import {PlainComponentListWriter} from './PlainComponentListWriter';
+import {TagListWriter} from './TagListWriter';
 
 
 /**
@@ -23,7 +24,7 @@ export interface IComponentWriter {
 }
 
 export class ComponentWriter {
-  constructor(private type: string, private nodes: Node[], private styleguide: Styleguide) {}
+  constructor(private type: string, private styleguide: Styleguide) {}
 
   /**
    * scheduler to the different ComponentWriters
@@ -32,9 +33,12 @@ export class ComponentWriter {
     var result:Promise<IComponentWriter>
 
     switch(this.type) {
+      case "tags":
+        result = new TagListWriter(this.styleguide).write();
+        break;
       case "plain":
       default:
-        result = new PlainComponentListWriter(this.nodes, this.styleguide).write();
+        result = new PlainComponentListWriter(this.styleguide).write();
     }
 
     return result;

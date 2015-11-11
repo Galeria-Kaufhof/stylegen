@@ -23,7 +23,7 @@ interface IViewComponent {
   compiled?: string;
 }
 
-export class PlainComponentListWriter implements IComponentWriter {
+export class TagListWriter implements IComponentWriter {
   constructor(private styleguide: Styleguide) {}
 
   /**
@@ -75,27 +75,23 @@ export class PlainComponentListWriter implements IComponentWriter {
    */
   public write():Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
+
       var context:{} = {};
-
-      try { context.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
-
-      try { context.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
-
       try {
         /** get all all components, registered in the styleguide */
         var components:IViewComponent[] = this.styleguide.components.all()
 
         /** remove components not element of this styleguide configuration */
-        .filter(c => c.config.namespace === this.styleguide.config.namespace)
+        // .filter(c => c.config.namespace === this.styleguide.config.namespace)
 
         /** build the collected IViewComponents */
         .map(component => this.buildViewComponent(component))
 
         /** remove components that had no view */
-        .filter(c => c !== null);
+        // .filter(c => c !== null);
 
         /** set context for rendering the component list */
-        context.components = components;
+        context = { components: components };
 
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
@@ -114,9 +110,7 @@ export class PlainComponentListWriter implements IComponentWriter {
       /** create the plain component list */
       .then(() => {
         /** applying here, because of stupid method defintion with multiargs :/ */
-        return fswritefile.apply(this, [
-          path.resolve(config.cwd, config.target, "components.html"),
-          compListTemplate(context)]);
+        return fswritefile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
       })
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));

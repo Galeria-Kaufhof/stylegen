@@ -37,7 +37,7 @@ export class StructureWriter {
    */
   public write():Promise<StructureWriter> {
     // TODO: resolve which component-writer from styleguide.config
-    return new ComponentWriter('plain', this.nodes, this.styleguide).write()
+    return new ComponentWriter('plain', this.styleguide).write()
     .then(componentWriter => this);
   }
 }

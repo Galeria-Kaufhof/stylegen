@@ -22,6 +22,9 @@
     },
     "marked/marked.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
+    },
+    "js-yaml/js-yaml.d.ts": {
+      "commit": "8c4ec896ab619e7cb6572f82423e6e1eece70f5a"
     }
   }
 }

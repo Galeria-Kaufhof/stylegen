@@ -1,7 +1,10 @@
 "use strict";
 
 import * as fs from 'fs';
+import * as path from 'path';
 import * as denodeify from 'denodeify';
+import * as YAML from 'js-yaml';
+
 import {Partial, View} from './Templating';
 
 var fsreadfile = denodeify(fs.readFile);
@@ -42,7 +45,14 @@ export class Config implements IAbstractConfig {
           .then(function(buffer:Buffer) {
             /** catch and return json parsing errors */
             try {
-              var result:string = JSON.parse(buffer.toString());
+              var result:string;
+              if (path.extname(path_or_object.toString()) === '.yml'
+                  || path.extname(path_or_object.toString()) === '.yaml') {
+                result = YAML.safeLoad(buffer.toString());
+              } else {
+                result = JSON.parse(buffer.toString());
+              }
+
               resolve(result);
             } catch(e) {
               reject(e);

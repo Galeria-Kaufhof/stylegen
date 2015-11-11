@@ -9,7 +9,6 @@ export class Partial extends ComponentFile {
   constructor(filePath: string) {
     // TODO: make template extension configurable
     super(filePath, path.basename(filePath, '_partial.hbs'));
-    console.log("partial:", this.name);
   }
 }
 
