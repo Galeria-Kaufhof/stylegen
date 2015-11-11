@@ -30,6 +30,7 @@ export interface IProjectConfig {
   namespace?: string;
   componentPaths?: string[];
   target?: string[];
+  dependencies?: any;
 }
 
 export class Styleguide {

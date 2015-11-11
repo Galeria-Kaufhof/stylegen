@@ -8,7 +8,7 @@ import * as mkdirp from 'mkdirp';
 import {Node} from './Node';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
-import {IComponentWriter} from './ComponentWriter';
+import {IComponentWriter, ILayoutContext, IViewComponent} from './ComponentWriter';
 
 
 var _mkdirp = denodeify(mkdirp);
@@ -18,10 +18,6 @@ var fswritefile = denodeify(fs.writeFile);
  * describes an app.component that has been wrapped in the component view,
  * and holds a reference to the Component itself and the compiled output.
  */
-interface IViewComponent {
-  component: Component;
-  compiled?: string;
-}
 
 export class PlainComponentListWriter implements IComponentWriter {
   constructor(private styleguide: Styleguide) {}
@@ -58,7 +54,7 @@ export class PlainComponentListWriter implements IComponentWriter {
 
       /** lookup the styleguide component template */
       // TODO: handle/secure this law of demeter disaster :D
-      var compTemplate = this.styleguide.components.find('sg.plain-list-component').view.template;
+      var compTemplate = this.styleguide.components.find('sg.component').view.template;
 
       /** build the representation of the current component for the styleguide */
       viewComponent.compiled = compTemplate(context);
@@ -73,13 +69,9 @@ export class PlainComponentListWriter implements IComponentWriter {
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  public write():Promise<IComponentWriter> {
+  public write(layoutContext?: ILayoutContext):Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
-      var context:{} = {};
-
-      try { context.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
-
-      try { context.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+      var context:ILayoutContext = layoutContext || {};
 
       try {
         /** get all all components, registered in the styleguide */
