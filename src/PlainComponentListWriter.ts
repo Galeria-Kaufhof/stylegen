@@ -77,6 +77,10 @@ export class PlainComponentListWriter implements IComponentWriter {
     return new Promise((resolve, reject) => {
       var context:{} = {};
 
+      try { context.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
+
+      try { context.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+
       try {
         /** get all all components, registered in the styleguide */
         var components:IViewComponent[] = this.styleguide.components.all()
@@ -91,7 +95,7 @@ export class PlainComponentListWriter implements IComponentWriter {
         .filter(c => c !== null);
 
         /** set context for rendering the component list */
-        context = { components: components };
+        context.components = components;
 
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
@@ -110,7 +114,9 @@ export class PlainComponentListWriter implements IComponentWriter {
       /** create the plain component list */
       .then(() => {
         /** applying here, because of stupid method defintion with multiargs :/ */
-        return fswritefile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
+        return fswritefile.apply(this, [
+          path.resolve(config.cwd, config.target, "components.html"),
+          compListTemplate(context)]);
       })
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));

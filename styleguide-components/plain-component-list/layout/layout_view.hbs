@@ -5,12 +5,13 @@
   <title>Components</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css">
-  <style>
-  </style>
+  <!-- TODO: reference upfront styles in here -->
+  <!-- TODO: make css deps more dynamic, maybe allow tag reference here -->
+  {{#each cssDeps}}
+    <link rel="stylesheet" href="{{this}}">
+  {{/each}}
 
+  <!-- TODO: allow head js tags -->
 </head>
 <body class="mdl-color--grey-100">
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
@@ -52,7 +53,8 @@
     </main>
   </div>
 
-  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.js"></script>
+  {{#each jsDeps}}
+    <script src="{{this}}"></script>
+  {{/each}}
 </body>
 </html>
