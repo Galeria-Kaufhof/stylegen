@@ -48,7 +48,7 @@ export class HandlebarsRenderer implements IRenderer {
     }
 
     if (!!component.partials) {
-      component.partials.forEach((partial) => {
+      for (let partial of component.partials) {
         this.registerPartial(partial, namespace);
       });
     }

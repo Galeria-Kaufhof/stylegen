@@ -28,7 +28,7 @@ export class StructureReader {
   }
 
   private buildComponentDictionary(nodes: Node[], dict: ComponentList) {
-    nodes.forEach((node) => {
+    for (let node of nodes) {
       if (node.isComponent()) {
         dict.set(node.component.id, node.component);
       }
