@@ -80,9 +80,9 @@ export class Page {
 
       }
 
-      return contentPromise.then((content: string) => {
-        this.content = content;
-        return this
+      return contentPromise.then((content: Doc) => {
+        this.content = content.compiled;
+        return this;
       });
   }
 
