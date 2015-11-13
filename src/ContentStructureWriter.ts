@@ -19,6 +19,7 @@ export class ContentStructureWriter {
    */
   walk(content: IPageConfig[]):Promise<ContentStructureWriter> {
     return Promise.all(content.map((pageConfig:IPageConfig) => {
+      pageConfig.styleguide = this.styleguide;
       pageConfig.mdRenderer = this.mdRenderer;
       pageConfig.target = this.styleguide.config.target;
 

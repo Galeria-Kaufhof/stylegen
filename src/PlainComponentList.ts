@@ -72,6 +72,9 @@ export class PlainComponentList implements IComponentWriter {
   }
 
   private intersect<T>(array1:T[], array2:T[]):T[] {
+    if (!array1 || !array2) {
+      return [];
+    }
     return array1.filter((a:T) => array2.indexOf(a) != -1);
   }
 
@@ -83,11 +86,10 @@ export class PlainComponentList implements IComponentWriter {
       try {
         /** get all all components, registered in the styleguide */
         var components:Component[] = this.styleguide.components.all();
-
         if (!!tags) {
           components = components.filter((c:Component) => this.intersect(c.tags, tags).length > 0);
         }
-        
+
         var componentViews:IViewComponent[] = components
 
         /** remove components not element of this styleguide configuration */

@@ -11,6 +11,9 @@ import {MarkdownRenderer} from './MarkdownRenderer';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
+import {PlainComponentList} from './PlainComponentList';
+
+!!PlainComponentList
 
 var fswritefile = denodeify(fs.writeFile);
 var _mkdirp = denodeify(mkdirp);
@@ -76,8 +79,11 @@ export class Page {
           });
           break;
         case "tags":
-          // TODO: handle tag pages
+          contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);
+          break;
         default:
+          /** FOR UNKNOWN TYPES */
+          console.error("Page.buildContent - config.type unknown", this.config.type);
           contentPromise = new Promise((resolve) => resolve(this));
 
       }
