@@ -8,7 +8,8 @@
     "handlebars": "^4.0.3",
     "js-yaml": "^3.4.3",
     "mkdirp": "^0.5.1",
-    "remarkable": "^1.6.0"
+    "remarkable": "^1.6.0",
+    "slug": "^0.9.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

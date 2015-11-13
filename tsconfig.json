@@ -28,6 +28,7 @@
         "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/Page.ts",
+        "src/PageLayout.ts",
         "src/PlainComponentListWriter.ts",
         "src/Renderer.ts",
         "src/StructureReader.ts",

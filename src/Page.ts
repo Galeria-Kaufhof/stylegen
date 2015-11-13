@@ -1,10 +1,17 @@
 "use strict";
 
+import * as fs from 'fs';
 import * as path from 'path';
+import * as slug from 'slug';
+import * as denodeify from 'denodeify';
+
 import {Doc} from './Doc';
 import {MarkdownRenderer} from './MarkdownRenderer';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
+import {IPageLayoutContext} from './PageLayout';
+
+var fswritefile = denodeify(fs.writeFile);
 
 export interface IPageConfig {
   label?: string;
@@ -15,17 +22,31 @@ export interface IPageConfig {
   target?: string;
 }
 
+
 export class Page {
   target: string;
+  label: string;
+  slug: string;
   content: string;
   parent: Page;
   children: Page[];
   mdRenderer: IRenderer;
 
   constructor(private config: IPageConfig, parent?: Page) {
-    /** TODO: rotating demeter in his grave, so at least encapsulate the access to the engine */
     this.mdRenderer = this.config.mdRenderer;
-    this.target = this.config.target;
+
+    this.label = this.config.label;
+    this.slug = slug(this.label.toLowerCase());
+
+    if(!parent && this.config.target) {
+      this.target = this.config.target;
+    } else if(!!parent) {
+       this.target = path.dirname(parent.target);
+    } else {
+      throw("No target for the styleguide specified")
+    }
+
+    this.target = path.resolve(this.target, this.slug + '.html');
   }
 
   resolveChildren():Promise<Page> {
@@ -59,8 +80,7 @@ export class Page {
 
       }
 
-      return contentPromise
-      .then((content: string) => {
+      return contentPromise.then((content: string) => {
         this.content = content;
         return this
       });
@@ -72,7 +92,11 @@ export class Page {
     .then(() => {return this; });
   }
 
-  write():Promise<Page> {
-    return new Promise(resolve => resolve(this));
+  write(layout: Function, context: IPageLayoutContext):Promise<Page> {
+    context.content = this.content;
+
+    /** applying here, because of stupid method defintion with multiargs :/ */
+    return fswritefile.apply(this, [this.target, layout(context)])
+    .then((file:any) => this);
   }
 }

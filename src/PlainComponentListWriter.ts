@@ -9,8 +9,12 @@ import {Node} from './Node';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';
-import {ILayoutContext} from './StructureWriter';
 
+interface IComponentLayoutContext {
+  components?: IViewComponent[];
+  cssDeps?: string[];
+  jsDeps?: string[];
+}
 
 var _mkdirp = denodeify(mkdirp);
 var fswritefile = denodeify(fs.writeFile);
@@ -70,9 +74,9 @@ export class PlainComponentListWriter implements IComponentWriter {
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  public write(layoutContext?: ILayoutContext):Promise<IComponentWriter> {
+  public write(layoutContext?: IComponentLayoutContext):Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
-      var context:ILayoutContext = layoutContext || {};
+      var context:IComponentLayoutContext = layoutContext || {};
 
       try {
         /** get all all components, registered in the styleguide */

@@ -2,6 +2,7 @@
 
 import {Styleguide} from './Styleguide';
 import {Page, IPageConfig} from './Page';
+import {IPageLayoutContext} from './PageLayout';
 import {IRenderer} from './Renderer';
 import {MarkdownRenderer} from './MarkdownRenderer';
 
@@ -29,16 +30,12 @@ export class ContentStructureWriter {
     });
   }
 
-  buildNavigation():Promise<ContentStructureWriter> {
-    // TODO: to it :D
-    //
-    return new Promise(resolve => this);
-  }
+  write(context: IPageLayoutContext):Promise<ContentStructureWriter> {
+    context.pages = this.pages;
 
-  write():Promise<ContentStructureWriter> {
-    var target = this.styleguide.config.target;
+    var pageLayout = this.styleguide.components.find('sg.page-layout').view.template
 
-    return Promise.all(this.pages.map(page => page.write()))
+    return Promise.all(this.pages.map(page => page.write(pageLayout, context)))
     .then(pages => this);
   }
 }

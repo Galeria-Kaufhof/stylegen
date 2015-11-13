@@ -4,13 +4,11 @@ import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {ComponentRegistry} from './ComponentRegistry';
-import {IViewComponent} from './ComponentWriter';
 import {PlainComponentListWriter} from './PlainComponentListWriter';
 import {ContentStructureWriter} from './ContentStructureWriter';
 
-
-export interface ILayoutContext {
-  components?: IViewComponent[];
+/** basic unspecific layout context */
+interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
 }
@@ -69,11 +67,8 @@ export class StructureWriter {
           result = new ContentStructureWriter(this.styleguide)
           .walk(this.styleguide.config.content)
 
-          /** build navigation from page objects */
-          .then(contentStructureWriter => contentStructureWriter.buildNavigation())
-
           /** render page objects to file struture (with layout and context inclusively navigation) */
-          .then(contentStructureWriter => contentStructureWriter.write());
+          .then(contentStructureWriter => contentStructureWriter.write(layoutContext));
           break;
         case "plain":
         default:
