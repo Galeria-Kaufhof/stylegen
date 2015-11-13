@@ -71,26 +71,36 @@ export class PlainComponentList implements IComponentWriter {
     }
   }
 
-  public build():Promise<IComponentWriter> {
+  private intersect<T>(array1:T[], array2:T[]):T[] {
+    return array1.filter((a:T) => array2.indexOf(a) != -1);
+  }
+
+  public build(tags?: string[]):Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
 
       var context:IComponentLayoutContext = {};
 
       try {
         /** get all all components, registered in the styleguide */
-        var components:IViewComponent[] = this.styleguide.components.all()
+        var components:Component[] = this.styleguide.components.all();
+
+        if (!!tags) {
+          components = components.filter((c:Component) => this.intersect(c.tags, tags).length > 0);
+        }
+        
+        var componentViews:IViewComponent[] = components
 
         /** remove components not element of this styleguide configuration */
-        .filter(c => c.config.namespace === this.styleguide.config.namespace)
+        .filter((c:Component) => c.config.namespace === this.styleguide.config.namespace)
 
         /** build the collected IViewComponents */
-        .map(component => this.buildViewComponent(component))
+        .map((c:Component) => this.buildViewComponent(c))
 
         /** remove components that had no view */
-        .filter(c => c !== null);
+        .filter((c:IViewComponent) => c !== null);
 
         /** set context for rendering the component list */
-        context.components = components;
+        context.components = componentViews;
 
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
