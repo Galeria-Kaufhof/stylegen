@@ -57,17 +57,21 @@ export class StructureWriter {
         type = "content-config";
       }
       var result:Promise<any>;
+
+      /**
+       * https://github.com/TypeStrong/atom-typescript/issues/719
+       */
       console.log(ContentStructureWriter);
 
       switch(type) {
         case "content-config":
           /** 1. walk config, and build page objects */
           result = new ContentStructureWriter(this.styleguide)
-          .walk(this.styleguide.config.content);
-          // .write(this.styleguide.config.content);
+          .walk(this.styleguide.config.content)
 
           // TODO: 2. build navigation from page objects
           // TODO: 3. render page objects to file struture (with layout and context inclusively navigation)
+          .then(contentStructureWriter => contentStructureWriter.write());
           break;
         case "plain":
         default:

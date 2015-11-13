@@ -26,4 +26,8 @@ export class ContentStructureWriter {
       return this;
     });
   }
+
+  write():Promise<ContentStructureWriter> {
+    return new Promise(resolve => resolve(this));
+  }
 }
