@@ -53,7 +53,7 @@ export class Page {
     }
 
     this.target = path.resolve(this.target, this.slug + '.html');
-    this.link = path.relative(this.config.styleguide.config.target, this.target);
+    this.link = path.resolve("/", path.relative(this.config.styleguide.config.target, this.target));
   }
 
   resolveChildren():Promise<Page> {
