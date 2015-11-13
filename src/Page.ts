@@ -12,6 +12,7 @@ export interface IPageConfig {
   content?: string;
   styleguide?: Styleguide;
   mdRenderer?: IRenderer;
+  target?: string;
 }
 
 export class Page {
@@ -24,6 +25,7 @@ export class Page {
   constructor(private config: IPageConfig, parent?: Page) {
     /** TODO: rotating demeter in his grave, so at least encapsulate the access to the engine */
     this.mdRenderer = this.config.mdRenderer;
+    this.target = this.config.target;
   }
 
   resolveChildren():Promise<Page> {
@@ -68,5 +70,9 @@ export class Page {
     return this.resolveChildren()
     .then((page) => this.buildContent())
     .then(() => {return this; });
+  }
+
+  write():Promise<Page> {
+    return new Promise(resolve => resolve(this));
   }
 }

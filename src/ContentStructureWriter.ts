@@ -19,6 +19,8 @@ export class ContentStructureWriter {
   walk(content: IPageConfig[]):Promise<ContentStructureWriter> {
     return Promise.all(content.map((pageConfig:IPageConfig) => {
       pageConfig.mdRenderer = this.mdRenderer;
+      pageConfig.target = this.styleguide.config.target;
+
       return new Page(pageConfig).build();
     }))
     .then((pages) => {
@@ -27,7 +29,16 @@ export class ContentStructureWriter {
     });
   }
 
+  buildNavigation():Promise<ContentStructureWriter> {
+    // TODO: to it :D
+    //
+    return new Promise(resolve => this);
+  }
+
   write():Promise<ContentStructureWriter> {
-    return new Promise(resolve => resolve(this));
+    var target = this.styleguide.config.target;
+
+    return Promise.all(this.pages.map(page => page.write()))
+    .then(pages => this);
   }
 }

@@ -30,7 +30,7 @@ export interface IStyleguideConfig {
   upfrontRoot?: string;
   namespace?: string;
   componentPaths?: string[];
-  target?: string[];
+  target?: string;
   dependencies?: any;
   content?: IPageConfig[];
 }
