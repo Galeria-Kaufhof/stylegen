@@ -27,7 +27,17 @@ export class Page {
   }
 
   resolveChildren():Promise<Page> {
-    return new Promise((resolve) => resolve(this));
+    if (!!this.children && this.children.length > 0) {
+      return Promise.all(this.children.map(childPageConfig => {
+        return new Page(childPageConfig, this).build();
+      }))
+      .then(children => {
+        this.children = children;
+        return this;
+      });
+    } else {
+      return new Promise((resolve) => resolve(this));
+    }
   }
 
   buildContent():Promise<Page> {
@@ -40,10 +50,10 @@ export class Page {
             return this.mdRenderer.render(doc);
           });
           break;
+        case "tags":
+          // TODO: handle tag pages
         default:
           contentPromise = new Promise((resolve) => resolve(this));
-        // case "tags":
-        //   this.content = "";
 
       }
 
