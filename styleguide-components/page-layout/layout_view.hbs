@@ -11,6 +11,22 @@
     <link rel="stylesheet" href="{{this}}">
   {{/each}}
 
+  <style>
+  .material-icons {
+    position: relative;
+    top: 50%;
+  }
+
+  .children {
+    padding-left: 1em;
+  }
+
+  .mdl-layout__drawer .mdl-navigation .children .mdl-navigation__link {
+    padding-top: .3em;
+    padding-bottom: .3em;
+  }
+  </style>
+
   <!-- TODO: allow head js tags -->
 </head>
 <body class="mdl-color--grey-100">
@@ -35,9 +51,22 @@
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Title</span>
       <nav class="mdl-navigation">
-        {{#each links}}
+        {{#*inline "sg.main-link-item"}}
           <a class="mdl-navigation__link" href="{{link}}">{{label}}</a>
-        {{/each}}
+          {{#if children}}
+            <div class="children">
+              {{> sg.main-link-list children}}
+            </div>
+          {{/if}}
+        {{/inline}}
+
+        {{#*inline "sg.main-link-list"}}
+          {{#each this}}
+            {{> sg.main-link-item}}
+          {{/each}}
+        {{/inline}}
+
+        {{> sg.main-link-list pages }}
       </nav>
     </div>
     <main class="mdl-layout__content">

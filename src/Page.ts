@@ -22,6 +22,7 @@ export interface IPageConfig {
   label?: string;
   type?: string;
   content?: string;
+  children?: Page[];
   styleguide?: Styleguide;
   mdRenderer?: IRenderer;
   target?: string;
@@ -30,14 +31,14 @@ export interface IPageConfig {
 
 export class Page {
   target: string;
+  link: string;
   label: string;
   slug: string;
   content: string;
-  parent: Page;
   children: Page[];
   mdRenderer: IRenderer;
 
-  constructor(private config: IPageConfig, parent?: Page) {
+  constructor(private config: IPageConfig, private parent?: Page) {
     this.mdRenderer = this.config.mdRenderer;
 
     this.label = this.config.label;
@@ -46,17 +47,19 @@ export class Page {
     if(!parent && this.config.target) {
       this.target = this.config.target;
     } else if(!!parent) {
-       this.target = path.dirname(parent.target);
+       this.target = path.resolve(path.dirname(parent.target), parent.slug);
     } else {
       throw("No target for the styleguide specified")
     }
 
     this.target = path.resolve(this.target, this.slug + '.html');
+    this.link = path.relative(this.config.styleguide.config.target, this.target);
   }
 
   resolveChildren():Promise<Page> {
-    if (!!this.children && this.children.length > 0) {
-      return Promise.all(this.children.map(childPageConfig => {
+    if (!!this.config.children && this.config.children.length > 0) {
+      return Promise.all(this.config.children.map((childPageConfig:IPageConfig) => {
+        childPageConfig.styleguide = this.config.styleguide;
         return new Page(childPageConfig, this).build();
       }))
       .then(children => {
@@ -100,12 +103,23 @@ export class Page {
     .then(() => {return this; });
   }
 
+  writeChildren(layout: Function, context: IPageLayoutContext):Promise<Page> {
+    if (!!this.children) {
+      return Promise.all(this.children.map((child:Page) => child.write(layout, context)))
+      .then(children => this);
+    } else {
+      return new Promise(resolve => resolve(this));
+    }
+  }
+
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
-    context.content = this.content;
+    var pageContext:IPageLayoutContext = Object.assign({}, context);
+    pageContext.content = this.content
 
     /** applying here, because of stupid method defintion with multiargs :/ */
     return _mkdirp(path.dirname(this.target))
-    .then(fswritefile.apply(this, [this.target, layout(context)]))
+    .then(page => fswritefile.apply(this, [this.target, layout(pageContext)]))
+    .then(page => this.writeChildren(layout, context))
     .then((file:any) => this);
   }
 }
