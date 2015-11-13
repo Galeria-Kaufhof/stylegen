@@ -29,7 +29,7 @@
         "src/Node.ts",
         "src/Page.ts",
         "src/PageLayout.ts",
-        "src/PlainComponentListWriter.ts",
+        "src/PlainComponentList.ts",
         "src/Renderer.ts",
         "src/StructureReader.ts",
         "src/StructureWriter.ts",

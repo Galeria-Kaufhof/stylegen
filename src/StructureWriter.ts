@@ -4,7 +4,7 @@ import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {ComponentRegistry} from './ComponentRegistry';
-import {PlainComponentListWriter} from './PlainComponentListWriter';
+import {PlainComponentList} from './PlainComponentList';
 import {ContentStructureWriter} from './ContentStructureWriter';
 
 /** basic unspecific layout context */
@@ -72,8 +72,8 @@ export class StructureWriter {
           break;
         case "plain":
         default:
-          result = new PlainComponentListWriter(this.styleguide).build()
-            .then((plainListWriter:PlainComponentListWriter) => plainListWriter.write(layoutContext));
+          result = new PlainComponentList(this.styleguide).build()
+            .then((plainListWriter:PlainComponentList) => plainListWriter.write(layoutContext));
       }
 
       result

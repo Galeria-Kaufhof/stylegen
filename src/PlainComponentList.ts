@@ -24,7 +24,7 @@ var fswritefile = denodeify(fs.writeFile);
  * and holds a reference to the Component itself and the compiled output.
  */
 
-export class PlainComponentListWriter implements IComponentWriter {
+export class PlainComponentList implements IComponentWriter {
   compiled: string;
   constructor(private styleguide: Styleguide) {}
 
