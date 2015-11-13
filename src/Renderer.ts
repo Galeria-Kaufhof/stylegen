@@ -5,6 +5,7 @@
  * As an example implementation look for the HandlebarsRenderer.
  */
 export interface IRenderer {
+  engine: IRenderer;
   setEngine<T>(engine: T): IRenderer;
   render<T>(object: T): T;
 }

@@ -8,7 +8,8 @@ import * as mkdirp from 'mkdirp';
 import {Node} from './Node';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
-import {IComponentWriter, ILayoutContext, IViewComponent} from './ComponentWriter';
+import {IComponentWriter, IViewComponent} from './ComponentWriter';
+import {ILayoutContext} from './StructureWriter';
 
 var _mkdirp = denodeify(mkdirp);
 var fswritefile = denodeify(fs.writeFile);

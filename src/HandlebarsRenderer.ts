@@ -12,7 +12,7 @@ import {MarkdownRenderer} from './MarkdownRenderer';
  * Build in renderer, that is taken as default if no external is given.
  */
 export class HandlebarsRenderer implements IRenderer {
-  private engine: any;
+  public engine: any;
 
   constructor(private options?: IRendererOptions) {
   }

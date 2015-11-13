@@ -65,7 +65,7 @@ export class Config implements IAbstractConfig {
 
         }
       } else {
-        reject("IProjectConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
+        reject("IStyleguideConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
       }
 
     });

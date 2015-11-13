@@ -1,7 +1,7 @@
 "use strict";
 
 import * as path from 'path';
-import {Styleguide, IProjectConfig} from './Styleguide';
+import {Styleguide, IStyleguideConfig} from './Styleguide';
 import {Node, INodeOptions} from './Node';
 import {Component} from './Component';
 import {ComponentList} from './ComponentList';
