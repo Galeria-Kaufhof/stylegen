@@ -3,6 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as slug from 'slug';
+import * as mkdirp from 'mkdirp';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
@@ -12,6 +13,7 @@ import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 
 var fswritefile = denodeify(fs.writeFile);
+var _mkdirp = denodeify(mkdirp);
 
 export interface IPageConfig {
   label?: string;
@@ -96,7 +98,8 @@ export class Page {
     context.content = this.content;
 
     /** applying here, because of stupid method defintion with multiargs :/ */
-    return fswritefile.apply(this, [this.target, layout(context)])
+    return _mkdirp(path.dirname(this.target))
+    .then(fswritefile.apply(this, [this.target, layout(context)]))
     .then((file:any) => this);
   }
 }
