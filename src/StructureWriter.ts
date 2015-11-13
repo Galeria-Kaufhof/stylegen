@@ -61,7 +61,7 @@ export class StructureWriter {
       /**
        * https://github.com/TypeStrong/atom-typescript/issues/719
        */
-      console.log(ContentStructureWriter);
+      ContentStructureWriter == true;
 
       switch(type) {
         case "content-config":

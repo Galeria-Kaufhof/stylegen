@@ -3,7 +3,6 @@
 import * as path from 'path';
 import {Styleguide} from './Styleguide';
 
-
 /**
  * create the static styleguide
  *
@@ -31,7 +30,7 @@ export function build() {
     console.log('Styleguide.write:' ,'finished writing');
   })
   .catch(function(e) {
-    console.log(e.stack);
+    console.error(e.stack);
     throw(e);
   });
 };

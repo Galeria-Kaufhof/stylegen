@@ -59,7 +59,7 @@ export class Config implements IAbstractConfig {
             }
           })
           .catch((e) => {
-            console.log("Config.resolve:readFile:", path_or_object);
+            console.error("Config.resolve:readFile:", path_or_object);
             reject(e);
           });
 
