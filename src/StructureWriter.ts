@@ -72,7 +72,8 @@ export class StructureWriter {
           break;
         case "plain":
         default:
-          result = new PlainComponentListWriter(this.styleguide).write(layoutContext);
+          result = new PlainComponentListWriter(this.styleguide).build()
+            .then((plainListWriter:PlainComponentListWriter) => plainListWriter.write(layoutContext));
       }
 
       result

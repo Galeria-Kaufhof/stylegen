@@ -25,6 +25,7 @@ var fswritefile = denodeify(fs.writeFile);
  */
 
 export class PlainComponentListWriter implements IComponentWriter {
+  compiled: string;
   constructor(private styleguide: Styleguide) {}
 
   /**
@@ -70,13 +71,10 @@ export class PlainComponentListWriter implements IComponentWriter {
     }
   }
 
-  /**
-   * the most basic writer, that handles the resolution of how to
-   * integrated the rendered component views in the target file structure.
-   */
-  public write(layoutContext?: IComponentLayoutContext):Promise<IComponentWriter> {
+  public build():Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
-      var context:IComponentLayoutContext = layoutContext || {};
+
+      var context:IComponentLayoutContext = {};
 
       try {
         /** get all all components, registered in the styleguide */
@@ -103,6 +101,17 @@ export class PlainComponentListWriter implements IComponentWriter {
       var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
 
       /** shorthand to the styleguide config */
+      this.compiled = compListTemplate(context);
+      resolve(this);
+    });
+  }
+
+  /**
+   * the most basic writer, that handles the resolution of how to
+   * integrated the rendered component views in the target file structure.
+   */
+  public write(layoutContext?: IComponentLayoutContext):Promise<IComponentWriter> {
+    return new Promise((resolve, reject) => {
       var config = this.styleguide.config;
 
       /** creating the target folder path (like mkdir -p), if it doesn't exist */
@@ -112,8 +121,7 @@ export class PlainComponentListWriter implements IComponentWriter {
       .then(() => {
         /** applying here, because of stupid method defintion with multiargs :/ */
         return fswritefile.apply(this, [
-          path.resolve(config.cwd, config.target, "components.html"),
-          compListTemplate(context)]);
+          path.resolve(config.cwd, config.target, "components.html"), this.compiled]);
       })
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
