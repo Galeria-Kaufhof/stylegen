@@ -12,7 +12,7 @@ var md = new Remarkable({ quotes: ''});
  * Build in renderer, that is taken as default if no external is given.
  */
 export class MarkdownRenderer implements IRenderer {
-  private engine: any;
+  public engine: any;
   private htmlEngine: IRenderer;
 
   constructor(private options?: IRendererOptions) {

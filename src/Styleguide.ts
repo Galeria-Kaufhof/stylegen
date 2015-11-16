@@ -12,9 +12,10 @@ import {ComponentList} from './ComponentList';
 import {IRenderer, IRendererOptions} from './Renderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
 import {ComponentRegistry} from './ComponentRegistry';
-import {ComponentWriter} from './ComponentWriter';
+import {IPageConfig} from './Page';
+import {Doc} from './Doc';
 
-Handlebars.registerHelper("pp", function(object){
+Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));
 });
 
@@ -23,17 +24,19 @@ interface IStyleguideOptions {
 }
 
 /** configuration structure for the general styleguide settings, aka. styleguide.json */
-export interface IProjectConfig {
+export interface IStyleguideConfig {
   cwd?: string;
   name?: string;
   upfrontRoot?: string;
   namespace?: string;
   componentPaths?: string[];
-  target?: string[];
+  target?: string;
+  dependencies?: any;
+  content?: IPageConfig[];
 }
 
 export class Styleguide {
-  public config: IProjectConfig;
+  public config: IStyleguideConfig;
   public renderer: IRenderer;
   public nodes: Node[];
   public components: ComponentList;
@@ -42,7 +45,6 @@ export class Styleguide {
     // nodes build the structure of our styleguide
     this.nodes = [];
     this.components = new ComponentList();
-    console.log(this.components);
   }
 
   /*

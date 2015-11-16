@@ -8,8 +8,13 @@ import * as mkdirp from 'mkdirp';
 import {Node} from './Node';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
-import {IComponentWriter} from './ComponentWriter';
+import {IComponentWriter, IViewComponent} from './ComponentWriter';
 
+interface IComponentLayoutContext {
+  components?: IViewComponent[];
+  cssDeps?: string[];
+  jsDeps?: string[];
+}
 
 var _mkdirp = denodeify(mkdirp);
 var fswritefile = denodeify(fs.writeFile);
@@ -18,12 +23,9 @@ var fswritefile = denodeify(fs.writeFile);
  * describes an app.component that has been wrapped in the component view,
  * and holds a reference to the Component itself and the compiled output.
  */
-interface IViewComponent {
-  component: Component;
-  compiled?: string;
-}
 
-export class PlainComponentListWriter implements IComponentWriter {
+export class PlainComponentList implements IComponentWriter {
+  compiled: string;
   constructor(private styleguide: Styleguide) {}
 
   /**
@@ -58,7 +60,7 @@ export class PlainComponentListWriter implements IComponentWriter {
 
       /** lookup the styleguide component template */
       // TODO: handle/secure this law of demeter disaster :D
-      var compTemplate = this.styleguide.components.find('sg.plain-list-component').view.template;
+      var compTemplate = this.styleguide.components.find('sg.component').view.template;
 
       /** build the representation of the current component for the styleguide */
       viewComponent.compiled = compTemplate(context);
@@ -69,33 +71,38 @@ export class PlainComponentListWriter implements IComponentWriter {
     }
   }
 
-  /**
-   * the most basic writer, that handles the resolution of how to
-   * integrated the rendered component views in the target file structure.
-   */
-  public write():Promise<IComponentWriter> {
+  private intersect<T>(array1:T[], array2:T[]):T[] {
+    if (!array1 || !array2) {
+      return [];
+    }
+    return array1.filter((a:T) => array2.indexOf(a) != -1);
+  }
+
+  public build(tags?: string[]):Promise<IComponentWriter> {
     return new Promise((resolve, reject) => {
-      var context:{} = {};
 
-      try { context.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
-
-      try { context.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+      var context:IComponentLayoutContext = {};
 
       try {
         /** get all all components, registered in the styleguide */
-        var components:IViewComponent[] = this.styleguide.components.all()
+        var components:Component[] = this.styleguide.components.all();
+        if (!!tags) {
+          components = components.filter((c:Component) => this.intersect(c.tags, tags).length > 0);
+        }
+
+        var componentViews:IViewComponent[] = components
 
         /** remove components not element of this styleguide configuration */
-        .filter(c => c.config.namespace === this.styleguide.config.namespace)
+        .filter((c:Component) => c.config.namespace === this.styleguide.config.namespace)
 
         /** build the collected IViewComponents */
-        .map(component => this.buildViewComponent(component))
+        .map((c:Component) => this.buildViewComponent(c))
 
         /** remove components that had no view */
-        .filter(c => c !== null);
+        .filter((c:IViewComponent) => c !== null);
 
         /** set context for rendering the component list */
-        context.components = components;
+        context.components = componentViews;
 
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
@@ -106,6 +113,17 @@ export class PlainComponentListWriter implements IComponentWriter {
       var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
 
       /** shorthand to the styleguide config */
+      this.compiled = compListTemplate(context);
+      resolve(this);
+    });
+  }
+
+  /**
+   * the most basic writer, that handles the resolution of how to
+   * integrated the rendered component views in the target file structure.
+   */
+  public write(layoutContext?: IComponentLayoutContext):Promise<IComponentWriter> {
+    return new Promise((resolve, reject) => {
       var config = this.styleguide.config;
 
       /** creating the target folder path (like mkdir -p), if it doesn't exist */
@@ -115,8 +133,7 @@ export class PlainComponentListWriter implements IComponentWriter {
       .then(() => {
         /** applying here, because of stupid method defintion with multiargs :/ */
         return fswritefile.apply(this, [
-          path.resolve(config.cwd, config.target, "components.html"),
-          compListTemplate(context)]);
+          path.resolve(config.cwd, config.target, "components.html"), this.compiled]);
       })
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));

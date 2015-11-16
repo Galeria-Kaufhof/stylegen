@@ -4,7 +4,14 @@ import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {ComponentRegistry} from './ComponentRegistry';
-import {ComponentWriter} from './ComponentWriter';
+import {PlainComponentList} from './PlainComponentList';
+import {ContentStructureWriter} from './ContentStructureWriter';
+
+/** basic unspecific layout context */
+interface ILayoutContext {
+  cssDeps?: string[];
+  jsDeps?: string[];
+}
 
 
 /**
@@ -36,8 +43,38 @@ export class StructureWriter {
    * Lets write down Components, Pages, etc.
    */
   public write():Promise<StructureWriter> {
-    // TODO: resolve which component-writer from styleguide.config
-    return new ComponentWriter('plain', this.styleguide).write()
-    .then(componentWriter => this);
+    return new Promise<StructureWriter>((resolve, reject) => {
+      var layoutContext:ILayoutContext = {};
+      var type:string = 'plain';
+
+      try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
+
+      try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+
+      if (!!this.styleguide.config.content) {
+        type = "content-config";
+      }
+
+      var result:Promise<any>;
+
+      switch(type) {
+        case "content-config":
+          /** walk config, and build page objects */
+          result = new ContentStructureWriter(this.styleguide)
+          .walk(this.styleguide.config.content)
+
+          /** render page objects to file struture (with layout and context inclusively navigation) */
+          .then(contentStructureWriter => contentStructureWriter.write(layoutContext));
+          break;
+        case "plain":
+        default:
+          result = new PlainComponentList(this.styleguide).build()
+            .then((plainListWriter:PlainComponentList) => plainListWriter.write(layoutContext));
+      }
+
+      result
+      .then(() => resolve(this))
+      .catch((e) => reject(e));
+    });
   }
 }

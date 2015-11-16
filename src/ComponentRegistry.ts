@@ -19,7 +19,7 @@ export class ComponentRegistry {
    * of partials, etc. works as expected.
    */
   private registerComponents(nodes: Node[]) {
-    nodes.forEach((node) => {
+    for (let node of nodes) {
       if (node.isComponent()) {
         /**
          * rendering the views and partials included in the component,
