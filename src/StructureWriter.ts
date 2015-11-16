@@ -54,12 +54,8 @@ export class StructureWriter {
       if (!!this.styleguide.config.content) {
         type = "content-config";
       }
-      var result:Promise<any>;
 
-      /**
-       * https://github.com/TypeStrong/atom-typescript/issues/719
-       */
-      !!ContentStructureWriter;
+      var result:Promise<any>;
 
       switch(type) {
         case "content-config":

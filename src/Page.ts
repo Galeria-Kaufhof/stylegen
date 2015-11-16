@@ -13,8 +13,6 @@ import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
 
-!!PlainComponentList
-
 var fswritefile = denodeify(fs.writeFile);
 var _mkdirp = denodeify(mkdirp);
 
