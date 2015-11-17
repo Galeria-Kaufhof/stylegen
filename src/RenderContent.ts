@@ -5,21 +5,21 @@ import * as denodeify from 'denodeify';
 
 var fsreadfile = denodeify(fs.readFile);
 
-export interface IComponentFile {
+export interface IRenderContent {
   raw: string;
   name: string;
   compiled: string;
 
-  load():Promise<IComponentFile>;
+  load():Promise<IRenderContent>;
 }
 
-export class ComponentFile implements IComponentFile {
+export class RenderContent implements IRenderContent {
   raw: string;
   compiled: string;
 
   constructor(private filePath: string, public name: string) {}
 
-  load():Promise<IComponentFile> {
+  load():Promise<IRenderContent> {
     return fsreadfile(this.filePath.toString())
     .then((buffer) => {
       var content:string = buffer.toString();

@@ -1,9 +1,9 @@
 "use strict";
 
-import {ComponentFile} from './ComponentFile';
+import {RenderContent} from './RenderContent';
 import * as path from 'path';
 
-export class Partial extends ComponentFile {
+export class Partial extends RenderContent {
   public name: string;
 
   constructor(filePath: string) {
@@ -12,7 +12,7 @@ export class Partial extends ComponentFile {
   }
 }
 
-export class View extends ComponentFile {
+export class View extends RenderContent {
   public name: string;
   public template: HandlebarsTemplateDelegate;
 

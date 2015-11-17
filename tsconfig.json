@@ -4,8 +4,7 @@
         "moduleResolution": "node",
         "target": "ES6",
         "removeComments": false,
-        "outDir": "dist",
-        "noImplicitAny": true
+        "outDir": "dist"
     },
     "filesGlob": [
         "**/*.ts",
@@ -16,7 +15,7 @@
     "files": [
         "src/Cli.ts",
         "src/Component.ts",
-        "src/ComponentFile.ts",
+        "src/RenderContent.ts",
         "src/ComponentList.ts",
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
