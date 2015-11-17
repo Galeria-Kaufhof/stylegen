@@ -87,7 +87,7 @@ export class PlainComponentList implements IComponentWriter {
         /** get all all components, registered in the styleguide */
         var components:Component[] = this.styleguide.components.all();
         if (!!tags) {
-          components = components.filter((c:Component) => this.intersect(c.tags, tags).length > 0);
+          components = components.filter((c:Component) => this.intersect(c.tags, tags).length == tags.length);
         }
 
         var componentViews:IViewComponent[] = components
