@@ -1,6 +1,6 @@
 "use strict";
 
-import {RenderContent} from './RenderContent';
+import {CompilableContent} from './CompilableContent';
 import {MarkdownRenderer} from './MarkdownRenderer';
 
-export class Doc extends RenderContent {}
+export class Doc extends CompilableContent {}
