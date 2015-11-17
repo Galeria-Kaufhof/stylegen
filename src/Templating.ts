@@ -1,9 +1,9 @@
 "use strict";
 
-import {RenderContent} from './RenderContent';
+import {CompilableContent} from './CompilableContent';
 import * as path from 'path';
 
-export class Partial extends RenderContent {
+export class Partial extends CompilableContent {
   public name: string;
 
   constructor(filePath: string) {
@@ -12,7 +12,7 @@ export class Partial extends RenderContent {
   }
 }
 
-export class View extends RenderContent {
+export class View extends CompilableContent {
   public name: string;
   public template: HandlebarsTemplateDelegate;
 
