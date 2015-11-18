@@ -7,7 +7,7 @@ import * as denodeify from 'denodeify';
 import {Config} from './Config';
 import {IComponentConfig} from './Component';
 import {Component} from './Component';
-import {Partial} from './Templating';
+import {Partial} from './Partial';
 
 var fsstat = denodeify(fs.stat);
 var fsreaddir = denodeify(fs.readdir);
@@ -125,6 +125,7 @@ export class Node {
     // remove the processed files
     .filter((f) => { return alreadyProcessed.indexOf(f) < 0 })
     // collect the others
+    // TODO: the above seems to be useless now, just take in account folders, not all files
     .map((f) => { return this.nodesForDirectories(f, this); });
 
     return Promise.all(filePromises)
