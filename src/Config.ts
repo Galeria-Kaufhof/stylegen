@@ -5,7 +5,8 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as YAML from 'js-yaml';
 
-import {Partial, View} from './Templating';
+import {Partial} from './Partial';
+import {View} from './View';
 
 var fsreadfile = denodeify(fs.readFile);
 
