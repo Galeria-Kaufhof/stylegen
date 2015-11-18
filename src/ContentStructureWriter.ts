@@ -7,11 +7,9 @@ import {IRenderer} from './Renderer';
 import {MarkdownRenderer} from './MarkdownRenderer';
 
 export class ContentStructureWriter {
-  mdRenderer: IRenderer;
   pages: Page[];
 
   constructor(private styleguide:Styleguide) {
-    this.mdRenderer = new MarkdownRenderer({"htmlEngine": this.styleguide.renderer.engine});
   }
 
   /**
@@ -20,7 +18,6 @@ export class ContentStructureWriter {
   walk(content: IPageConfig[]):Promise<ContentStructureWriter> {
     return Promise.all(content.map((pageConfig:IPageConfig) => {
       pageConfig.styleguide = this.styleguide;
-      pageConfig.mdRenderer = this.mdRenderer;
       pageConfig.target = this.styleguide.config.target;
 
       return new Page(pageConfig).build();
