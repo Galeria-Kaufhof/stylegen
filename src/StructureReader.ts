@@ -36,7 +36,7 @@ export class StructureReader {
       if (!!node.children) {
         this.buildComponentDictionary(node.children, dict);
       }
-    });
+    }
   }
 
   /**
@@ -55,7 +55,7 @@ export class StructureReader {
       if (!!this.styleguide.config.namespace) {
         nodeConfig.namespace = this.styleguide.config.namespace;
       }
-
+      
       return new Node(this.fileInCWD(p), null, nodeConfig).resolve();
     });
 
