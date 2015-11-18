@@ -3,10 +3,7 @@
 import * as Handlebars from 'handlebars';
 
 import {IRenderer, IRendererOptions} from './Renderer';
-import {Partial} from './Partial';
-import {View} from './View';
 import {Component} from './Component';
-import {Doc} from './Doc';
 
 Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));

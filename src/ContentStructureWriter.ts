@@ -3,8 +3,6 @@
 import {Styleguide} from './Styleguide';
 import {Page, IPageConfig} from './Page';
 import {IPageLayoutContext} from './PageLayout';
-import {IRenderer} from './Renderer';
-import {MarkdownRenderer} from './MarkdownRenderer';
 
 export class ContentStructureWriter {
   pages: Page[];

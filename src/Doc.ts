@@ -4,8 +4,6 @@ import * as fs from 'fs';
 import * as denodeify from 'denodeify';
 
 import {CompilableContent, ICompilableContent} from './CompilableContent';
-import {MarkdownRenderer} from './MarkdownRenderer';
-import {IRenderer} from './Renderer';
 
 var fsreadfile = denodeify(fs.readFile);
 
@@ -15,7 +13,7 @@ export class Doc extends CompilableContent {
     .then((buffer) => {
       var content:string = buffer.toString();
       this.raw = content;
-      
+
       this.compiled = this.render();
       return this;
     });

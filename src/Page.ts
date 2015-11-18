@@ -7,7 +7,6 @@ import * as mkdirp from 'mkdirp';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
-import {MarkdownRenderer} from './MarkdownRenderer';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';

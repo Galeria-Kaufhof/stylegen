@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as denodeify from 'denodeify';
 import * as mkdirp from 'mkdirp';
 
-import {Node} from './Node';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';

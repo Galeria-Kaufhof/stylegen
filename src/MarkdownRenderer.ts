@@ -1,11 +1,10 @@
 "use strict";
 
 import {IRenderer, IRendererOptions} from './Renderer';
-import {Doc} from './Doc';
 
 import * as Remarkable from 'remarkable';
 import {RemarkableUpfront} from './lib/RemarkableUpfront';
-var md = new Remarkable({ quotes: ''});
+var md = new Remarkable({ quotes: '' });
 
 
 /**

@@ -7,10 +7,8 @@ import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
 import {Node} from './Node';
-import {Component} from './Component';
 import {ComponentList} from './ComponentList';
 import {IRenderer, IRendererOptions} from './Renderer';
-import {ComponentRegistry} from './ComponentRegistry';
 import {IPageConfig} from './Page';
 
 import {Doc} from './Doc';
