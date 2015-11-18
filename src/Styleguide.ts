@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as Handlebars from 'handlebars';
+
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
@@ -10,14 +10,15 @@ import {Node} from './Node';
 import {Component} from './Component';
 import {ComponentList} from './ComponentList';
 import {IRenderer, IRendererOptions} from './Renderer';
-import {HandlebarsRenderer} from './HandlebarsRenderer';
 import {ComponentRegistry} from './ComponentRegistry';
 import {IPageConfig} from './Page';
-import {Doc} from './Doc';
 
-Handlebars.registerHelper("pp", function(object:{}){
-  return new Handlebars.SafeString(JSON.stringify(object));
-});
+import {Doc} from './Doc';
+import {Partial} from './Partial';
+import {View} from './View';
+
+import {MarkdownRenderer} from './MarkdownRenderer';
+import {HandlebarsRenderer} from './HandlebarsRenderer';
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
@@ -36,10 +37,14 @@ export interface IStyleguideConfig {
 }
 
 export class Styleguide {
+  public htmlRenderer: IRenderer;
+  private docRenderer: IRenderer;
+
   public config: IStyleguideConfig;
   public renderer: IRenderer;
   public nodes: Node[];
   public components: ComponentList;
+  // public docFactory: DocFactory;
 
   constructor(options?: IStyleguideOptions) {
     // nodes build the structure of our styleguide
@@ -76,16 +81,16 @@ export class Styleguide {
             this.config.name = path.basename(this.config.cwd);
           }
 
-          // TODO: think about configurability of the renderer, and how to apply constructor options
-          /** if a renderer is configured in the initialize options, lets take it. */
-          // if (!!options && !!options.renderer) {
-          //   this.renderer = options.renderer;
-          // } else {
-            /** otherwise take the build in handlebars engine */
           var rendererConfig:IRendererOptions = {};
           rendererConfig.namespace = this.config.namespace;
-          this.renderer = new HandlebarsRenderer(rendererConfig).setEngine(Handlebars);
-          // }
+
+          // TODO: hand in options for renderers
+          this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
+          this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
+
+          Doc.setRenderer(this.docRenderer);
+          Partial.setRenderer(this.htmlRenderer);
+          View.setRenderer(this.htmlRenderer);
 
           resolve(this);
         })

@@ -4,6 +4,7 @@
  * As an example implementation look for the HandlebarsRenderer.
  */
 export interface IRenderer {
+  engine: any;
   render<T>(object: T): T;
 }
 

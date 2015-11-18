@@ -14,12 +14,16 @@ export class View extends CompilableContent {
 
   // changing return type, because View has additional properties
   load():Promise<View> {
-    return super.load();
+    return super.load()
+    .then(view => {
+      this.template = this.renderer.engine.compile(this.raw);
+      return this;
+    });
   }
 
-  static create(filePath: string): ICompilableContent {
+  static create(filePath: string): View {
     var view:View = new View(filePath);
-    view.engine = this.engine;
+    view.renderer = this.renderer;
     return view;
   }
 }

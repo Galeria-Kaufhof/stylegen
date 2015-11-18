@@ -11,23 +11,22 @@ export interface ICompilableContent {
   raw: string;
   name: string;
   compiled: string;
-  engine: IRenderer;
+  renderer: IRenderer;
 
   load():Promise<ICompilableContent>;
 }
 
 export class CompilableContent implements ICompilableContent {
-  public static engine: IRenderer;
+  public static renderer: IRenderer;
 
-  public engine: IRenderer;
+  public renderer: IRenderer;
   public raw: string;
   public compiled: string;
 
-  static setEngine(engine: IRenderer) {
-    this.engine = engine;
+  static setRenderer(renderer: IRenderer) {
+    this.renderer = renderer;
   }
-
-  constructor(private filePath: string, public name: string) {}
+  constructor(public filePath: string, public name: string) {}
 
   load():Promise<ICompilableContent> {
     return fsreadfile(this.filePath.toString())
@@ -39,6 +38,6 @@ export class CompilableContent implements ICompilableContent {
   }
 
   render():string {
-    return this.engine.render(this.raw);
+    return this.renderer.render(this.raw);
   }
 }

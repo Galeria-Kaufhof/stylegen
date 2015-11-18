@@ -16,7 +16,7 @@ export class MarkdownRenderer implements IRenderer {
 
   constructor(private options?: IRendererOptions) {
     if (!!options && !!options.htmlEngine) {
-      md.use(RemarkableUpfront(options.htmlEngine));
+      md.use(RemarkableUpfront(options.htmlEngine.engine));
     }
   }
 

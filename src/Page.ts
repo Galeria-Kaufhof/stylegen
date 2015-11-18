@@ -74,11 +74,7 @@ export class Page {
       // var docFactory = this.config.styleguide.docFactory;
       switch(this.config.type) {
         case "md":
-          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load()
-          .then((doc: Doc) => {
-            doc.compiled = doc.render();
-            return doc;
-          });
+          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load();
           break;
         case "tags":
           contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);

@@ -60,7 +60,7 @@ export class Component {
       var partialPromises:Promise<Partial>[] = this.config.partials.map((partialName:Partial) => {
         var p = path.resolve(this.config.path, partialName);
         /** add partial loading promise to promise collection */
-        return new Partial(p).load();
+        return Partial.create(p, this.config.namespace).load();
       });
 
       return Promise.all(partialPromises)
@@ -94,7 +94,7 @@ export class Component {
     if(!!this.config.view) {
       var p = path.resolve(this.config.path, this.config.view);
 
-      return new View(p).load()
+      return View.create(p).load()
       .then((view) => {
         this.view = view;
         return this;
@@ -155,7 +155,15 @@ export class Component {
   }
 
 
+  /**
+   * compile the inherent files
+   */
   public compile():void {
-
+    // for (let doc of docs) {
+    //   doc.compiled = doc.render();
+    // }
+    // for (let doc of docs) {
+    //   doc.compiled = doc.render();
+    // }
   }
 }
