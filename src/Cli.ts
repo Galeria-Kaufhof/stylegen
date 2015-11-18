@@ -31,6 +31,7 @@ export function build() {
     console.log('Styleguide.write:' ,'finished writing'.green());
   })
   .catch(function(e) {
+    console.error(e.red());
     console.error(e.stack);
     throw(e);
   });
