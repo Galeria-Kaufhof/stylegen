@@ -17,9 +17,15 @@ export interface ICompilableContent {
 }
 
 export class CompilableContent implements ICompilableContent {
-  raw: string;
-  compiled: string;
-  engine: IRenderer;
+  public static engine: IRenderer;
+
+  public engine: IRenderer;
+  public raw: string;
+  public compiled: string;
+
+  static setEngine(engine: IRenderer) {
+    this.engine = engine;
+  }
 
   constructor(private filePath: string, public name: string) {}
 
@@ -30,5 +36,9 @@ export class CompilableContent implements ICompilableContent {
       this.raw = content;
       return this;
     });
+  }
+
+  render():string {
+    return this.engine.render(this.raw);
   }
 }
