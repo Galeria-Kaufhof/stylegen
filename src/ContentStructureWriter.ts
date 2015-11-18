@@ -29,7 +29,7 @@ export class ContentStructureWriter {
   write(context: IPageLayoutContext):Promise<ContentStructureWriter> {
     context.pages = this.pages;
 
-    var pageLayout = this.styleguide.components.find('sg.page-layout').view.template
+    var pageLayout = this.styleguide.components.find('sg.layout').view.template
 
     return Promise.all(this.pages.map(page => page.write(pageLayout, context)))
     .then(pages => this);
