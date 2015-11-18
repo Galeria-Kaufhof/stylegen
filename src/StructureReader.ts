@@ -1,9 +1,8 @@
 "use strict";
 
 import * as path from 'path';
-import {Styleguide, IStyleguideConfig} from './Styleguide';
+import {Styleguide} from './Styleguide';
 import {Node, INodeOptions} from './Node';
-import {Component} from './Component';
 import {ComponentList} from './ComponentList';
 
 /**
@@ -36,7 +35,7 @@ export class StructureReader {
       if (!!node.children) {
         this.buildComponentDictionary(node.children, dict);
       }
-    });
+    }
   }
 
   /**

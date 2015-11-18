@@ -2,7 +2,9 @@
 
 import * as path from 'path';
 
-import {Partial, View} from './Templating';
+import {IRenderer} from './Renderer';
+import {Partial} from './Partial';
+import {View} from './View';
 import {Doc} from './Doc';
 
 /** configuration structure for the component settings, aka. component.json */
@@ -30,6 +32,7 @@ export class Component {
   docs: Doc[];
   slug: string;
   tags: string[];
+  htmlRenderer: IRenderer;
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
@@ -57,7 +60,7 @@ export class Component {
       var partialPromises:Promise<Partial>[] = this.config.partials.map((partialName:Partial) => {
         var p = path.resolve(this.config.path, partialName);
         /** add partial loading promise to promise collection */
-        return new Partial(p).load();
+        return Partial.create(p, this.config.namespace).load();
       });
 
       return Promise.all(partialPromises)
@@ -91,7 +94,7 @@ export class Component {
     if(!!this.config.view) {
       var p = path.resolve(this.config.path, this.config.view);
 
-      return new View(p).load()
+      return View.create(p).load()
       .then((view) => {
         this.view = view;
         return this;
@@ -120,7 +123,7 @@ export class Component {
       var docPromises:Promise<Doc>[] = Object.keys(docs).map((doc:string) => {
         var p = path.resolve(this.config.path, docs[doc]);
         /** add partial loading promise to promise collection */
-        return new Doc(p, doc).load();
+        return Doc.create(p, doc).load();
       });
 
       return Promise.all(docPromises)
@@ -149,5 +152,18 @@ export class Component {
     /** after that lets read and build its view */
     .then(() => this.buildView())
     .then(() => this.buildDocs());
+  }
+
+
+  /**
+   * compile the inherent files
+   */
+  public compile():void {
+    // for (let doc of docs) {
+    //   doc.compiled = doc.render();
+    // }
+    // for (let doc of docs) {
+    //   doc.compiled = doc.render();
+    // }
   }
 }

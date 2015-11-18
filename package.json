@@ -9,7 +9,8 @@
     "js-yaml": "^3.4.3",
     "mkdirp": "^0.5.1",
     "remarkable": "^1.6.0",
-    "slug": "^0.9.1"
+    "slug": "^0.9.1",
+    "unicorn": "0.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,11 +1,10 @@
 "use strict";
 
 import {IRenderer, IRendererOptions} from './Renderer';
-import {Doc} from './Doc';
 
 import * as Remarkable from 'remarkable';
 import {RemarkableUpfront} from './lib/RemarkableUpfront';
-var md = new Remarkable({ quotes: ''});
+var md = new Remarkable({ quotes: '' });
 
 
 /**
@@ -13,23 +12,14 @@ var md = new Remarkable({ quotes: ''});
  */
 export class MarkdownRenderer implements IRenderer {
   public engine: any;
-  private htmlEngine: IRenderer;
 
   constructor(private options?: IRendererOptions) {
     if (!!options && !!options.htmlEngine) {
-      this.htmlEngine = options.htmlEngine;
-
-      md.use(RemarkableUpfront(this.htmlEngine));
+      md.use(RemarkableUpfront(options.htmlEngine.engine));
     }
   }
 
-  public setEngine<Object>(engine: Object) {
-    this.engine = engine;
-    return this;
-  }
-
-  public render(doc: Doc):Doc {
-    doc.compiled = md.render(doc.raw);
-    return doc;
+  public render(raw: string):string {
+    return md.render(raw);
   }
 }

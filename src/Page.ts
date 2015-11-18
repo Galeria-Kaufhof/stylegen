@@ -7,7 +7,6 @@ import * as mkdirp from 'mkdirp';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
-import {MarkdownRenderer} from './MarkdownRenderer';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
@@ -19,7 +18,7 @@ var _mkdirp = denodeify(mkdirp);
 export interface IPageConfig {
   label?: string;
   type?: string;
-  content?: string;
+  content?: any;
   children?: Page[];
   styleguide?: Styleguide;
   mdRenderer?: IRenderer;
@@ -32,7 +31,7 @@ export class Page {
   link: string;
   label: string;
   slug: string;
-  content: string;
+  content: any;
   children: Page[];
   mdRenderer: IRenderer;
 
@@ -71,13 +70,10 @@ export class Page {
 
   buildContent():Promise<Page> {
       var contentPromise:Promise<any>;
-
+      // var docFactory = this.config.styleguide.docFactory;
       switch(this.config.type) {
         case "md":
-          contentPromise = new Doc(path.resolve(this.config.content), this.config.label).load()
-          .then((doc: Doc) => {
-            return this.mdRenderer.render(doc);
-          });
+          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load();
           break;
         case "tags":
           contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);

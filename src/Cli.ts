@@ -2,6 +2,7 @@
 
 import * as path from 'path';
 import {Styleguide} from './Styleguide';
+require('unicorn').install();
 
 /**
  * create the static styleguide
@@ -17,19 +18,20 @@ export function build() {
   .initialize(process.cwd(), path.resolve(__dirname, '..'))
   /** resolve styleguide structure */
   .then(function(styleguide) {
-    console.log('Styleguide.read:' ,'start reading ...');
+    console.log('Styleguide.read:' ,'start reading ...'.green());
     return styleguide.read();
   })
   /** create static styleguide structure */
   .then(function(styleguide) {
-    console.log('Styleguide.read:' ,'finished reading');
-    console.log('Styleguide.write:' ,'start writing ...');
+    console.log('Styleguide.read:' ,'finished reading'.green());
+    console.log('Styleguide.write:' ,'start writing ...'.green());
     return styleguide.write();
   })
   .then(function(styleguide) {
-    console.log('Styleguide.write:' ,'finished writing');
+    console.log('Styleguide.write:' ,'finished writing'.green());
   })
   .catch(function(e) {
+    console.error(e.red());
     console.error(e.stack);
     throw(e);
   });

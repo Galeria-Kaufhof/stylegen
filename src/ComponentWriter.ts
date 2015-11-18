@@ -1,7 +1,6 @@
 "use strict";
 
 import {Component} from './Component';
-import {PlainComponentList} from './PlainComponentList';
 
 /**
  * The ComponentWriter is dedicated on how to write components

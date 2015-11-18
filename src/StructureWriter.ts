@@ -8,9 +8,10 @@ import {PlainComponentList} from './PlainComponentList';
 import {ContentStructureWriter} from './ContentStructureWriter';
 
 /** basic unspecific layout context */
-interface ILayoutContext {
+export interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
+  components?: any;
 }
 
 

@@ -5,8 +5,6 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as YAML from 'js-yaml';
 
-import {Partial, View} from './Templating';
-
 var fsreadfile = denodeify(fs.readFile);
 
 /** general setup for configuration file loaders  */

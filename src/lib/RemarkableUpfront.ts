@@ -77,6 +77,7 @@ function upfrontBlock(engine) {
     len = state.tShift[startLine];
 
     state.line = nextLine + (haveEndMarker ? 1 : 0);
+
     state.tokens.push({
       type: 'htmlblock',
       params: params,
@@ -142,9 +143,11 @@ function upfrontInline(engine) {
 
 export function RemarkableUpfront(engine) {
   return function(md) {
-    md.meta = md.meta || {};
+    if (!!engine) {
+      md.meta = md.meta || {};
 
-    md.block.ruler.before('code', 'upfront', upfrontBlock(engine), { alt: [] });
-    md.inline.ruler.before('text', 'upfront', upfrontInline(engine), { alt: [] });
+      md.block.ruler.before('code', 'upfront', upfrontBlock(engine), { alt: [] });
+      md.inline.ruler.before('text', 'upfront', upfrontInline(engine), { alt: [] });
+    }
   }
 };
