@@ -3,15 +3,6 @@
 import {CompilableContent} from './CompilableContent';
 import * as path from 'path';
 
-export class Partial extends CompilableContent {
-  public name: string;
-
-  constructor(filePath: string) {
-    // TODO: make template extension configurable
-    super(filePath, path.basename(filePath, '_partial.hbs'));
-  }
-}
-
 export class View extends CompilableContent {
   public name: string;
   public template: HandlebarsTemplateDelegate;
@@ -21,5 +12,11 @@ export class View extends CompilableContent {
   }
 
   // changing return type, because View has additional properties
-  load():Promise<View> { return super.load(); }
+  load():Promise<View> {
+    return super.load();
+  }
+
+  // render():string {
+  //   return this.engine.render(this.raw);
+  // }
 }
