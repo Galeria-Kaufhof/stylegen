@@ -153,17 +153,4 @@ export class Component {
     .then(() => this.buildView())
     .then(() => this.buildDocs());
   }
-
-
-  /**
-   * compile the inherent files
-   */
-  public compile():void {
-    // for (let doc of docs) {
-    //   doc.compiled = doc.render();
-    // }
-    // for (let doc of docs) {
-    //   doc.compiled = doc.render();
-    // }
-  }
 }
