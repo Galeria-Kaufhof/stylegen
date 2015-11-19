@@ -8,16 +8,10 @@
     "denodeify/denodeify.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
     },
-    "es6-promise/es6-promise.d.ts": {
-      "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
-    },
     "mkdirp/mkdirp.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
     },
     "handlebars/handlebars.d.ts": {
-      "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
-    },
-    "node/node.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
     },
     "marked/marked.d.ts": {
@@ -25,6 +19,12 @@
     },
     "js-yaml/js-yaml.d.ts": {
       "commit": "8c4ec896ab619e7cb6572f82423e6e1eece70f5a"
+    },
+    "node/node.d.ts": {
+      "commit": "fc341765ebbb04b7109981a25dced01f488f4d94"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "commit": "fc341765ebbb04b7109981a25dced01f488f4d94"
     }
   }
 }
