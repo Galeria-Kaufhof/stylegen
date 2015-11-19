@@ -18,6 +18,14 @@ install the tool, with `npm install -g upfront`
 
 To get **Upfront** up and running for your development, just create your fork and run `npm install` in it.
 
+For TypeScript compilation, please install the TypeScript npm package:
+
+(Because we rely on es6 but want to have the commonjs import syntax to have it running on node, please install the latest typescript package with `@next`)
+
+```
+npm install -g typescript@next
+```
+
 Install also the Typedefinitions with tsd:
 
 ```

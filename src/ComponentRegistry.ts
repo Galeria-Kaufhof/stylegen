@@ -25,7 +25,6 @@ export class ComponentRegistry {
          * rendering the views and partials included in the component,
          * and apply those changes to given View and Partial Objects.
          */
-        node.component.compile();
       }
 
       /** run through the node tree and register childrens, and childrens childrent, and ... */

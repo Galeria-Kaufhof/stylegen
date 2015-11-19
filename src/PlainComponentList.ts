@@ -3,7 +3,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as denodeify from 'denodeify';
-import * as mkdirp from 'mkdirp';
+import * as fsExtra from 'fs-extra';
 
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
@@ -15,7 +15,7 @@ interface IComponentLayoutContext {
   jsDeps?: string[];
 }
 
-var _mkdirp = denodeify(mkdirp);
+var mkdirs = denodeify(fsExtra.mkdirs);
 var fswritefile = denodeify(fs.writeFile);
 
 /**
@@ -126,7 +126,7 @@ export class PlainComponentList implements IComponentWriter {
       var config = this.styleguide.config;
 
       /** creating the target folder path (like mkdir -p), if it doesn't exist */
-      _mkdirp(config.target.toString())
+      mkdirs(config.target.toString())
 
       /** create the plain component list */
       .then(() => {

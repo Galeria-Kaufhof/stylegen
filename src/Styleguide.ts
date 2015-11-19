@@ -2,6 +2,9 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
+import * as denodeify from 'denodeify';
+import * as fsExtra from 'fs-extra';
+
 
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
@@ -17,6 +20,9 @@ import {View} from './View';
 
 import {MarkdownRenderer} from './MarkdownRenderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
+
+var mkdirs = denodeify(fsExtra.mkdirs);
+var copy = denodeify(fsExtra.copy);
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
@@ -130,5 +136,21 @@ export class Styleguide {
       return structureWriter.write();
     })
     .then((result) => this);
+  }
+
+  /*
+   * write down, what was read, so make sure you read before :)
+   */
+  public prepare():Promise<Styleguide> {
+    return mkdirs(path.resolve(this.config.cwd, this.config.target, 'assets'))
+    .then(() => {
+      return copy(
+        path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
+        path.resolve(this.config.cwd, this.config.target, 'assets'));
+    })
+    .then(() => {
+      console.log("prepared".red());
+      return this
+    });
   }
 }

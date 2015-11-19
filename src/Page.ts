@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as slug from 'slug';
-import * as mkdirp from 'mkdirp';
+import * as fsExtra from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
@@ -14,7 +14,7 @@ import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
 
 var fswritefile = denodeify(fs.writeFile);
-var _mkdirp = denodeify(mkdirp);
+var mkdirs = denodeify(fsExtra.mkdirs);
 
 export interface IPageConfig {
   label?: string;
@@ -115,7 +115,7 @@ export class Page {
     pageContext.content = pageLayout(pageContext);
 
     /** applying here, because of stupid method defintion with multiargs :/ */
-    return _mkdirp(path.dirname(this.target))
+    return mkdirs(path.dirname(this.target))
     .then(page => fswritefile.apply(this, [this.target, layout(pageContext)]))
     .then(page => this.writeChildren(layout, context))
     .then((file:any) => this);
