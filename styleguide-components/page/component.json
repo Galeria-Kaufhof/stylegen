@@ -1,0 +1,5 @@
+{
+  "id": "page"
+  , "view": "page_view.hbs"
+  , "namespace": "sg"
+}
