@@ -7,6 +7,7 @@ import * as mkdirp from 'mkdirp';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
+import {View} from './View';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
@@ -108,7 +109,10 @@ export class Page {
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
     var pageContext:IPageLayoutContext = Object.assign({}, context);
-    pageContext.content = this.content
+    pageContext.content = this.content;
+
+    var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
+    pageContext.content = pageLayout(pageContext);
 
     /** applying here, because of stupid method defintion with multiargs :/ */
     return _mkdirp(path.dirname(this.target))

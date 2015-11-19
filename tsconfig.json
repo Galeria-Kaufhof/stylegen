@@ -14,8 +14,8 @@
     ],
     "files": [
         "src/Cli.ts",
-        "src/Component.ts",
         "src/CompilableContent.ts",
+        "src/Component.ts",
         "src/ComponentList.ts",
         "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
@@ -28,13 +28,14 @@
         "src/Node.ts",
         "src/Page.ts",
         "src/PageLayout.ts",
+        "src/Partial.ts",
         "src/PlainComponentList.ts",
         "src/Renderer.ts",
         "src/StructureReader.ts",
         "src/StructureWriter.ts",
         "src/Styleguide.ts",
         "src/TagListWriter.ts",
-        "src/Templating.ts",
+        "src/View.ts",
         "typings/denodeify/denodeify.d.ts",
         "typings/es6-promise/es6-promise.d.ts",
         "typings/handlebars/handlebars.d.ts",
@@ -46,5 +47,8 @@
     ],
     "exclude": [
         "node_modules"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
