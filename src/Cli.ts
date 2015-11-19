@@ -18,6 +18,10 @@ export function build() {
   .initialize(process.cwd(), path.resolve(__dirname, '..'))
   /** resolve styleguide structure */
   .then(function(styleguide) {
+    console.log('Styleguide.prepare:' ,'preparing the styleguide target ...'.green());
+    return styleguide.prepare();
+  })
+  .then(function(styleguide) {
     console.log('Styleguide.read:' ,'start reading ...'.green());
     return styleguide.read();
   })

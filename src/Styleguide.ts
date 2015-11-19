@@ -22,6 +22,7 @@ import {MarkdownRenderer} from './MarkdownRenderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
 
 var mkdirs = denodeify(fsExtra.mkdirs);
+var copy = denodeify(fsExtra.copy);
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
@@ -142,11 +143,11 @@ export class Styleguide {
    */
   public prepare():Promise<Styleguide> {
     return mkdirs(path.resolve(this.config.cwd, this.config.target, 'assets'))
-    // .then(() => {
-    //   return (
-    //     path.resolve(this.config.upfrontRoot, 'styleguide-assets/**/*'),
-    //     path.resolve(this.config.upfrontRoot, this.config.target, 'assets'));
-    // })
+    .then(() => {
+      return copy(
+        path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
+        path.resolve(this.config.cwd, this.config.target, 'assets'));
+    })
     .then(() => {
       console.log("prepared".red());
       return this
