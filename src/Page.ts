@@ -12,6 +12,7 @@ import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
+import {ICompilableContent} from './CompilableContent';
 
 var fswritefile = denodeify(fs.writeFile);
 var mkdirs = denodeify(fsExtra.mkdirs);
@@ -74,7 +75,14 @@ export class Page {
       // var docFactory = this.config.styleguide.docFactory;
       switch(this.config.type) {
         case "md":
-          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load();
+          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load()
+          .then((doc) => {
+
+            var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
+            doc.compiled = pageLayout({content: doc.compiled});
+            
+            return doc;
+          });
           break;
         case "tags":
           contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);
@@ -86,7 +94,7 @@ export class Page {
 
       }
 
-      return contentPromise.then((content: Doc) => {
+      return contentPromise.then((content: ICompilableContent) => {
         this.content = content.compiled;
         return this;
       });
@@ -110,9 +118,6 @@ export class Page {
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
     var pageContext:IPageLayoutContext = Object.assign({}, context);
     pageContext.content = this.content;
-
-    var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
-    pageContext.content = pageLayout(pageContext);
 
     /** applying here, because of stupid method defintion with multiargs :/ */
     return mkdirs(path.dirname(this.target))
