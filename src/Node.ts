@@ -62,6 +62,10 @@ export class Node {
   private resolveComponent():Promise<Node> {
     var componentConfigPath:string = this.files.find((x) => x == 'component.json');
 
+    if (!componentConfigPath) {
+      componentConfigPath = this.files.find((x) => x == 'component.yaml');
+    }
+    
     if (!!componentConfigPath) {
       // TODO: merge in default configuration for components
       return new Config().load(path.resolve(this.path, componentConfigPath))
