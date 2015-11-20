@@ -28,6 +28,11 @@ interface IStyleguideOptions {
   renderer?: IRenderer;
 }
 
+interface IAssetCopyConfig {
+  src?: string;
+  target?: string;
+}
+
 /** configuration structure for the general styleguide settings, aka. styleguide.json */
 export interface IStyleguideConfig {
   cwd?: string;
@@ -38,6 +43,7 @@ export interface IStyleguideConfig {
   target?: string;
   dependencies?: any;
   content?: IPageConfig[];
+  assets?: IAssetCopyConfig[];
 }
 
 export class Styleguide {
@@ -143,13 +149,23 @@ export class Styleguide {
    */
   public prepare():Promise<Styleguide> {
     return mkdirs(path.resolve(this.config.cwd, this.config.target, 'assets'))
+    /** copy the styleguide related assets */
     .then(() => {
       return copy(
         path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
         path.resolve(this.config.cwd, this.config.target, 'assets'));
     })
+    /** copy the app specific assets, configured in styleguide config */
     .then(() => {
-      console.log("prepared".red());
+      var copyPromises = this.config.assets.map((asset:IAssetCopyConfig) => {
+        return copy(
+          path.resolve(this.config.cwd, asset.src),
+          path.resolve(this.config.cwd, this.config.target, asset.target));
+      })
+
+      return Promise.all(copyPromises);
+    })
+    .then(() => {
       return this
     });
   }

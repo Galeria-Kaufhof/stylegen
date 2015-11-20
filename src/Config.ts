@@ -53,11 +53,13 @@ export class Config implements IAbstractConfig {
 
               resolve(result);
             } catch(e) {
+              console.error("Config.resolve:readFile:", "ParseError", path_or_object.red());
+              console.error(e.stack);
               reject(e);
             }
           })
           .catch((e) => {
-            console.error("Config.resolve:readFile:", path_or_object);
+            console.error("Config.resolve:readFile:", path_or_object.red());
             reject(e);
           });
 
