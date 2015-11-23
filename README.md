@@ -14,6 +14,7 @@ install the tool, with `npm install -g upfront`
 - add component.yaml or .json files to your components
 - run `upfront` inside the project
 
+
 ### Styleguide-Config (styleguide.yaml / styleguide.json)
 
 This file must be located in the project root and declares the project settings. It may be either written in yaml format (styleguide.yaml) or as plain json (styleguide.json). We prefer yaml format for configurations, but  you are free to choose json as well.
@@ -53,6 +54,31 @@ This file must be located in the project root and declares the project settings.
 | content                   |                             | in case type is "md", content must be a relative path to that document, otherwise a list of tags is expected
 | children                  |                             | like content itself this is a list of page configurations
 
+
+
+### Component-Config (component.yaml / component.json)
+
+Component configuration files are usually located adjacent to the component content, but it is not mandatory. Likewise to the styleguide configurations,
+you can use component.yaml or component.json files for the configurations.
+As well as for styleguides we recommend the usage of yaml as configuration language.
+
+#### Base Properties
+
+| Property                  | Default                     | Description     
+|---------------------------|-----------------------------|--------------------
+| id                        | directory basename          | namespace unique identifier
+| label                     |                             | label is used for the component headline for example
+| namespace                 | styleguide namespace        | prefix for partials
+| tags                      | []                          | list of tags, that is used for content structure building
+| partials                  | []                          | reusable list of partials for creating entities of this component. Partials are prefixed with the configured namespace.
+| view                      | ""                          | the view is the renderable preview inside of the component
+| docs                      | []                          | list of markdown documents, that describe the component. See "Documentation"
+
+#### Documentation
+
+| Property                  | Default                     | Description     
+|---------------------------|-----------------------------|--------------------
+| key: value                |                             | key determines the label of a document, while the value is a component relative path to the document. (e.g. "business": "component-business.md")
 
 
 
