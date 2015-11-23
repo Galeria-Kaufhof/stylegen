@@ -1,0 +1,45 @@
+project: ExampleApp
+namespace: example
+
+componentPaths:
+  - assets/components
+
+target: styleguide
+
+content:
+  - label: Globals
+    type: md
+    content: assets/globals/index.md
+
+  - label: Atoms
+    type: tags
+    content:
+      - atoms
+
+  - label: Moleculars
+    type: tags
+    content:
+      - moleculars
+
+    childrend:
+      - label: Forms
+        type: tags
+        content:
+          - moleculars
+          - forms
+
+dependencies:
+  styles:
+    - https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css
+    - https://fonts.googleapis.com/icon?family=Material+Icons
+    - https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css
+    - dist/app.css
+
+  js:
+    - https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js
+    - https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.js
+    - dist/app.js
+
+assets:
+  - src: dist
+    target: dist

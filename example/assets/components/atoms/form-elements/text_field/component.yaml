@@ -1,0 +1,9 @@
+label: Simple Text Field
+tags:
+  - atoms
+  - forms
+partials:
+  - text_field_partial.hbs
+view: text_field_view.hbs
+docs:
+  technical: technical.md
