@@ -153,17 +153,24 @@ export class Styleguide {
     .then(() => {
       return copy(
         path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
-        path.resolve(this.config.cwd, this.config.target, 'assets'));
+        path.resolve(this.config.cwd, this.config.target, 'assets')
+      )
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {
-      var copyPromises = this.config.assets.map((asset:IAssetCopyConfig) => {
-        return copy(
-          path.resolve(this.config.cwd, asset.src),
-          path.resolve(this.config.cwd, this.config.target, asset.target));
-      })
+      if (!!this.config.assets) {
 
-      return Promise.all(copyPromises);
+        var copyPromises = this.config.assets.map((asset:IAssetCopyConfig) => {
+          return copy(
+            path.resolve(this.config.cwd, asset.src),
+            path.resolve(this.config.cwd, this.config.target, asset.target));
+        })
+
+        return Promise.all(copyPromises);
+      } else {
+        console.log("Styleguide.prepare", "No additional assets configured".yellow());
+        return new Promise(resolve => resolve(this));
+      }
     })
     .then(() => {
       return this
