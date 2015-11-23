@@ -78,7 +78,8 @@ export class Component {
     /** no partials configured, no problem.  */
     } else {
       this.partials = [];
-      console.warn("Component.buildPartials", "Did not found any partials for Component", this.id);
+
+      console.log("Component.buildPartials", "Did not found any partials for Component".yellow(), this.id);
       return new Promise((resolve) => resolve(this));
     }
   }
@@ -107,7 +108,7 @@ export class Component {
 
     /** no view found, no problem :) */
     } else {
-      console.warn("Component.buildView", "Did not found a view for Component", this.id);
+      console.log("Component.buildView", "Did not found a view for Component".yellow(), this.id);
       return new Promise((resolve) => resolve(this));
     }
   }
@@ -135,7 +136,11 @@ export class Component {
     /** no partials configured, no problem.  */
     } else {
       this.docs = [];
-      console.warn("Component.buildDocs", "Did not found any docs for Component", this.id);
+
+      if (!!this.config.namespace && this.config.namespace != 'sg') {
+        console.log("Component.buildDocs", "Did not found any docs for Component".yellow(), this.id);
+      }
+      
       return new Promise((resolve) => resolve(this));
     }
   }

@@ -153,6 +153,7 @@ export class Styleguide {
     .then(() => {
       return copy(
         path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
+        // TODO: make "assets" path configurable
         path.resolve(this.config.cwd, this.config.target, 'assets')
       )
     })
