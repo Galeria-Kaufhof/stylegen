@@ -65,7 +65,7 @@ export class Node {
     if (!componentConfigPath) {
       componentConfigPath = this.files.find((x) => x == 'component.yaml');
     }
-    
+
     if (!!componentConfigPath) {
       // TODO: merge in default configuration for components
       return new Config().load(path.resolve(this.path, componentConfigPath))
@@ -155,6 +155,7 @@ export class Node {
        * lets resolve the component parts of this node, like component.json
        * and referenced partials, etc.
        */
+
       return this.resolveComponent();
     })
     .then((node) => {
