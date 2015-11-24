@@ -73,13 +73,13 @@ export class Component {
     } else if(!this.config.partials) {
       // TODO: try to find  *_partial files in component path (this.config.path)
       this.partials = [];
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
 
     /** no partials configured, no problem.  */
     } else {
       this.partials = [];
       console.log("Component.buildPartials", "Did not found any partials for Component".yellow(), this.id);
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
     }
   }
 
@@ -103,12 +103,12 @@ export class Component {
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
     } else if(!this.config.view) {
       // TODO: try to find  *_view files in component path (this.config.path)
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
 
     /** no view found, no problem :) */
     } else {
       console.log("Component.buildView", "Did not found a view for Component".yellow(), this.id);
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
     }
   }
 
@@ -140,7 +140,7 @@ export class Component {
         console.log("Component.buildDocs", "Did not found any docs for Component".yellow(), this.id);
       }
 
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
     }
   }
 

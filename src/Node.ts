@@ -51,7 +51,7 @@ export class Node {
         /** so, ok, we have a directory, so lets build the sub tree  */
         return new Node(filePath, parent, this.options).resolve();
       } else {
-        return null;
+        return Promise.resolve(null);
       }
     });
   }
@@ -104,7 +104,7 @@ export class Node {
         });
       });
 
-    } else { return new Promise((resolve) => resolve(this)); };
+    } else { return Promise.resolve(this); };
 
   }
 

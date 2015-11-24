@@ -139,6 +139,7 @@ export class Styleguide {
     return new StructureWriter(this.renderer, this.nodes, this)
     .setup()
     .then((structureWriter) => {
+      console.log("Styleguide.write", "writer setup finished".green());
       return structureWriter.write();
     })
     .then((result) => this);
@@ -170,7 +171,7 @@ export class Styleguide {
         return Promise.all(copyPromises);
       } else {
         console.log("Styleguide.prepare", "No additional assets configured".yellow());
-        return new Promise(resolve => resolve(this));
+        return Promise.resolve(this);
       }
     })
     .then(() => {
