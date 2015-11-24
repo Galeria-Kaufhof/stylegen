@@ -6,7 +6,7 @@ import * as denodeify from 'denodeify';
 import * as fsExtra from 'fs-extra';
 
 
-import {success} from './Logger';
+import {success, warn} from './Logger';
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
