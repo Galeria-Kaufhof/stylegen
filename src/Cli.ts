@@ -2,8 +2,8 @@
 
 import * as path from 'path';
 import {Styleguide} from './Styleguide';
-require('unicorn').install();
 
+import {success, error} from './Logger';
 /**
  * create the static styleguide
  *
@@ -18,25 +18,25 @@ export function build() {
   .initialize(process.cwd(), path.resolve(__dirname, '..'))
   /** resolve styleguide structure */
   .then(function(styleguide) {
-    console.log('Styleguide.prepare:' ,'preparing the styleguide target ...'.green());
+    success('Styleguide.prepare:' ,'preparing the styleguide target ...');
     return styleguide.prepare();
   })
   .then(function(styleguide) {
-    console.log('Styleguide.read:' ,'start reading ...'.green());
+    success('Styleguide.read:' ,'start reading ...');
     return styleguide.read();
   })
   /** create static styleguide structure */
   .then(function(styleguide) {
-    console.log('Styleguide.read:' ,'finished reading'.green());
-    console.log('Styleguide.write:' ,'start writing ...'.green());
+    success('Styleguide.read:' ,'finished reading');
+    success('Styleguide.write:' ,'start writing ...');
     return styleguide.write();
   })
   .then(function(styleguide) {
-    console.log('Styleguide.write:' ,'finished writing'.green());
+    success('Styleguide.write:' ,'finished writing');
   })
   .catch(function(e) {
-    console.error(e.red());
-    console.error(e.stack);
+    error("Cli.build", "failed to build Styleguide", e);
+    error(e.stack);
     throw(e);
   });
 };

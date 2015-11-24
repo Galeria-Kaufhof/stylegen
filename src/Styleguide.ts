@@ -6,6 +6,7 @@ import * as denodeify from 'denodeify';
 import * as fsExtra from 'fs-extra';
 
 
+import {success} from './Logger';
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
@@ -139,7 +140,7 @@ export class Styleguide {
     return new StructureWriter(this.renderer, this.nodes, this)
     .setup()
     .then((structureWriter) => {
-      console.log("Styleguide.write", "writer setup finished".green());
+      success("Styleguide.write", "writer setup finished");
       return structureWriter.write();
     })
     .then((result) => this);

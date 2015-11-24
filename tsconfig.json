@@ -25,6 +25,7 @@
         "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
         "src/lib/RemarkableUpfront.ts",
+        "src/Logger.ts",
         "src/MarkdownRenderer.ts",
         "src/Node.ts",
         "src/Page.ts",
