@@ -1,7 +1,5 @@
 # stylegen
 
-(**NOTE**: stylegen itself is only a code name for now, we should search for something, that is available as npm project too.)
-
 **stylegen** should be an easy to use styleguide generator for arbitrary projects. There is no assumption about programming languages and only a few ones about your projects code structure.
 
 What **stylegen** ships is an executable that parses your project for **stylegen** specific configuration files, and builds a ready to deploy static styleguide.
