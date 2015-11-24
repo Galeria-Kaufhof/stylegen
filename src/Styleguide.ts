@@ -6,6 +6,7 @@ import * as denodeify from 'denodeify';
 import * as fsExtra from 'fs-extra';
 
 
+import {success} from './Logger';
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
@@ -139,7 +140,7 @@ export class Styleguide {
     return new StructureWriter(this.renderer, this.nodes, this)
     .setup()
     .then((structureWriter) => {
-      console.log("Styleguide.write", "writer setup finished".green());
+      success("Styleguide.write", "writer setup finished");
       return structureWriter.write();
     })
     .then((result) => this);
@@ -156,7 +157,7 @@ export class Styleguide {
         path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
         // TODO: make "assets" path configurable
         path.resolve(this.config.cwd, this.config.target, 'assets')
-      )
+      );
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {
@@ -171,7 +172,7 @@ export class Styleguide {
         return Promise.all(copyPromises);
       } else {
         console.log("Styleguide.prepare", "No additional assets configured".yellow());
-        return Promise.resolve(this);
+        return Promise.resolve([]);
       }
     })
     .then(() => {

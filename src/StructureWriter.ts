@@ -73,7 +73,7 @@ export class StructureWriter {
             .then((plainListWriter:PlainComponentList) => plainListWriter.write(layoutContext));
       }
 
-      result
+      return result
       .then(() => resolve(this))
       .catch((e) => reject(e));
     });

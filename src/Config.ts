@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as YAML from 'js-yaml';
 
+import {error} from './Logger';
+
 var fsreadfile = denodeify(fs.readFile);
 
 /** general setup for configuration file loaders  */
@@ -53,13 +55,13 @@ export class Config implements IAbstractConfig {
 
               resolve(result);
             } catch(e) {
-              console.error("Config.resolve:readFile:", "ParseError", path_or_object.red());
-              console.error(e.stack);
+              error("Config.resolve:readFile:", "ParseError", path_or_object);
+              error(e.stack);
               reject(e);
             }
           })
           .catch((e) => {
-            console.error("Config.resolve:readFile:", path_or_object.red());
+            error("Config.resolve:readFile:", path_or_object);
             reject(e);
           });
 
