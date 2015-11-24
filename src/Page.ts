@@ -66,7 +66,7 @@ export class Page {
         return this;
       });
     } else {
-      return new Promise((resolve) => resolve(this));
+      return Promise.resolve(this);
     }
   }
 
@@ -80,7 +80,7 @@ export class Page {
 
             var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
             doc.compiled = pageLayout({content: doc.compiled});
-            
+
             return doc;
           });
           break;
@@ -90,7 +90,7 @@ export class Page {
         default:
           /** FOR UNKNOWN TYPES */
           console.error("Page.buildContent - config.type unknown", this.config.type);
-          contentPromise = new Promise((resolve) => resolve(this));
+          contentPromise = Promise.resolve(this);
 
       }
 
@@ -111,7 +111,7 @@ export class Page {
       return Promise.all(this.children.map((child:Page) => child.write(layout, context)))
       .then(children => this);
     } else {
-      return new Promise(resolve => resolve(this));
+      return Promise.resolve(this);
     }
   }
 

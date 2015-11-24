@@ -38,6 +38,12 @@ export class CompilableContent implements ICompilableContent {
   }
 
   render():string {
-    return this.renderer.render(this.raw);
+    try {
+      return this.renderer.render(this.raw);
+    } catch(e) {
+      console.error("CompilableContent.render:".red(), e);
+      console.error(e.stack);
+      throw(e);
+    }
   }
 }

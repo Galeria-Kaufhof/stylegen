@@ -16,6 +16,11 @@ export class Doc extends CompilableContent {
 
       this.compiled = this.render();
       return this;
+    })
+    .catch(e => {
+      console.error("Doc.load".red(), e);
+      console.error(e.stack);
+      throw(e);
     });
   }
 

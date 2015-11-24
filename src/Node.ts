@@ -51,7 +51,7 @@ export class Node {
         /** so, ok, we have a directory, so lets build the sub tree  */
         return new Node(filePath, parent, this.options).resolve();
       } else {
-        return null;
+        return Promise.resolve(null);
       }
     });
   }
@@ -65,7 +65,7 @@ export class Node {
     if (!componentConfigPath) {
       componentConfigPath = this.files.find((x) => x == 'component.yaml');
     }
-    
+
     if (!!componentConfigPath) {
       // TODO: merge in default configuration for components
       return new Config().load(path.resolve(this.path, componentConfigPath))
@@ -104,7 +104,7 @@ export class Node {
         });
       });
 
-    } else { return new Promise((resolve) => resolve(this)); };
+    } else { return Promise.resolve(this); };
 
   }
 
@@ -155,6 +155,7 @@ export class Node {
        * lets resolve the component parts of this node, like component.json
        * and referenced partials, etc.
        */
+
       return this.resolveComponent();
     })
     .then((node) => {
