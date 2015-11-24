@@ -24,7 +24,7 @@
         "src/ContentStructureWriter.ts",
         "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
-        "src/lib/RemarkableUpfront.ts",
+        "src/lib/RemarkableStylegen.ts",
         "src/Logger.ts",
         "src/MarkdownRenderer.ts",
         "src/Node.ts",

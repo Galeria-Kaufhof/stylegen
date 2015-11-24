@@ -3,7 +3,7 @@
 import {IRenderer, IRendererOptions} from './Renderer';
 
 import * as Remarkable from 'remarkable';
-import {RemarkableUpfront} from './lib/RemarkableUpfront';
+import {RemarkableStylegen} from './lib/RemarkableStylegen';
 var md = new Remarkable({ quotes: '' });
 
 
@@ -15,7 +15,7 @@ export class MarkdownRenderer implements IRenderer {
 
   constructor(private options?: IRendererOptions) {
     if (!!options && !!options.htmlEngine) {
-      md.use(RemarkableUpfront(options.htmlEngine.engine));
+      md.use(RemarkableStylegen(options.htmlEngine.engine));
     }
   }
 

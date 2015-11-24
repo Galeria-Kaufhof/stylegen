@@ -13,7 +13,7 @@ export function build() {
   new Styleguide()
   /**
    * initialize the styleguide with the current working
-   * directory of the app and the root of the upfront tool itself.
+   * directory of the app and the root of the stylegen tool itself.
    */
   .initialize(process.cwd(), path.resolve(__dirname, '..'))
   /** resolve styleguide structure */
