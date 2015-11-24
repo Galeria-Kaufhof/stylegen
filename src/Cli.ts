@@ -36,7 +36,7 @@ export function build() {
   })
   .catch(function(e) {
     error("Cli.build", "failed to build Styleguide", e);
-    error(e.stack);
+    console.log(e.callee, e.stack);
     throw(e);
   });
 };
