@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as denodeify from 'denodeify';
 
 import {IRenderer} from './Renderer';
+import {error} from './Logger';
 
 var fsreadfile = denodeify(fs.readFile);
 
@@ -41,8 +42,8 @@ export class CompilableContent implements ICompilableContent {
     try {
       return this.renderer.render(this.raw);
     } catch(e) {
-      console.error("CompilableContent.render:".red(), e);
-      console.error(e.stack);
+      error("CompilableContent.render:", e);
+      console.log(e.stack);
       throw(e);
     }
   }

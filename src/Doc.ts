@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as denodeify from 'denodeify';
 
 import {CompilableContent, ICompilableContent} from './CompilableContent';
+import {error} from './Logger';
 
 var fsreadfile = denodeify(fs.readFile);
 
@@ -18,8 +19,8 @@ export class Doc extends CompilableContent {
       return this;
     })
     .catch(e => {
-      console.error("Doc.load".red(), e);
-      console.error(e.stack);
+      error("Doc.load", e);
+      console.log(e.stack);
       throw(e);
     });
   }
