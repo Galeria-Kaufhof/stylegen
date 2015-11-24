@@ -156,7 +156,7 @@ export class Styleguide {
         path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
         // TODO: make "assets" path configurable
         path.resolve(this.config.cwd, this.config.target, 'assets')
-      )
+      );
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {
@@ -171,7 +171,7 @@ export class Styleguide {
         return Promise.all(copyPromises);
       } else {
         console.log("Styleguide.prepare", "No additional assets configured".yellow());
-        return Promise.resolve(this);
+        return Promise.resolve([]);
       }
     })
     .then(() => {
