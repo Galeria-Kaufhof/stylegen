@@ -171,7 +171,7 @@ export class Styleguide {
 
         return Promise.all(copyPromises);
       } else {
-        console.log("Styleguide.prepare", "No additional assets configured".yellow());
+        warn("Styleguide.prepare", "No additional assets configured");
         return Promise.resolve([]);
       }
     })
