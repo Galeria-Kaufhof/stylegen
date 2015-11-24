@@ -38,7 +38,7 @@ interface IAssetCopyConfig {
 export interface IStyleguideConfig {
   cwd?: string;
   name?: string;
-  upfrontRoot?: string;
+  stylegenRoot?: string;
   namespace?: string;
   componentPaths?: string[];
   target?: string;
@@ -67,7 +67,7 @@ export class Styleguide {
    * Styleguide setup method to collect and merge configurations,
    * to set defaults and allow to overwrite them in the styleguide.json
    */
-  initialize(cwd: string, upfrontRoot: string):Promise<Styleguide> {
+  initialize(cwd: string, stylegenRoot: string):Promise<Styleguide> {
     return new Promise<Styleguide>((resolve, reject) => {
       var jsonConfig = path.resolve(cwd, 'styleguide.json');
       var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
@@ -79,14 +79,14 @@ export class Styleguide {
          * retrieve the config and bootstrap the styleguide object.
          */
         new Config()
-        .load(configPath, path.resolve(upfrontRoot, 'styleguide-defaults.yaml'))
+        .load(configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml'))
         .then((mergedConfig: Config) => {
           this.config = mergedConfig;
           /** lets assure, that we have the current working directory in reach for later access */
           this.config.cwd = cwd;
-          /** we sometimes need the upfront root, e.g. for file resolvement */
-          this.config.upfrontRoot = upfrontRoot;
-          this.config.componentPaths.push(path.resolve(upfrontRoot, "styleguide-components"));
+          /** we sometimes need the stylegen root, e.g. for file resolvement */
+          this.config.stylegenRoot = stylegenRoot;
+          this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
           /** each and every styleguide should have a name ;) */
           if (!this.config.name) {
             this.config.name = path.basename(this.config.cwd);
@@ -154,7 +154,7 @@ export class Styleguide {
     /** copy the styleguide related assets */
     .then(() => {
       return copy(
-        path.resolve(this.config.upfrontRoot, 'styleguide-assets'),
+        path.resolve(this.config.stylegenRoot, 'styleguide-assets'),
         // TODO: make "assets" path configurable
         path.resolve(this.config.cwd, this.config.target, 'assets')
       );

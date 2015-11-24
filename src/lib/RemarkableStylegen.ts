@@ -1,4 +1,4 @@
-function upfrontBlock(engine) {
+function stylegenBlock(engine) {
   return function(state, startLine, endLine, silent) {
     var marker, len, params, nextLine, mem,
         haveEndMarker = false,
@@ -90,7 +90,7 @@ function upfrontBlock(engine) {
   }
 }
 
-function upfrontInline(engine) {
+function stylegenInline(engine) {
   return function (state, silent) {
     var start, max, marker, matchStart, matchEnd,
         pos = state.pos,
@@ -115,13 +115,13 @@ function upfrontInline(engine) {
     // closed brackets found, lets look for the prefix
     if (!!closed) {
       marker = state.src.slice(start+1, pos);
-      var upfrontTag = marker.trim().match(/^upl\ (.+)/);
-      if (upfrontTag) {
+      var stylegenTag = marker.trim().match(/^upl\ (.+)/);
+      if (stylegenTag) {
 
         if (!silent) {
           state.push({
             type: 'htmlblock',
-            content: engine.compile(upfrontTag[1])({}),
+            content: engine.compile(stylegenTag[1])({}),
             block: false,
             level: --state.level
           });
@@ -141,13 +141,13 @@ function upfrontInline(engine) {
   };
 }
 
-export function RemarkableUpfront(engine) {
+export function RemarkableStylegen(engine) {
   return function(md) {
     if (!!engine) {
       md.meta = md.meta || {};
 
-      md.block.ruler.before('code', 'upfront', upfrontBlock(engine), { alt: [] });
-      md.inline.ruler.before('text', 'upfront', upfrontInline(engine), { alt: [] });
+      md.block.ruler.before('code', 'stylegen', stylegenBlock(engine), { alt: [] });
+      md.inline.ruler.before('text', 'stylegen', stylegenInline(engine), { alt: [] });
     }
   }
 };
