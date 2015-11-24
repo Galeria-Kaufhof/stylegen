@@ -1,8 +1,10 @@
 {
   "name": "stylegen",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.3",
+  "description": "flexible styleguide generator",
+
   "main": "index.js",
+
   "dependencies": {
     "denodeify": "^1.2.1",
     "fs-extra": "^0.26.2",
@@ -12,9 +14,21 @@
     "slug": "^0.9.1",
     "unicorn": "0.0.1"
   },
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
-  "license": "MIT"
+
+  "contributors": [
+    {
+      "name": "Rico Pfaus",
+      "email": "ricopfaus@gmail.com"
+    },
+    {
+      "name": "Falk Hoppe",
+      "email": "falkhoppe81@gmail.com"
+    }
+  ]
 }
