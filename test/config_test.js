@@ -84,7 +84,7 @@ describe('Config', function() {
         promise = config.resolveFile("fubar.json");
       });
 
-      return assert.eventually.deepEqual(promise, jsonTest);
+      return assert.eventually.deepEqual(promise, JSON.parse(jsonTest));
     });
 
   });
