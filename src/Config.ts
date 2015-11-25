@@ -18,6 +18,34 @@ interface IAbstractConfig {
  * Config resolver for conveniant merging of configuration options and defaults.
  */
 export class Config implements IAbstractConfig {
+  private parseFileContent(filePath: string, buffer: Buffer):Object {
+    var result: Object;
+
+    if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
+      result = YAML.safeLoad(buffer.toString());
+    } else {
+      result = JSON.parse(buffer.toString());
+    }
+
+    return result;
+  }
+
+
+  private resolveFile(filePath:string):Promise<{}> {
+    return fsreadfile(filePath)
+    .then((buffer:Buffer) => {
+      /** catch and return json parsing errors */
+
+      try {
+        return this.parseFileContent(filePath, buffer);
+      } catch(e) {
+        error("Config.resolveFile:", "ParseError", filePath);
+        error(e.stack);
+        return Promise.reject(e);
+      }
+    });
+  }
+
   /**
    * this is the flesh and bones of the config resolving.
    * If it is a file, load the file, if it is a string containing
@@ -41,30 +69,7 @@ export class Config implements IAbstractConfig {
         } catch (e) {
 
           /** ok, it may be a file path, so lets resolve the file and return it as json object */
-          fsreadfile(path_or_object.toString())
-          .then(function(buffer:Buffer) {
-            /** catch and return json parsing errors */
-            try {
-              var result:string;
-              if (path.extname(path_or_object.toString()) === '.yml'
-                  || path.extname(path_or_object.toString()) === '.yaml') {
-                result = YAML.safeLoad(buffer.toString());
-              } else {
-                result = JSON.parse(buffer.toString());
-              }
-
-              resolve(result);
-            } catch(e) {
-              error("Config.resolve:readFile:", "ParseError", path_or_object);
-              error(e.stack);
-              reject(e);
-            }
-          })
-          .catch((e) => {
-            error("Config.resolve:readFile:", path_or_object);
-            reject(e);
-          });
-
+          resolve(this.resolveFile(path_or_object.toString()));
         }
       } else {
         reject("IStyleguideConfig.load: options type not supported, use either object or string (path to a json file or stringified json)");
