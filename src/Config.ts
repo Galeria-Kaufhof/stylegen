@@ -35,13 +35,13 @@ export class Config implements IAbstractConfig {
     return fsreadfile(filePath)
     .then((buffer:Buffer) => {
       /** catch and return json parsing errors */
-      
+
       try {
         return this.parseFileContent(filePath, buffer);
       } catch(e) {
         error("Config.resolveFile:", "ParseError", filePath);
         error(e.stack);
-        throw(e);
+        return Promise.reject(e);
       }
     });
   }

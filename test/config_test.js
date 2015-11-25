@@ -7,14 +7,12 @@ var rewire = require('rewire');
 // var Config = require('../dist/Config').Config;
 var configMod = rewire('../dist/Config');
 
-// configMod.__set__(
-//   { fs:
-//     { readFile: function (path, callback) {
-//         callback(null, true);
-//       }
-//     }
-//   }
-// );
+// muting the standard log output
+configMod.__set__({
+  Logger_1: {
+    error: function() {}
+  }
+});
 
 var Config = configMod.Config;
 
@@ -85,6 +83,22 @@ describe('Config', function() {
       });
 
       return assert.eventually.deepEqual(promise, JSON.parse(jsonTest));
+    });
+
+    it('should reject on parseError', function () {
+      var jsonTest = `{ "test": ["a", "b", "c" } `;
+      var promise;
+
+      configMod.__with__({
+        fsreadfile: function (path) {
+          return Promise.resolve(jsonTest);
+        }
+      })(function () {
+        var config = new configMod.Config();
+        promise = config.resolveFile("fubar.json");
+      });
+
+      return assert.isRejected(promise);
     });
 
   });
