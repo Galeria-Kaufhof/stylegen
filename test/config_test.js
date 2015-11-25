@@ -143,4 +143,40 @@ describe('Config', function() {
     });
 
   });
+
+
+  describe('#load()', function () {
+
+    it('should resolve a single config', function () {
+      var jsonTest = { "test": ["a", "b", "c"] };
+      var result;
+
+      var config = new configMod.Config();
+      result = config.load(jsonTest);
+
+      return assert.becomes(result, jsonTest);
+    });
+
+    it('should merge two configs, if given', function () {
+      var options = { "test": ["a", "b", "c"] };
+      var defaults = { "test2": ["c", "d", "e"] };
+      var result;
+
+      var config = new configMod.Config();
+      result = config.load(options, defaults);
+      return assert.becomes(result, { "test": ["a", "b", "c"], "test2": ["c", "d", "e"] });
+    });
+
+    it('options should overwrite defaults', function () {
+      var options = { "test": ["a", "b", "c"] };
+      var defaults = { "test": ["c", "d", "e"], "additional": "test" };
+      var result;
+
+      var config = new configMod.Config();
+      result = config.load(options, defaults);
+      return assert.becomes(result, { "test": ["a", "b", "c"], "additional": "test"});
+    });
+
+  });
+
 });
