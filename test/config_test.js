@@ -25,7 +25,6 @@ describe('Config', function() {
       config = new Config();
     });
 
-
     it('should parse yaml content, if a yaml filepath is given', function () {
       var yamlTest = `
         test:
@@ -71,7 +70,7 @@ describe('Config', function() {
 
     it('should read the file content and return it parsed', function () {
       var jsonTest = `{ "test": ["a", "b", "c"] } `;
-      var promise;
+      var result;
 
       configMod.__with__({
         fsreadfile: function (path) {
@@ -79,15 +78,15 @@ describe('Config', function() {
         }
       })(function () {
         var config = new configMod.Config();
-        promise = config.resolveFile("fubar.json");
+        result = config.resolveFile("fubar.json");
       });
 
-      return assert.eventually.deepEqual(promise, JSON.parse(jsonTest));
+      return assert.becomes(result, JSON.parse(jsonTest));
     });
 
     it('should reject on parseError', function () {
       var jsonTest = `{ "test": ["a", "b", "c" } `;
-      var promise;
+      var result;
 
       configMod.__with__({
         fsreadfile: function (path) {
@@ -95,10 +94,52 @@ describe('Config', function() {
         }
       })(function () {
         var config = new configMod.Config();
-        promise = config.resolveFile("fubar.json");
+        result = config.resolveFile("fubar.json");
       });
 
-      return assert.isRejected(promise);
+      return assert.isRejected(result);
+    });
+
+  });
+
+
+
+  describe('#resolve()', function () {
+
+    it('should just resolve the object if one is given', function () {
+      var jsonTest = { "test": ["a", "b", "c"] };
+      var result;
+
+      config = new Config();
+      result = config.resolve(jsonTest);
+
+      return assert.becomes(result, jsonTest);
+    });
+
+    it('should see if theres an object in the given string', function () {
+      var jsonTest = `{ "test": ["a", "b", "c"] }`;
+      var result;
+
+      config = new Config();
+      result = config.resolve(jsonTest);
+
+      return assert.becomes(result, JSON.parse(jsonTest));
+    });
+
+    it('should resolve the given string as path, if it is not a parsable object', function () {
+      var jsonTest = `{ "test": ["a", "b", "c"] } `;
+      var result;
+
+      configMod.__with__({
+        fsreadfile: function (path) {
+          return Promise.resolve(jsonTest);
+        }
+      })(function () {
+        var config = new configMod.Config();
+        result = config.resolveFile("fubar.json");
+      });
+
+      return assert.becomes(result, JSON.parse(jsonTest));
     });
 
   });
