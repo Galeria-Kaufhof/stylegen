@@ -1,7 +1,67 @@
 #!/usr/bin/env node --harmony
+"use strict";
 
-var Cli = require('../dist/Cli.js');
+let argv = require('minimist')(process.argv.slice(2));
+let help = require('generate-help');
+let Cli = require('../dist/Cli.js');
+let cliPackage = require('../package');
 
-// TODO: implement args
-// TODO: implement help arg
-Cli.command();
+let helpOptions = {
+  usage: 'stylegen [options] <command>',
+  desc: 'styleguide tooling',
+  options: {
+    help: {
+      alias: 'h',
+      desc: 'Display help'
+    },
+
+    version: {
+      aliases: ['v'],
+      desc: 'show version'
+    }
+  },
+  commands: [{
+    name: 'create',
+    desc: 'create the styleguide'
+  }, {
+    name: 'export',
+    desc: 'exports the reusable parts of your styleguide like partials'
+  }]
+};
+
+let flags = {
+  help: argv.h || argv.help
+  , version: argv.v || argv.version
+}
+
+if (!!flags.version) {
+  console.log(cliPackage.version);
+  return;
+}
+
+if (!!flags.help) {
+  console.log(help(helpOptions));
+  return;
+}
+
+let args = argv._;
+
+let validCommands = [
+  'create'
+  , 'export'
+];
+
+let command = args[0];
+
+if (args.length > 0 && validCommands.includes(command)) {
+  args = args.slice(1);
+  Cli.command(command, args)
+  .catch((e) => {
+    console.error(e.message);
+    console.log(help(helpOptions));
+  });
+} else {
+  console.error("unknown command: " + command);
+  console.log(help(helpOptions));
+  return;
+}
