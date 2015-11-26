@@ -4,13 +4,9 @@ import * as path from 'path';
 import {Styleguide} from './Styleguide';
 
 import {success, error} from './Logger';
-/**
- * create the static styleguide
- *
- * TODO: add commandline feedback for success and error case
- */
-export function build() {
-  new Styleguide()
+
+function resolveStyleguide():Promise<Styleguide> {
+  return new Styleguide()
   /**
    * initialize the styleguide with the current working
    * directory of the app and the root of the stylegen tool itself.
@@ -24,7 +20,16 @@ export function build() {
   .then(function(styleguide) {
     success('Styleguide.read:' ,'start reading ...');
     return styleguide.read();
-  })
+  });
+}
+
+/**
+ * create the static styleguide
+ *
+ * TODO: add commandline feedback for success and error case
+ */
+export function build() {
+  resolveStyleguide()
   /** create static styleguide structure */
   .then(function(styleguide) {
     success('Styleguide.read:' ,'finished reading');
