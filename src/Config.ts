@@ -97,7 +97,7 @@ export class Config implements IAbstractConfig {
 
     /** resolve config files */
     return Promise.all(promises)
-    .then(function(configs: [{}]) {
+    .then(function(configs: {}[]) {
 
       /** return merged configuration */
       var result:Config = Object.assign.apply(this, configs);
