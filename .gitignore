@@ -1,5 +1,4 @@
 node_modules
-/dist
 typings
 bin/**/*.js
 src/**/*.js
