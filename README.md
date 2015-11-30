@@ -26,6 +26,7 @@ This file must be located in the project root and declares the project settings.
 | componentPaths            | ["components"]              | relative directory paths, in that your component configurations are located
 | target                    | "styleguide"                | the compile target for the resulting styleguide
 | dependencies              | {}                          | see "Dependencies" below
+| partials                  | []                          | list of partial libs to be included
 | assets                    | []                          | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
 | content                   | []                          | list of page configurations, take a look at "Content"
 

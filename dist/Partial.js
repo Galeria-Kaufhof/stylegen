@@ -18,6 +18,8 @@ class Partial extends CompilableContent_1.CompilableContent {
             var partialName = `${this.namespace}.${this.name}`;
             this.compiled = this.renderer.engine.precompile(this.raw);
             this.renderer.engine.registerPartial(partialName, this.raw);
+            var renderer = this.renderer;
+            this.registerable = renderer.registerablePartial(partialName, this.raw);
             return this;
         });
     }

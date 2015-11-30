@@ -24,6 +24,11 @@ import {HandlebarsRenderer} from './HandlebarsRenderer';
 
 var mkdirs = denodeify(fsExtra.mkdirs);
 var copy = denodeify(fsExtra.copy);
+var outputFile = denodeify(fsExtra.outputFile);
+
+var flatten = (list) => list.reduce(
+  (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+);
 
 interface IStyleguideOptions {
   renderer?: IRenderer;
@@ -45,6 +50,8 @@ export interface IStyleguideConfig {
   dependencies?: any;
   content?: IPageConfig[];
   assets?: IAssetCopyConfig[];
+  version?: string;
+  partials?: string[];
 }
 
 export class Styleguide {
@@ -86,14 +93,28 @@ export class Styleguide {
           this.config.cwd = cwd;
           /** we sometimes need the stylegen root, e.g. for file resolvement */
           this.config.stylegenRoot = stylegenRoot;
+
           this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
           /** each and every styleguide should have a name ;) */
+
           if (!this.config.name) {
             this.config.name = path.basename(this.config.cwd);
           }
 
+          if (!this.config.version) {
+            this.config.version = '0.0.1';
+          }
+
           var rendererConfig:IRendererOptions = {};
           rendererConfig.namespace = this.config.namespace;
+
+          if (this.config.partials) {
+            rendererConfig.partialLibs = this.config.partials.map(p => {
+              if (fsExtra.existsSync(path.resolve(this.config.cwd, p))) {
+                return require(path.resolve(this.config.cwd, p));
+              };
+            });
+          }
 
           // TODO: hand in options for renderers
           this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
@@ -118,7 +139,6 @@ export class Styleguide {
    * and store the information inside the styleguide properties.
    */
   public read():Promise<Styleguide> {
-
     /**
      * While this.nodes should represent our styleguide tree strucute, it is empty yet,
      * so lets start to fill it.
@@ -144,6 +164,30 @@ export class Styleguide {
       return structureWriter.write();
     })
     .then((result) => this);
+  }
+
+  /*
+   * write down, what was read, so make sure you read before :)
+   */
+  public export():Promise<Styleguide> {
+    success("Styleguide.export", "creating export ....");
+
+    // TODO: move to Partial export function
+    var partials = this.components.all()
+    .filter((c) => c.config.namespace === this.config.namespace)
+    .filter((c) => c.partials.length > 0)
+    .map(c => c.partials.map(p => p.registerable));
+
+    partials = flatten(partials);
+
+    partials = `exports.partials = function(engine, atob){
+      ${partials.join("\n")}
+    };`;
+
+    return outputFile(path.resolve('.', 'partials.js'), partials)
+    .then(() => {
+      return Promise.resolve(this);
+    });
   }
 
   /*
@@ -176,7 +220,7 @@ export class Styleguide {
       }
     })
     .then(() => {
-      return this
+      return this;
     });
   }
 }
