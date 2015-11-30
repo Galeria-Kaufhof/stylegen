@@ -7,9 +7,6 @@
 
   <!-- TODO: reference stylegen styles in here -->
   <!-- TODO: make css deps more dynamic, maybe allow tag reference here -->
-  {{#each cssDeps}}
-    <link rel="stylesheet" href="{{this}}">
-  {{/each}}
 
   <link rel="stylesheet" href="/stylegen-assets/defaults.css">
 
@@ -53,33 +50,22 @@
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Title</span>
       <nav class="mdl-navigation">
-        {{#*inline "sg.main-link-item"}}
-          <a class="mdl-navigation__link" href="{{link}}">{{label}}</a>
-          {{#if children}}
-            <div class="children">
-              {{> sg.main-link-list children}}
-            </div>
-          {{/if}}
-        {{/inline}}
 
-        {{#*inline "sg.main-link-list"}}
-          {{#each this}}
-            {{> sg.main-link-item}}
-          {{/each}}
-        {{/inline}}
 
-        {{> sg.main-link-list pages }}
+                              <a class="mdl-navigation__link" href="/atoms.html">Atoms</a>
+                                <div class="children">
+                                                        <a class="mdl-navigation__link" href="/atoms/forms.html">Forms</a>
+                                </div>
       </nav>
     </div>
     <main class="mdl-layout__content">
       <div class="page-content">
-        {{{content}}}
+        <div class="components">
+</div>
+
       </div>
     </main>
   </div>
 
-  {{#each jsDeps}}
-    <script src="{{this}}"></script>
-  {{/each}}
 </body>
 </html>

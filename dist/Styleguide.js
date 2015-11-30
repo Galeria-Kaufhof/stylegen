@@ -12,8 +12,8 @@ var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var MarkdownRenderer_1 = require('./MarkdownRenderer');
 var HandlebarsRenderer_1 = require('./HandlebarsRenderer');
-var mkdirs = denodeify(fs.mkdirs);
-var copy = denodeify(fs.copy);
+var fsensuredir = denodeify(fs.ensureDir);
+var fscopy = denodeify(fs.copy);
 var outputfile = denodeify(fs.outputFile);
 var flatten = (list) => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
 class Styleguide {
@@ -142,16 +142,17 @@ class Styleguide {
      * write down, what was read, so make sure you read before :)
      */
     prepare() {
-        return mkdirs(path.resolve(this.config.cwd, this.config.target, 'assets'))
+        console.log("ENSURE");
+        return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
             .then(() => {
-            return copy(path.resolve(this.config.stylegenRoot, 'styleguide-assets'), 
+            return fscopy(path.resolve(this.config.stylegenRoot, 'styleguide-assets'), 
             // TODO: make "assets" path configurable
-            path.resolve(this.config.cwd, this.config.target, 'assets'));
+            path.resolve(this.config.cwd, this.config.target, 'stylegen-assets'));
         })
             .then(() => {
             if (!!this.config.assets) {
                 var copyPromises = this.config.assets.map((asset) => {
-                    return copy(path.resolve(this.config.cwd, asset.src), path.resolve(this.config.cwd, this.config.target, asset.target));
+                    return fscopy(path.resolve(this.config.cwd, asset.src), path.resolve(this.config.cwd, this.config.target, asset.target));
                 });
                 return Promise.all(copyPromises);
             }

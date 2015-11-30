@@ -2,21 +2,24 @@
 var path = require('path');
 var Styleguide_1 = require('./Styleguide');
 var Logger_1 = require('./Logger');
-function resolveStyleguide(options) {
+function setupStyleguide(options) {
     let cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
     Logger_1.success('Styleguide.new:', 'initialize styleguide ...');
     return new Styleguide_1.Styleguide()
         .initialize(cwd, path.resolve(__dirname, '..'))
         .then(function (styleguide) {
         Logger_1.success('Styleguide.new:', 'initialize finished');
-        if (!!options && !!options.prepare) {
+        if (!options || !options.prepare) {
             Logger_1.success('Styleguide.prepare:', 'preparing the styleguide target ...');
             return styleguide.prepare();
         }
         else {
             return Promise.resolve(styleguide);
         }
-    })
+    });
+}
+function resolveStyleguide(options) {
+    return setupStyleguide(options)
         .then(function (styleguide) {
         Logger_1.success('Styleguide.read:', 'start reading ...');
         return styleguide.read();

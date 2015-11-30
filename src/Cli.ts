@@ -10,7 +10,7 @@ interface IResolveOptions {
   cwd?: string;
 }
 
-function resolveStyleguide(options?:IResolveOptions):Promise<Styleguide> {
+function setupStyleguide(options?:IResolveOptions):Promise<Styleguide> {
   let cwd:string = !!options && !!options.cwd ? options.cwd : process.cwd();
 
   success('Styleguide.new:' ,'initialize styleguide ...')
@@ -23,13 +23,17 @@ function resolveStyleguide(options?:IResolveOptions):Promise<Styleguide> {
   /** resolve styleguide structure */
   .then(function(styleguide) {
     success('Styleguide.new:' ,'initialize finished');
-    if (!!options && !!options.prepare) {
+    if (!options || !options.prepare) {
       success('Styleguide.prepare:' ,'preparing the styleguide target ...');
       return styleguide.prepare();
     } else {
       return Promise.resolve(styleguide);
     }
-  })
+  });
+}
+
+function resolveStyleguide(options?:IResolveOptions):Promise<Styleguide> {
+  return setupStyleguide(options)
   .then(function(styleguide) {
     success('Styleguide.read:' ,'start reading ...');
     return styleguide.read();

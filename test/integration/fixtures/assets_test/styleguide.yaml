@@ -1,0 +1,6 @@
+target: ../../results/assets_test
+assets:
+  - src: assets
+    target: assets
+  - src: assets2
+    target: assets2

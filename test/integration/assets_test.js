@@ -11,26 +11,24 @@ var assert = require('chai').assert;
 var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
-describe('Configuration content:', function() {
-  let testResults = "test/integration/results/content_test";
+describe('Configuration assets:', function() {
+  let testResults = "test/integration/results/assets_test";
 
-  describe('with a styleguide configuration with given pages', function () {
+  describe('with a styleguide configuration with configured assets', function () {
     afterEach(function() {
       // return fs.remove(path.resolve(testResults));
     });
 
 
     it('should create html files for each tag page', function () {
-      let testCWD = "test/integration/fixtures/content_test";
-      let a = Cli.__get__('build')({ cwd: testCWD })
+      let testCWD = "test/integration/fixtures/assets_test";
+      let a = Cli.__get__('setupStyleguide')({ cwd: testCWD })
 
-      // file  assertions!
       .then(res => {
-        return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms.html')));
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'assets', 'test.css')));
       })
-
       .then(res => {
-        return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms', 'forms.html')));
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'assets2', 'test.js')));
       });
 
       return assert.isFulfilled(a, "files available");

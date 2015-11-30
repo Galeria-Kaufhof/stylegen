@@ -21,8 +21,8 @@ import {View} from './View';
 import {MarkdownRenderer} from './MarkdownRenderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
 
-var mkdirs = denodeify(fs.mkdirs);
-var copy = denodeify(fs.copy);
+var fsensuredir = denodeify(fs.ensureDir);
+var fscopy = denodeify(fs.copy);
 var outputfile = denodeify(fs.outputFile);
 
 var flatten = (list) => list.reduce(
@@ -203,24 +203,24 @@ export class Styleguide {
    * write down, what was read, so make sure you read before :)
    */
   public prepare():Promise<Styleguide> {
-    return mkdirs(path.resolve(this.config.cwd, this.config.target, 'assets'))
+    console.log("ENSURE")
+    return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
     /** copy the styleguide related assets */
     .then(() => {
-      return copy(
+      return fscopy(
         path.resolve(this.config.stylegenRoot, 'styleguide-assets'),
         // TODO: make "assets" path configurable
-        path.resolve(this.config.cwd, this.config.target, 'assets')
-      );
+        path.resolve(this.config.cwd, this.config.target, 'stylegen-assets'));
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {
       if (!!this.config.assets) {
 
         var copyPromises = this.config.assets.map((asset:IAssetCopyConfig) => {
-          return copy(
+          return fscopy(
             path.resolve(this.config.cwd, asset.src),
             path.resolve(this.config.cwd, this.config.target, asset.target));
-        })
+        });
 
         return Promise.all(copyPromises);
       } else {
