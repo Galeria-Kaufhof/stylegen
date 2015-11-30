@@ -1,8 +1,7 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
 var denodeify = require('denodeify');
-var fsExtra = require('fs-extra');
+var fs = require('fs-extra');
 var Logger_1 = require('./Logger');
 var Config_1 = require('./Config');
 var StructureReader_1 = require('./StructureReader');
@@ -13,9 +12,9 @@ var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var MarkdownRenderer_1 = require('./MarkdownRenderer');
 var HandlebarsRenderer_1 = require('./HandlebarsRenderer');
-var mkdirs = denodeify(fsExtra.mkdirs);
-var copy = denodeify(fsExtra.copy);
-var outputFile = denodeify(fsExtra.outputFile);
+var mkdirs = denodeify(fs.mkdirs);
+var copy = denodeify(fs.copy);
+var outputFile = denodeify(fs.outputFile);
 var flatten = (list) => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
 class Styleguide {
     // public docFactory: DocFactory;
@@ -57,7 +56,7 @@ class Styleguide {
                     rendererConfig.namespace = this.config.namespace;
                     if (this.config.partials) {
                         rendererConfig.partialLibs = this.config.partials.map(p => {
-                            if (fsExtra.existsSync(path.resolve(this.config.cwd, p))) {
+                            if (fs.existsSync(path.resolve(this.config.cwd, p))) {
                                 return require(path.resolve(this.config.cwd, p));
                             }
                             ;

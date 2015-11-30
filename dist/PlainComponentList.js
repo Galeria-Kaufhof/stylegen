@@ -1,9 +1,8 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
 var denodeify = require('denodeify');
-var fsExtra = require('fs-extra');
-var mkdirs = denodeify(fsExtra.mkdirs);
+var fs = require('fs-extra');
+var mkdirs = denodeify(fs.mkdirs);
 var fswritefile = denodeify(fs.writeFile);
 /**
  * describes an app.component that has been wrapped in the component view,

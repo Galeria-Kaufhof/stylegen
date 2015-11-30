@@ -1,5 +1,5 @@
 "use strict";
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var denodeify = require('denodeify');
 var YAML = require('js-yaml');

@@ -1,10 +1,8 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var denodeify = require('denodeify');
-var mkdirp = require('mkdirp');
-var _mkdirp = denodeify(mkdirp);
-var fswritefile = denodeify(fs.writeFile);
+var fsoutputfile = denodeify(fs.outputFile);
 class TagListWriter {
     constructor(styleguide) {
         this.styleguide = styleguide;
@@ -71,13 +69,8 @@ class TagListWriter {
             var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
             /** shorthand to the styleguide config */
             var config = this.styleguide.config;
-            /** creating the target folder path (like mkdir -p), if it doesn't exist */
-            _mkdirp(config.target.toString())
-                .then(() => {
-                /** applying here, because of stupid method defintion with multiargs :/ */
-                return fswritefile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
-            })
-                .then(() => resolve(this))
+            fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
+            then(() => resolve(this))
                 .catch((e) => reject(e));
         });
     }

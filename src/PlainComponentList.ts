@@ -1,9 +1,8 @@
 "use strict";
 
 import * as path from 'path';
-import * as fs from 'fs';
 import * as denodeify from 'denodeify';
-import * as fsExtra from 'fs-extra';
+import * as fs from 'fs-extra';
 
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
@@ -15,7 +14,7 @@ interface IComponentLayoutContext {
   jsDeps?: string[];
 }
 
-var mkdirs = denodeify(fsExtra.mkdirs);
+var mkdirs = denodeify(fs.mkdirs);
 var fswritefile = denodeify(fs.writeFile);
 
 /**

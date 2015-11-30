@@ -1,13 +1,12 @@
 "use strict";
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var slug = require('slug');
-var fsExtra = require('fs-extra');
 var denodeify = require('denodeify');
 var Doc_1 = require('./Doc');
 var PlainComponentList_1 = require('./PlainComponentList');
 var fswritefile = denodeify(fs.writeFile);
-var mkdirs = denodeify(fsExtra.mkdirs);
+var mkdirs = denodeify(fs.mkdirs);
 class Page {
     constructor(config, parent) {
         this.config = config;

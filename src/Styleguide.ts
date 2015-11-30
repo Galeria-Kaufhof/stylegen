@@ -1,9 +1,8 @@
 "use strict";
 
 import * as path from 'path';
-import * as fs from 'fs';
 import * as denodeify from 'denodeify';
-import * as fsExtra from 'fs-extra';
+import * as fs from 'fs-extra';
 
 
 import {success, warn} from './Logger';
@@ -22,9 +21,9 @@ import {View} from './View';
 import {MarkdownRenderer} from './MarkdownRenderer';
 import {HandlebarsRenderer} from './HandlebarsRenderer';
 
-var mkdirs = denodeify(fsExtra.mkdirs);
-var copy = denodeify(fsExtra.copy);
-var outputFile = denodeify(fsExtra.outputFile);
+var mkdirs = denodeify(fs.mkdirs);
+var copy = denodeify(fs.copy);
+var outputFile = denodeify(fs.outputFile);
 
 var flatten = (list) => list.reduce(
   (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
@@ -110,7 +109,7 @@ export class Styleguide {
 
           if (this.config.partials) {
             rendererConfig.partialLibs = this.config.partials.map(p => {
-              if (fsExtra.existsSync(path.resolve(this.config.cwd, p))) {
+              if (fs.existsSync(path.resolve(this.config.cwd, p))) {
                 return require(path.resolve(this.config.cwd, p));
               };
             });

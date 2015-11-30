@@ -1,9 +1,8 @@
 "use strict";
 
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as slug from 'slug';
-import * as fsExtra from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
@@ -15,7 +14,7 @@ import {PlainComponentList} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
 
 var fswritefile = denodeify(fs.writeFile);
-var mkdirs = denodeify(fsExtra.mkdirs);
+var mkdirs = denodeify(fs.mkdirs);
 
 export interface IPageConfig {
   label?: string;

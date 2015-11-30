@@ -1,6 +1,6 @@
 "use strict";
 
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {IRenderer} from './Renderer';
