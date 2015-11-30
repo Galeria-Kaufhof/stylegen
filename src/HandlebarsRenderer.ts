@@ -3,8 +3,6 @@
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
 import * as btoa from 'btoa';
-
-
 import * as atob from 'atob';
 
 import {IRenderer, IRendererOptions} from './Renderer';
@@ -14,9 +12,8 @@ Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));
 });
 
-// require(path.resolve('.', 'partials.js')).partials(Handlebars, atob);
-
 export interface ITemplateRenderer {
+  partialLibs: any[];
   registerablePartial(name: string, content: string): string;
 }
 
@@ -25,9 +22,16 @@ export interface ITemplateRenderer {
  */
 export class HandlebarsRenderer implements IRenderer, ITemplateRenderer {
   public engine: any;
+  public partialLibs: any[];
 
   constructor(private options?: IRendererOptions) {
     this.engine = Handlebars;
+
+    if (!!options && !!options.partialLibs) {
+      this.partialLibs = options.partialLibs
+
+      this.partialLibs.forEach(lib => lib.partials(this.engine, atob))
+    }
   }
 
   public render(component: Component):Component {
@@ -36,6 +40,6 @@ export class HandlebarsRenderer implements IRenderer, ITemplateRenderer {
   }
 
   public registerablePartial(name: string, content: string):string {
-    return `engine.registerPartial("${name}", atob('${btoa(content.trim())}'));`;
+    return `engine.registerPartial("${name}", engine.compile(atob('${btoa(content.trim())}')));`;
   }
 }

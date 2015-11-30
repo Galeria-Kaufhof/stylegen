@@ -6,6 +6,9 @@ componentPaths:
 
 target: styleguide
 
+partials:
+  - partials.js
+
 content:
   - label: Globals
     type: md

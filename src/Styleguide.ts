@@ -51,6 +51,7 @@ export interface IStyleguideConfig {
   content?: IPageConfig[];
   assets?: IAssetCopyConfig[];
   version?: string;
+  partials?: string[];
 }
 
 export class Styleguide {
@@ -106,6 +107,14 @@ export class Styleguide {
 
           var rendererConfig:IRendererOptions = {};
           rendererConfig.namespace = this.config.namespace;
+
+          if (this.config.partials) {
+            rendererConfig.partialLibs = this.config.partials.map(p => {
+              if (fsExtra.existsSync(path.resolve(this.config.cwd, p))) {
+                return require(path.resolve(this.config.cwd, p));
+              };
+            });
+          }
 
           // TODO: hand in options for renderers
           this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
@@ -172,8 +181,8 @@ export class Styleguide {
     partials = flatten(partials);
 
     partials = `exports.partials = function(engine, atob){
-      ${partials.join("\n\n")}
-    }`;
+      ${partials.join("\n")}
+    };`;
 
     return outputFile(path.resolve('.', 'partials.js'), partials)
     .then(() => {

@@ -55,6 +55,14 @@ class Styleguide {
                     }
                     var rendererConfig = {};
                     rendererConfig.namespace = this.config.namespace;
+                    if (this.config.partials) {
+                        rendererConfig.partialLibs = this.config.partials.map(p => {
+                            if (fsExtra.existsSync(path.resolve(this.config.cwd, p))) {
+                                return require(path.resolve(this.config.cwd, p));
+                            }
+                            ;
+                        });
+                    }
                     // TODO: hand in options for renderers
                     this.htmlRenderer = new HandlebarsRenderer_1.HandlebarsRenderer(rendererConfig);
                     this.docRenderer = new MarkdownRenderer_1.MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
@@ -112,8 +120,8 @@ class Styleguide {
             .map(c => c.partials.map(p => p.registerable));
         partials = flatten(partials);
         partials = `exports.partials = function(engine, atob){
-      ${partials.join("\n\n")}
-    }`;
+      ${partials.join("\n")}
+    };`;
         return outputFile(path.resolve('.', 'partials.js'), partials)
             .then(() => {
             return Promise.resolve(this);

@@ -1,9 +1,3 @@
 exports.partials = function(engine, atob){
-      engine.registerPartial("example.button", atob('PGJ1dHRvbiBjbGFzcz0ibWRsLWJ1dHRvbiBtZGwtanMtYnV0dG9uIG1kbC1idXR0b24tLXJhaXNlZCI+e3t0ZXh0fX08L2J1dHRvbj4='));
-
-engine.registerPartial("example.button_primary", atob('PGJ1dHRvbiBjbGFzcz0ibWRsLWJ1dHRvbiBtZGwtanMtYnV0dG9uIG1kbC1idXR0b24tLXJhaXNlZCBtZGwtYnV0dG9uLS1jb2xvcmVkIj57e3RleHR9fTwvYnV0dG9uPg=='));
-
-engine.registerPartial("example.button_danger", atob('PGJ1dHRvbiBjbGFzcz0ibWRsLWJ1dHRvbiBtZGwtanMtYnV0dG9uIG1kbC1idXR0b24tLXJhaXNlZCBtZGwtYnV0dG9uLS1hY2NlbnQiPnt7dGV4dH19PC9idXR0b24+'));
-
-engine.registerPartial("example.text_field", atob('PGRpdiBjbGFzcz0ibWRsLXRleHRmaWVsZCBtZGwtanMtdGV4dGZpZWxkIj4KICA8aW5wdXQgbmFtZT0ie3tuYW1lfX0iIGNsYXNzPSJtZGwtdGV4dGZpZWxkX19pbnB1dCIgdHlwZT0idGV4dCIge3twbGFjZWhvbGRlcn19IGlkPSJ7e25hbWV9fSI+CiAgPGxhYmVsIGNsYXNzPSJtZGwtdGV4dGZpZWxkX19sYWJlbCIgZm9yPSJzYW1wbGUyIj57e25hbWV9fTwvbGFiZWw+CiAgPHNwYW4gY2xhc3M9Im1kbC10ZXh0ZmllbGRfX2Vycm9yIj5JbnB1dCBpcyBub3QgYSBudW1iZXIhPC9zcGFuPgo8L2Rpdj4='));
-    }
+  engine.registerPartial("ext.button", engine.compile(atob('PGJ1dHRvbiBjbGFzcz0ibWRsLWJ1dHRvbiBtZGwtanMtYnV0dG9uIG1kbC1idXR0b24tLXJhaXNlZCI+e3t0ZXh0fX08L2J1dHRvbj4=')));
+}

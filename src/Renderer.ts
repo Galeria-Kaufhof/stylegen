@@ -12,4 +12,5 @@ export interface IRenderer {
 export interface IRendererOptions {
   namespace?: string;
   htmlEngine?: IRenderer;
+  partialLibs?: any[];
 }
