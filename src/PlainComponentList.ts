@@ -14,8 +14,7 @@ interface IComponentLayoutContext {
   jsDeps?: string[];
 }
 
-var mkdirs = denodeify(fs.mkdirs);
-var fswritefile = denodeify(fs.writeFile);
+var fsoutputfile = denodeify(fs.outputFile);
 
 /**
  * describes an app.component that has been wrapped in the component view,
@@ -124,15 +123,8 @@ export class PlainComponentList implements IComponentWriter {
     return new Promise((resolve, reject) => {
       var config = this.styleguide.config;
 
-      /** creating the target folder path (like mkdir -p), if it doesn't exist */
-      mkdirs(config.target.toString())
-
-      /** create the plain component list */
-      .then(() => {
-        /** applying here, because of stupid method defintion with multiargs :/ */
-        return fswritefile.apply(this, [
-          path.resolve(config.cwd, config.target, "components.html"), this.compiled]);
-      })
+      /** applying here, because of stupid method defintion with multiargs :/ */
+      return fsoutputfile.apply(this, [ path.resolve(config.cwd, config.target, "components.html"), this.compiled ])
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
 
