@@ -15,7 +15,7 @@ describe('Configuration content:', function() {
   let testResults = "test/integration/results/content_test";
 
   describe('with a given styleguide configuration', function () {
-    beforeEach(function() {
+    afterEach(function() {
       return fs.remove(path.resolve(testResults));
     });
 
