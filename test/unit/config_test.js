@@ -4,10 +4,9 @@ chai.use(chaiAsPromised);
 var assert = require('chai').assert;
 
 var rewire = require('rewire');
-// var Config = require('../dist/Config').Config;
-var configMod = rewire('../dist/Config');
+var configMod = rewire('../../dist/Config');
 
-// muting the standard log output
+
 configMod.__set__({
   Logger_1: {
     error: function() {}

@@ -69,8 +69,8 @@ class TagListWriter {
             var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
             /** shorthand to the styleguide config */
             var config = this.styleguide.config;
-            fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
-            then(() => resolve(this))
+            fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)])
+                .then(() => resolve(this))
                 .catch((e) => reject(e));
         });
     }

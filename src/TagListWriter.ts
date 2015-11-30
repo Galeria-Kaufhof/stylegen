@@ -93,7 +93,7 @@ export class TagListWriter implements IComponentWriter {
       /** shorthand to the styleguide config */
       var config = this.styleguide.config;
 
-      fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
+      fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)])
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
 

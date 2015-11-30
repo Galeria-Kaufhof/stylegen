@@ -5,7 +5,7 @@ import * as denodeify from 'denodeify';
 import * as fs from 'fs-extra';
 
 
-import {success, warn} from './Logger';
+import {success, warn, error} from './Logger';
 import {Config} from './Config';
 import {StructureReader} from './StructureReader';
 import {StructureWriter} from './StructureWriter';
@@ -23,7 +23,7 @@ import {HandlebarsRenderer} from './HandlebarsRenderer';
 
 var mkdirs = denodeify(fs.mkdirs);
 var copy = denodeify(fs.copy);
-var outputFile = denodeify(fs.outputFile);
+var outputfile = denodeify(fs.outputFile);
 
 var flatten = (list) => list.reduce(
   (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
@@ -78,58 +78,68 @@ export class Styleguide {
       var jsonConfig = path.resolve(cwd, 'styleguide.json');
       var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
 
-      fs.exists(jsonConfig, (exists) => {
-        var configPath:string = exists ? jsonConfig : yamlConfig;
+      var stat;
+      try { stat = fs.statSync(jsonConfig); } catch(e) {}
 
-        /**
-         * retrieve the config and bootstrap the styleguide object.
-         */
-        new Config()
-        .load(configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml'))
-        .then((mergedConfig: Config) => {
-          this.config = mergedConfig;
-          /** lets assure, that we have the current working directory in reach for later access */
-          this.config.cwd = cwd;
-          /** we sometimes need the stylegen root, e.g. for file resolvement */
-          this.config.stylegenRoot = stylegenRoot;
+      var configPath:string = !!stat ? jsonConfig : yamlConfig;
+      /**
+       * retrieve the config and bootstrap the styleguide object.
+       */
+      return new Config()
+      .load(configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml'))
+      .then((mergedConfig: Config) => {
+        this.config = mergedConfig;
 
-          this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
-          /** each and every styleguide should have a name ;) */
+        /** lets assure, that we have the current working directory in reach for later access */
+        this.config.cwd = cwd;
 
-          if (!this.config.name) {
-            this.config.name = path.basename(this.config.cwd);
-          }
+        /** we sometimes need the stylegen root, e.g. for file resolvement */
+        this.config.stylegenRoot = stylegenRoot;
 
-          if (!this.config.version) {
-            this.config.version = '0.0.1';
-          }
+        this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
 
-          var rendererConfig:IRendererOptions = {};
-          rendererConfig.namespace = this.config.namespace;
+        this.config.target = path.resolve(cwd, this.config.target);
 
-          if (this.config.partials) {
-            rendererConfig.partialLibs = this.config.partials.map(p => {
-              if (fs.existsSync(path.resolve(this.config.cwd, p))) {
-                return require(path.resolve(this.config.cwd, p));
-              };
-            });
-          }
+        /** each and every styleguide should have a name ;) */
+        if (!this.config.name) {
+          this.config.name = path.basename(this.config.cwd);
+        }
 
-          // TODO: hand in options for renderers
-          this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
-          this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
+        if (!this.config.version) {
+          this.config.version = '0.0.1';
+        }
 
-          Doc.setRenderer(this.docRenderer);
-          Partial.setRenderer(this.htmlRenderer);
-          View.setRenderer(this.htmlRenderer);
+        var rendererConfig:IRendererOptions = {};
+        rendererConfig.namespace = this.config.namespace;
 
-          resolve(this);
-        })
-        .catch(function(e) {
-          console.log("Styleguide.initialize:", e);
-          reject(e);
-        });
+        if (this.config.partials) {
+          rendererConfig.partialLibs = this.config.partials.map(p => {
+            // TODO: exists is deprecated
+            try {
+              var partialLibPath = path.resolve(this.config.cwd, p);
+              if (fs.statSync(partialLibPath)) {
+                return require(partialLibPath);
+              }
+            } catch(e) { warn("Styleguide.initialize", "not existing partial lib referenced"); return null; }
+          });
+        }
+
+        // TODO: hand in options for renderers
+        this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
+        this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
+
+        Doc.setRenderer(this.docRenderer);
+        Partial.setRenderer(this.htmlRenderer);
+        View.setRenderer(this.htmlRenderer);
+
+        resolve(this);
+      })
+      .catch(function(e) {
+        error("Styleguide.initialize:", e.message);
+        console.log(e.stack);
+        reject(e);
       });
+
     });
   }
 
@@ -179,11 +189,11 @@ export class Styleguide {
 
     partials = flatten(partials);
 
-    partials = `exports.partials = function(engine, atob){
+    var partialsTemplate = `exports.partials = function(engine, atob){
       ${partials.join("\n")}
     };`;
 
-    return outputFile(path.resolve('.', 'partials.js'), partials)
+    return outputfile(path.resolve('.', 'partials.js'), partialsTemplate)
     .then(() => {
       return Promise.resolve(this);
     });

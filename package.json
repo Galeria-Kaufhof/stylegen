@@ -17,7 +17,7 @@
     "unicorn": "0.0.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --harmony"
+    "test": "./node_modules/.bin/mocha --recursive --harmony"
   },
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
   "contributors": [

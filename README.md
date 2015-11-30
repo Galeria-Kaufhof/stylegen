@@ -48,7 +48,7 @@ This file must be located in the project root and declares the project settings.
 
 | Property                  | Default                     | Description     
 |---------------------------|-----------------------------|--------------------
-| label                     |                             | the label of a page is used for the link text for example
+| label                     |                             | the label of a page is used for the link text for example *required
 | type                      |                             | either one of "md" or "tags", to define a page to be a plain markdown document or a list of components grouped by tags
 | content                   |                             | in case type is "md", content must be a relative path to that document, otherwise a list of tags is expected
 | children                  |                             | like content itself this is a list of page configurations

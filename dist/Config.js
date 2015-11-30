@@ -80,6 +80,10 @@ class Config {
         /** resolve config files */
         return Promise.all(promises)
             .then(function (configs) {
+            configs = configs.filter(x => !!x);
+            if (configs.length < 1) {
+                configs.push({});
+            }
             /** return merged configuration */
             var result = Object.assign.apply(this, configs);
             return result;

@@ -22,6 +22,7 @@ export class Config implements IAbstractConfig {
     var result: Object;
 
     if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
+
       result = YAML.safeLoad(buffer.toString());
     } else {
       result = JSON.parse(buffer.toString());
@@ -99,9 +100,14 @@ export class Config implements IAbstractConfig {
     return Promise.all(promises)
     .then(function(configs: {}[]) {
 
+      configs = configs.filter(x => !!x);
+      if (configs.length < 1) {
+        configs.push({});
+      }
+
       /** return merged configuration */
       var result:Config = Object.assign.apply(this, configs);
       return result;
-    })
+    });
   }
 }

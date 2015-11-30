@@ -3,9 +3,12 @@ var path = require('path');
 var Styleguide_1 = require('./Styleguide');
 var Logger_1 = require('./Logger');
 function resolveStyleguide(options) {
+    let cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
+    Logger_1.success('Styleguide.new:', 'initialize styleguide ...');
     return new Styleguide_1.Styleguide()
-        .initialize(process.cwd(), path.resolve(__dirname, '..'))
+        .initialize(cwd, path.resolve(__dirname, '..'))
         .then(function (styleguide) {
+        Logger_1.success('Styleguide.new:', 'initialize finished');
         if (!!options && !!options.prepare) {
             Logger_1.success('Styleguide.prepare:', 'preparing the styleguide target ...');
             return styleguide.prepare();
@@ -26,8 +29,9 @@ function resolveStyleguide(options) {
 /**
  * create the static styleguide
  */
-function build() {
-    return resolveStyleguide()
+function build(options) {
+    var options = Object.assign({}, options);
+    return resolveStyleguide(options)
         .then(function (styleguide) {
         Logger_1.success('Styleguide.write:', 'start writing ...');
         return styleguide.write();
@@ -46,9 +50,10 @@ function build() {
 /**
  * create styleguide partials, and maybe other exports
  */
-function createExport() {
+function createExport(options) {
+    var options = Object.assign({}, options, { prepare: false });
     /** we need no styleguide preparation, like asset copying etc. */
-    return resolveStyleguide({ prepare: false })
+    return resolveStyleguide(options)
         .then(function (styleguide) {
         return styleguide.export();
     })
@@ -69,8 +74,10 @@ function createExport() {
 function command(command, args) {
     switch (command) {
         case "create":
+            Logger_1.success("Cli.command", "create");
             return build();
         case "export":
+            Logger_1.success("Cli.command", "export");
             return createExport();
         default:
             return Promise.reject(new Error("Not the command you are searching for"));
