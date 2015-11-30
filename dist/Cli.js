@@ -47,7 +47,11 @@ function build() {
  * create styleguide partials, and maybe other exports
  */
 function createExport() {
+    /** we need no styleguide preparation, like asset copying etc. */
     return resolveStyleguide({ prepare: false })
+        .then(function (styleguide) {
+        return styleguide.export();
+    })
         .catch(function (e) {
         Logger_1.error("Cli.createExport", "failed to build Styleguide", e);
         console.log(e.callee, e.stack);

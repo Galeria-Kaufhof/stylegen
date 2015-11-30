@@ -15,6 +15,8 @@ var MarkdownRenderer_1 = require('./MarkdownRenderer');
 var HandlebarsRenderer_1 = require('./HandlebarsRenderer');
 var mkdirs = denodeify(fsExtra.mkdirs);
 var copy = denodeify(fsExtra.copy);
+var outputFile = denodeify(fsExtra.outputFile);
+var flatten = (list) => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
 class Styleguide {
     // public docFactory: DocFactory;
     constructor(options) {
@@ -47,6 +49,9 @@ class Styleguide {
                     /** each and every styleguide should have a name ;) */
                     if (!this.config.name) {
                         this.config.name = path.basename(this.config.cwd);
+                    }
+                    if (!this.config.version) {
+                        this.config.version = '0.0.1';
                     }
                     var rendererConfig = {};
                     rendererConfig.namespace = this.config.namespace;
@@ -94,6 +99,25 @@ class Styleguide {
             return structureWriter.write();
         })
             .then((result) => this);
+    }
+    /*
+     * write down, what was read, so make sure you read before :)
+     */
+    export() {
+        Logger_1.success("Styleguide.export", "creating export ....");
+        // TODO: move to Partial export function
+        var partials = this.components.all()
+            .filter((c) => c.config.namespace === this.config.namespace)
+            .filter((c) => c.partials.length > 0)
+            .map(c => c.partials.map(p => p.registerable));
+        partials = flatten(partials);
+        partials = `exports.partials = function(engine, atob){
+      ${partials.join("\n\n")}
+    }`;
+        return outputFile(path.resolve('.', 'partials.js'), partials)
+            .then(() => {
+            return Promise.resolve(this);
+        });
     }
     /*
      * write down, what was read, so make sure you read before :)

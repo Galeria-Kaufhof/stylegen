@@ -8,8 +8,10 @@ import {CompilableContent, ICompilableContent} from './CompilableContent';
 
 var fsreadfile = denodeify(fs.readFile);
 
+
 export class Partial extends CompilableContent {
   public name: string;
+  public registerable: string;
 
   constructor(filePath: string, private namespace: string) {
     // TODO: make template extension configurable
@@ -25,6 +27,9 @@ export class Partial extends CompilableContent {
       var partialName = `${this.namespace}.${this.name}`;
       this.compiled = this.renderer.engine.precompile(this.raw);
       this.renderer.engine.registerPartial(partialName, this.raw);
+
+      var renderer:any = this.renderer;
+      this.registerable = renderer.registerablePartial(partialName, this.raw);
 
       return this;
     });
