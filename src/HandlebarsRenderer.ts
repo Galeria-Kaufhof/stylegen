@@ -14,7 +14,7 @@ Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));
 });
 
-require(path.resolve('.', 'partials.js')).partials(Handlebars, atob);
+// require(path.resolve('.', 'partials.js')).partials(Handlebars, atob);
 
 export interface ITemplateRenderer {
   registerablePartial(name: string, content: string): string;
