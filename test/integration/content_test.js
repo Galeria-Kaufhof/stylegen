@@ -16,7 +16,7 @@ describe('Configuration content:', function() {
 
   describe('with a styleguide configuration with given pages', function () {
     afterEach(function() {
-      // return fs.remove(path.resolve(testResults));
+      return fs.remove(path.resolve(testResults));
     });
 
 

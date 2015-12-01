@@ -12,16 +12,29 @@ var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
 describe('Configuration assets:', function() {
-  let testResults = "test/integration/results/assets_test";
+  var testResults = "test/integration/results/assets_test";
+  var testCWD = "test/integration/fixtures/assets_test";
 
-  describe('with a styleguide configuration with configured assets', function () {
-    afterEach(function() {
-      // return fs.remove(path.resolve(testResults));
+  afterEach(function() {
+    // return fs.remove(path.resolve(testResults));
+  });
+
+  describe('with a styleguide default assets', function () {;
+    it('should create a copy for each default asset in the target folder', function () {
+      let testCWD = "test/integration/fixtures/assets_test";
+      let a = Cli.__get__('setupStyleguide')({ cwd: testCWD })
+
+      .then(res => {
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'stylegen-assets', 'defaults.css')));
+      });
+
+      return assert.isFulfilled(a, "files available");
     });
 
+  });
 
-    it('should create html files for each tag page', function () {
-      let testCWD = "test/integration/fixtures/assets_test";
+  describe('with a styleguide configuration with configured assets', function () {
+    it('should create a copy for each asset in the target folder', function () {
       let a = Cli.__get__('setupStyleguide')({ cwd: testCWD })
 
       .then(res => {
