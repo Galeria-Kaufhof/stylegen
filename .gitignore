@@ -4,4 +4,4 @@ bin/**/*.js
 src/**/*.js
 example/styleguide
 
-test/integration/results/content_test/styleguide-dist
+test/integration/results/**/*
