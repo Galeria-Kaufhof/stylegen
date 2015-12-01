@@ -142,7 +142,6 @@ class Styleguide {
      * write down, what was read, so make sure you read before :)
      */
     prepare() {
-        console.log("ENSURE");
         return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
             .then(() => {
             return fscopy(path.resolve(this.config.stylegenRoot, 'styleguide-assets'), 

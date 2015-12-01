@@ -203,7 +203,6 @@ export class Styleguide {
    * write down, what was read, so make sure you read before :)
    */
   public prepare():Promise<Styleguide> {
-    console.log("ENSURE")
     return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
     /** copy the styleguide related assets */
     .then(() => {
