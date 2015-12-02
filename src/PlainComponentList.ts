@@ -81,13 +81,16 @@ export class PlainComponentList implements IComponentWriter {
   }
 
   public build(config:IBuildConfig):Promise<IComponentWriter> {
+    config = config || {};
+
     return new Promise((resolve, reject) => {
 
       var context:IComponentLayoutContext = {};
 
       try {
         /** get all all components, registered in the styleguide */
-        var components:Component[] = this.styleguide.components.all();
+        var components:Component[] = this.styleguide.components.all(config.components);
+
         if (!!config.tags) {
           components = components.filter((c:Component) => this.intersect(c.tags, config.tags).length == config.tags.length);
         }
@@ -105,7 +108,6 @@ export class PlainComponentList implements IComponentWriter {
 
         /** set context for rendering the component list */
         context.components = componentViews;
-
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
         reject(e);

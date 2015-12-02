@@ -1,4 +1,5 @@
 target: ../../results/content_test
+
 content:
   - label: MarkdownPage
     type: md

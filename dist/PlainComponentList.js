@@ -56,11 +56,12 @@ class PlainComponentList {
         return array1.filter((a) => array2.indexOf(a) != -1);
     }
     build(config) {
+        config = config || {};
         return new Promise((resolve, reject) => {
             var context = {};
             try {
                 /** get all all components, registered in the styleguide */
-                var components = this.styleguide.components.all();
+                var components = this.styleguide.components.all(config.components);
                 if (!!config.tags) {
                     components = components.filter((c) => this.intersect(c.tags, config.tags).length == config.tags.length);
                 }

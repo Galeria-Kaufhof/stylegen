@@ -12,8 +12,13 @@ class ComponentList {
     keys() {
         return Object.keys(this.components);
     }
-    all() {
-        return this.keys().map(key => this.find(key));
+    all(ids) {
+        var components = this.keys().map(key => this.find(key));
+        if (!!ids && ids.length > 0) {
+            components = components.filter(c => ids.includes(c.id));
+            console.log("found comps", components.length);
+        }
+        return components;
     }
 }
 exports.ComponentList = ComponentList;

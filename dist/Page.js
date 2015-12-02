@@ -56,6 +56,9 @@ class Page {
             case "tags":
                 contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ tags: this.config.content });
                 break;
+            case "components":
+                contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content });
+                break;
             default:
                 /** FOR UNKNOWN TYPES */
                 Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
