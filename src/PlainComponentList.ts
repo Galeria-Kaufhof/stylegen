@@ -130,8 +130,11 @@ export class PlainComponentList implements IComponentWriter {
     return new Promise((resolve, reject) => {
       var config = this.styleguide.config;
 
-      /** applying here, because of stupid method defintion with multiargs :/ */
-      return fsoutputfile.apply(this, [ path.resolve(config.cwd, config.target, "components.html"), this.compiled ])
+      var layout = this.styleguide.components.find('sg.layout').view.template
+      layoutContext = Object.assign({}, layoutContext, {content: this.compiled});
+
+
+      return fsoutputfile(path.resolve(config.cwd, config.target, "components.html"), layout(layoutContext))
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
 
