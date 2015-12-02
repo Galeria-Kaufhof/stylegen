@@ -27,6 +27,20 @@ describe('Configuration content:', function() {
       });
     });
 
+    it('should create html files for each markdown page', function () {
+      let a = Cli.__get__('build')({ cwd: testCWD })
+
+      // file  assertions!
+      .then(res => {
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage.html')));
+      })
+      .then(res => {
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage2.html')));
+      });
+
+      return assert.isFulfilled(a, "files available");
+    });
+
     it('should create html files for each tag page', function () {
       let a = Cli.__get__('build')({ cwd: testCWD })
 
@@ -55,13 +69,23 @@ describe('Configuration content:', function() {
             var navEntries = $('.test-stylegen-main-nav > a');
             var childLinks = nav.find('.children');
 
-            if (navEntries.length !== 1) {
-              return Promise.reject("Expected to have exactly one link in first nav layer");
+            if (navEntries.length !== 3) {
+              return Promise.reject("Expected to have exactly 2 links in first nav layer");
             }
 
-            var baseLinkText = 'Atoms';
-            if (navEntries.text().trim() !== baseLinkText) {
-              return Promise.reject(`Expected the link to have the link text "${baseLinkText}" instead it has "${navEntries.text()}"`);
+            var mdPageText = 'MarkdownPage';
+            if ($(navEntries[0]).text().trim() !== mdPageText) {
+              return Promise.reject(`Expected the link to have the link text "${mdPageText}" instead it has "${navEntries.text()}"`);
+            }
+
+            var mdPageText2 = 'MarkdownPage2';
+            if ($(navEntries[2]).text().trim() !== mdPageText2) {
+              return Promise.reject(`Expected the link to have the link text "${mdPageText2}" instead it has "${navEntries.text()}"`);
+            }
+
+            var atomsText = 'Atoms';
+            if ($(navEntries[1]).text().trim() !== atomsText) {
+              return Promise.reject(`Expected the link to have the link text "${atomsText}" instead it has "${navEntries.text()}"`);
             }
 
             if (childLinks.length !== 1) {

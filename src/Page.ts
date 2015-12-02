@@ -73,7 +73,7 @@ export class Page {
       // var docFactory = this.config.styleguide.docFactory;
       switch(this.config.type) {
         case "md":
-          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load()
+          contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
           .then((doc) => {
 
             var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
