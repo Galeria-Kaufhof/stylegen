@@ -1,6 +1,7 @@
 label: Simple Button
 tags:
   - atoms
+  - buttons
 partials:
   - button_partial.hbs
   - button_primary_partial.hbs

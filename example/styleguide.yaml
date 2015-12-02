@@ -19,6 +19,18 @@ content:
     content:
       - atoms
 
+    children:
+      - label: Buttons
+        type: tags
+        content:
+          - atoms
+          - buttons
+      - label: Form Elements
+        type: tags
+        content:
+          - atoms
+          - forms
+
   - label: Moleculars
     type: tags
     content:
