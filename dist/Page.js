@@ -83,12 +83,17 @@ class Page {
         }
     }
     write(layout, context) {
-        var pageContext = Object.assign({}, context);
-        pageContext.content = this.content;
-        /** applying here, because of stupid method defintion with multiargs :/ */
-        return fsoutputfile.apply(this, [this.target, layout(pageContext)])
-            .then(page => this.writeChildren(layout, context))
-            .then((file) => this);
+        if (!!this.content) {
+            var pageContext = Object.assign({}, context);
+            pageContext.content = this.content;
+            /** applying here, because of stupid method defintion with multiargs :/ */
+            return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+                .then(page => this.writeChildren(layout, context))
+                .then((file) => this);
+        }
+        else {
+            return Promise.resolve(this);
+        }
     }
 }
 exports.Page = Page;

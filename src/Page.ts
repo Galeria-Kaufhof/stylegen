@@ -97,7 +97,7 @@ export class Page {
         if (content !== null) {
           this.content = content.compiled;
         }
-        
+
         return this;
       });
   }
@@ -118,13 +118,17 @@ export class Page {
   }
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
-    var pageContext:IPageLayoutContext = Object.assign({}, context);
-    pageContext.content = this.content;
+    if (!!this.content) {
+      var pageContext:IPageLayoutContext = Object.assign({}, context);
+      pageContext.content = this.content;
 
-    /** applying here, because of stupid method defintion with multiargs :/ */
+      /** applying here, because of stupid method defintion with multiargs :/ */
 
-    return fsoutputfile.apply(this, [this.target, layout(pageContext)])
-    .then(page => this.writeChildren(layout, context))
-    .then((file:any) => this);
+      return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+      .then(page => this.writeChildren(layout, context))
+      .then((file:any) => this);
+    } else {
+      return Promise.resolve(this);
+    }
   }
 }
