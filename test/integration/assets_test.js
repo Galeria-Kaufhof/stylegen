@@ -15,8 +15,10 @@ describe('Configuration assets:', function() {
   var testResults = "test/integration/results/assets_test";
   var testCWD = "test/integration/fixtures/assets_test";
 
-  afterEach(function() {
-    return fs.remove(path.resolve(testResults));
+  afterEach(function(done) {
+    fs.remove(path.resolve(testResults), function() {
+      return done();
+    });
   });
 
   describe('with a styleguide default assets', function () {;
