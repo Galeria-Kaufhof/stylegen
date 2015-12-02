@@ -49,6 +49,12 @@ describe('Configuration dependencies:', function() {
               return Promise.reject(`Expected to have exactly one reference to the js dep script tag, but found ${jsRef.length}`);
             }
 
+            var jsRef2 = $('body script[src="assets/test.js"]');
+
+            if (jsRef2.length !== 1) {
+              return Promise.reject(`Expected to have exactly one reference to the js dep script tag, but found ${jsRef2.length}`);
+            }
+
             return Promise.resolve(true);
           });
 

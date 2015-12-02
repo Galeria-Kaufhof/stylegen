@@ -1,5 +1,8 @@
 "use strict";
 
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import {error} from './Logger';
 import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
@@ -11,6 +14,7 @@ import {ContentStructureWriter} from './ContentStructureWriter';
 export interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
+  head?: string[];
   components?: any;
 }
 
@@ -51,6 +55,17 @@ export class StructureWriter {
       try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
 
       try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+
+      try {
+        layoutContext.head = this.styleguide.config.dependencies.templates.head;
+
+        if (typeof layoutContext.head === "string") {
+          layoutContext.head = [layoutContext.head];
+        }
+
+        layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+        
+      } catch(e) { }
 
       if (!!this.styleguide.config.content) {
         type = "content-config";

@@ -1,4 +1,6 @@
 "use strict";
+var fs = require('fs-extra');
+var path = require('path');
 var ComponentRegistry_1 = require('./ComponentRegistry');
 var PlainComponentList_1 = require('./PlainComponentList');
 var ContentStructureWriter_1 = require('./ContentStructureWriter');
@@ -34,6 +36,14 @@ class StructureWriter {
             catch (e) { }
             try {
                 layoutContext.jsDeps = this.styleguide.config.dependencies.js;
+            }
+            catch (e) { }
+            try {
+                layoutContext.head = this.styleguide.config.dependencies.templates.head;
+                if (typeof layoutContext.head === "string") {
+                    layoutContext.head = [layoutContext.head];
+                }
+                layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
             }
             catch (e) { }
             if (!!this.styleguide.config.content) {

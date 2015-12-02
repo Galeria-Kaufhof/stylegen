@@ -8,5 +8,7 @@ dependencies:
     - assets/test.js
 
   templates:
-    head: head_template.html
+    head:
+      - head_template.html
+      - head2_template.html
     eop: end_of_page_template.html
