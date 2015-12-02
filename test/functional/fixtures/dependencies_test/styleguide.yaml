@@ -1,1 +1,12 @@
 target: ../../results/dependencies_test
+
+dependencies:
+  styles:
+    - assets/test.css
+
+  js:
+    - assets/test.js
+
+  templates:
+    head: head_template.html
+    eop: end_of_page_template.html
