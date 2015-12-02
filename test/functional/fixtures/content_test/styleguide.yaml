@@ -23,6 +23,6 @@ content:
   - label: ManualCompListing
     type: components
     content:
-      - app.a
-      - app.b
       - app.c
+      - app.b
+      - app.a

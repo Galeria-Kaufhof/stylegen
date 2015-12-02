@@ -142,6 +142,18 @@ describe('Configuration content:', function() {
                 return Promise.reject(`Expected to have exactly ${compListConfig.length} components listed, but found ${components.length}`);
               }
 
+              if ($(components[0]).attr('id') !== "component-app-c") {
+                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[0]).attr('id')}"`);
+              }
+
+              if ($(components[1]).attr('id') !== "component-app-b") {
+                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[1]).attr('id')}"`);
+              }
+
+              if ($(components[2]).attr('id') !== "component-app-a") {
+                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[2]).attr('id')}"`);
+              }
+
               return Promise.resolve(true);
             });
 

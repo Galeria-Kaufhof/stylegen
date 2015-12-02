@@ -22,13 +22,10 @@ export class ComponentList {
   }
 
   all(ids: string[]):Component[] {
-    var components this.keys().map(key => this.find(key));
-
     if (!!ids && ids.length > 0) {
-      components = components.filter(c => ids.includes(c.id));
-      console.log("found comps", components.length)
+      return ids.map(id => this.find(id));
     }
 
-    return components;
+    return this.keys().map(key => this.find(key));
   }
 }
