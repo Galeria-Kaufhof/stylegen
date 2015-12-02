@@ -84,7 +84,7 @@ export class Page {
           });
           break;
         case "tags":
-          contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);
+          contentPromise = new PlainComponentList(this.config.styleguide).build({tags: this.config.content});
           break;
         default:
           /** FOR UNKNOWN TYPES */
@@ -122,8 +122,7 @@ export class Page {
       var pageContext:IPageLayoutContext = Object.assign({}, context);
       pageContext.content = this.content;
 
-      /** applying here, because of stupid method defintion with multiargs :/ */
-
+      /** applying here, because of stupid type defintion with multiargs :/ */
       return fsoutputfile.apply(this, [this.target, layout(pageContext)])
       .then(page => this.writeChildren(layout, context))
       .then((file:any) => this);
