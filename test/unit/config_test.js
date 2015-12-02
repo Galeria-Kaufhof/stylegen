@@ -5,14 +5,6 @@ var assert = require('chai').assert;
 
 var rewire = require('rewire');
 var configMod = rewire('../../dist/Config');
-
-
-configMod.__set__({
-  Logger_1: {
-    error: function() {}
-  }
-});
-
 var Config = configMod.Config;
 
 describe('Config', function() {

@@ -17,7 +17,7 @@
     "unicorn": "0.0.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --recursive --harmony"
+    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha --recursive --harmony"
   },
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
   "contributors": [
@@ -33,6 +33,8 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
+    "jquery": "^2.1.4",
+    "jsdom": "^7.1.0",
     "mocha": "^2.3.4",
     "rewire": "^2.5.0"
   }
