@@ -1,14 +1,16 @@
 "use strict";
 
 var fs = require('fs-extra');
+var denodeify = require('denodeify');
+var fsreadfile = denodeify(fs.readFile);
+
 var path = require('path');
 var chai = require('chai');
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 var assert = require('chai').assert;
 
-var jsdom = require("jsdom");
-var jquery = fs.readFileSync(path.resolve(__dirname, "../../node_modules/jquery/dist/jquery.js"), "utf-8");
+var cheerio = require("cheerio");
 
 var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
@@ -45,41 +47,35 @@ describe('Configuration content:', function() {
 
       // file  assertions!
       .then(res => {
-        return new Promise(function(resolve, reject) {
-          jsdom.env({
-            file: path.resolve(testResults, 'atoms.html'),
-            src: [jquery],
-            done: function (err, window) {
-              if (!!err) {
-                console.log("ERR", err);
-                reject(err);
-              }
-              var nav = window.$('.test-stylegen-main-nav');
-              var navEntries = window.$('.test-stylegen-main-nav > a');
-              var childLinks = nav.find('.children');
+          return fsreadfile(path.resolve(testResults, 'atoms.html'))
+          .then((content) => {
+            var $ = cheerio.load(content);
 
-              if (navEntries.length !== 1) {
-                return reject("Expected to have exactly one link in first nav layer");
-              }
+            var nav = $('.test-stylegen-main-nav');
+            var navEntries = $('.test-stylegen-main-nav > a');
+            var childLinks = nav.find('.children');
 
-              var baseLinkText = 'Atoms';
-              if (navEntries.text().trim() !== baseLinkText) {
-                return reject(`Expected the link to have the link text "${baseLinkText}" instead it has "${navEntries.text()}"`);
-              }
-
-              if (childLinks.length !== 1) {
-                return reject("Expected to have exactly one child link in first nav layer");
-              }
-
-              var childLinkText = 'Forms';
-              if (childLinks.text().trim() !== childLinkText) {
-                return reject(`Expected the link to have the link text "${childLinkText}" instead it has "${childLinks.text().trim()}"`);
-              }
-
-              return resolve(true);
+            if (navEntries.length !== 1) {
+              return Promise.reject("Expected to have exactly one link in first nav layer");
             }
+
+            var baseLinkText = 'Atoms';
+            if (navEntries.text().trim() !== baseLinkText) {
+              return Promise.reject(`Expected the link to have the link text "${baseLinkText}" instead it has "${navEntries.text()}"`);
+            }
+
+            if (childLinks.length !== 1) {
+              return Promise.reject("Expected to have exactly one child link in first nav layer");
+            }
+
+            var childLinkText = 'Forms';
+            if (childLinks.text().trim() !== childLinkText) {
+              return Promise.reject(`Expected the link to have the link text "${childLinkText}" instead it has "${childLinks.text().trim()}"`);
+            }
+
+            return Promise.resolve(true);
           });
-        });
+
       });
 
       return assert.isFulfilled(a, "navigation entries available");
