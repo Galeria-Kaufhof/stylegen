@@ -1,5 +1,5 @@
 "use strict";
-var fs = require('fs');
+var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var Logger_1 = require('./Logger');
 var fsreadfile = denodeify(fs.readFile);

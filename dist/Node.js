@@ -1,6 +1,6 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var Config_1 = require('./Config');
 var Component_1 = require('./Component');

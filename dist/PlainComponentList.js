@@ -1,10 +1,8 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
 var denodeify = require('denodeify');
-var fsExtra = require('fs-extra');
-var mkdirs = denodeify(fsExtra.mkdirs);
-var fswritefile = denodeify(fs.writeFile);
+var fs = require('fs-extra');
+var fsoutputfile = denodeify(fs.outputFile);
 /**
  * describes an app.component that has been wrapped in the component view,
  * and holds a reference to the Component itself and the compiled output.
@@ -91,13 +89,8 @@ class PlainComponentList {
     write(layoutContext) {
         return new Promise((resolve, reject) => {
             var config = this.styleguide.config;
-            /** creating the target folder path (like mkdir -p), if it doesn't exist */
-            mkdirs(config.target.toString())
-                .then(() => {
-                /** applying here, because of stupid method defintion with multiargs :/ */
-                return fswritefile.apply(this, [
-                    path.resolve(config.cwd, config.target, "components.html"), this.compiled]);
-            })
+            /** applying here, because of stupid method defintion with multiargs :/ */
+            return fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), this.compiled])
                 .then(() => resolve(this))
                 .catch((e) => reject(e));
         });

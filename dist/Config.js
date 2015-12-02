@@ -1,5 +1,5 @@
 "use strict";
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var denodeify = require('denodeify');
 var YAML = require('js-yaml');
@@ -80,6 +80,10 @@ class Config {
         /** resolve config files */
         return Promise.all(promises)
             .then(function (configs) {
+            configs = configs.filter(x => !!x);
+            if (configs.length < 1) {
+                configs.push({});
+            }
             /** return merged configuration */
             var result = Object.assign.apply(this, configs);
             return result;

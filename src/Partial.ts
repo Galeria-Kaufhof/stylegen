@@ -1,7 +1,7 @@
 "use strict";
 
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {CompilableContent, ICompilableContent} from './CompilableContent';

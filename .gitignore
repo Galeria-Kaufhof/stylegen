@@ -3,3 +3,5 @@ typings
 bin/**/*.js
 src/**/*.js
 example/styleguide
+
+test/functional/results/**/*

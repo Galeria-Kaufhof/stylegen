@@ -2,12 +2,10 @@
 
 require('unicorn').install();
 
-export function warn(...args: any[]) {
-  if (args.length > 1) {
-    args[0] = args[0].yellow();
+export function log(...args: any[]) {
+  if (!process.env.MUTE_CLI_LOG) {
+    console.log.apply(console, args);
   }
-
-  console.log.apply(console, args);
 }
 
 export function error(...args: any[]) {
@@ -15,7 +13,17 @@ export function error(...args: any[]) {
     args[0] = args[0].red();
   }
 
-  console.error.apply(console, args);
+  if (!process.env.MUTE_CLI_LOG) {
+    console.error.apply(console, args);
+  }
+}
+
+export function warn(...args: any[]) {
+  if (args.length > 1) {
+    args[0] = args[0].yellow();
+  }
+
+  log.apply(console, args);
 }
 
 export function success(...args: any[]) {
@@ -23,5 +31,5 @@ export function success(...args: any[]) {
     args[0] = args[0].green();
   }
 
-  console.log.apply(console, args);
+  log.apply(console, args);
 }

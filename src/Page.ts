@@ -1,9 +1,8 @@
 "use strict";
 
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as slug from 'slug';
-import * as fsExtra from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {Doc} from './Doc';
@@ -14,8 +13,7 @@ import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
 
-var fswritefile = denodeify(fs.writeFile);
-var mkdirs = denodeify(fsExtra.mkdirs);
+var fsoutputfile = denodeify(fs.outputFile);
 
 export interface IPageConfig {
   label?: string;
@@ -120,8 +118,8 @@ export class Page {
     pageContext.content = this.content;
 
     /** applying here, because of stupid method defintion with multiargs :/ */
-    return mkdirs(path.dirname(this.target))
-    .then(page => fswritefile.apply(this, [this.target, layout(pageContext)]))
+
+    return fsoutputfile.apply(this, [this.target, layout(pageContext)])
     .then(page => this.writeChildren(layout, context))
     .then((file:any) => this);
   }

@@ -1,6 +1,6 @@
 "use strict";
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var CompilableContent_1 = require('./CompilableContent');
 var fsreadfile = denodeify(fs.readFile);

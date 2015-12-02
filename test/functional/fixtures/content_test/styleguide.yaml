@@ -1,0 +1,12 @@
+target: ../../results/content_test
+content:
+  - label: Atoms
+    type: tags
+    content:
+      - atoms
+
+    children:
+      - label: Forms
+        type: tags
+        content:
+          - forms

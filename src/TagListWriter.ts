@@ -1,7 +1,7 @@
 "use strict";
 
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 import * as mkdirp from 'mkdirp';
 
@@ -10,8 +10,7 @@ import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';
 import {ILayoutContext} from './StructureWriter';
 
-var _mkdirp = denodeify(mkdirp);
-var fswritefile = denodeify(fs.writeFile);
+var fsoutputfile = denodeify(fs.outputFile);
 
 export class TagListWriter implements IComponentWriter {
   constructor(private styleguide: Styleguide) {}
@@ -94,14 +93,7 @@ export class TagListWriter implements IComponentWriter {
       /** shorthand to the styleguide config */
       var config = this.styleguide.config;
 
-      /** creating the target folder path (like mkdir -p), if it doesn't exist */
-      _mkdirp(config.target.toString())
-
-      /** create the plain component list */
-      .then(() => {
-        /** applying here, because of stupid method defintion with multiargs :/ */
-        return fswritefile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)]);
-      })
+      fsoutputfile.apply(this, [path.resolve(config.cwd, config.target, "components.html"), compListTemplate(context)])
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
 
