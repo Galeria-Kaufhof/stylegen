@@ -20,23 +20,18 @@ var Cli = rewire('../../dist/Cli');
 describe('Configuration dependencies:', function() {
   var testResults = `${__dirname}/results/dependencies_test`;
   var testCWD = `${__dirname}/fixtures/dependencies_test`;
+  var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
   afterEach(function(done) {
-    // fs.remove(path.resolve(testResults), function() {
-    //   return done();
-    // });
-    return done();
+    fs.remove(path.resolve(testResults), function() {
+      return done();
+    });
   });
 
-  describe('with configured style deps', function () {
-    var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
-
-    it('should contain the content inside of the head tag', function () {
-      let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
-
+  describe('with configured js and style deps the page', function () {
+    it('should contain the link and script tags', function () {
       let a = Cli.__get__('build')({ cwd: testCWD })
 
-      // file  assertions!
       .then(res => {
           return fsreadfile(path.resolve(testResults, 'components.html'))
           .then((content) => {
@@ -59,30 +54,30 @@ describe('Configuration dependencies:', function() {
 
       });
 
-      return assert.isFulfilled(a, "navigation entries available");
+      return assert.isFulfilled(a, "dependencies available");
     });
   });
 
-  describe('with a defined head template', function () {
-    var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
-
-    it('should contain the content inside of the head tag', function () {
-      let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
-
+  describe('with a defined head template the page', function () {
+    it('should contain the template content inside of the head tag', function () {
       let a = Cli.__get__('build')({ cwd: testCWD })
 
-      // file  assertions!
       .then(res => {
           return fsreadfile(path.resolve(testResults, 'components.html'))
           .then((content) => {
             var $ = cheerio.load(content);
 
+            var cssRef = $('head link[rel=stylesheet][href="included/test.css"]');
+
+            if (cssRef.length !== 1) {
+              return Promise.reject(`Expected to have exactly one reference to the stylesheet, but found ${cssRef.length}`);
+            }
+
             return Promise.resolve(true);
           });
-
       });
 
-      return assert.isFulfilled(a, "navigation entries available");
+      return assert.isFulfilled(a, "templates available");
     });
   });
 });
