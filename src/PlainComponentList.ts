@@ -14,6 +14,11 @@ interface IComponentLayoutContext {
   jsDeps?: string[];
 }
 
+interface IBuildConfig {
+  tags?: string[];
+  components?: string[];
+}
+
 var fsoutputfile = denodeify(fs.outputFile);
 
 /**
@@ -75,16 +80,19 @@ export class PlainComponentList implements IComponentWriter {
     return array1.filter((a:T) => array2.indexOf(a) != -1);
   }
 
-  public build(tags?: string[]):Promise<IComponentWriter> {
+  public build(config:IBuildConfig):Promise<IComponentWriter> {
+    config = config || {};
+
     return new Promise((resolve, reject) => {
 
       var context:IComponentLayoutContext = {};
 
       try {
         /** get all all components, registered in the styleguide */
-        var components:Component[] = this.styleguide.components.all();
-        if (!!tags) {
-          components = components.filter((c:Component) => this.intersect(c.tags, tags).length == tags.length);
+        var components:Component[] = this.styleguide.components.all(config.components);
+
+        if (!!config.tags) {
+          components = components.filter((c:Component) => this.intersect(c.tags, config.tags).length == config.tags.length);
         }
 
         var componentViews:IViewComponent[] = components
@@ -100,7 +108,6 @@ export class PlainComponentList implements IComponentWriter {
 
         /** set context for rendering the component list */
         context.components = componentViews;
-
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
         reject(e);

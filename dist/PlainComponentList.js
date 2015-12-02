@@ -55,14 +55,15 @@ class PlainComponentList {
         }
         return array1.filter((a) => array2.indexOf(a) != -1);
     }
-    build(tags) {
+    build(config) {
+        config = config || {};
         return new Promise((resolve, reject) => {
             var context = {};
             try {
                 /** get all all components, registered in the styleguide */
-                var components = this.styleguide.components.all();
-                if (!!tags) {
-                    components = components.filter((c) => this.intersect(c.tags, tags).length == tags.length);
+                var components = this.styleguide.components.all(config.components);
+                if (!!config.tags) {
+                    components = components.filter((c) => this.intersect(c.tags, config.tags).length == config.tags.length);
                 }
                 var componentViews = components
                     .filter((c) => c.config.namespace === this.styleguide.config.namespace)

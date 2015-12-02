@@ -12,6 +12,7 @@ import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
+import {warn} from './Logger';
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -73,7 +74,7 @@ export class Page {
       // var docFactory = this.config.styleguide.docFactory;
       switch(this.config.type) {
         case "md":
-          contentPromise = Doc.create(path.resolve(this.config.content), this.config.label).load()
+          contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
           .then((doc) => {
 
             var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
@@ -83,17 +84,23 @@ export class Page {
           });
           break;
         case "tags":
-          contentPromise = new PlainComponentList(this.config.styleguide).build(this.config.content);
+          contentPromise = new PlainComponentList(this.config.styleguide).build({tags: this.config.content});
+          break;
+        case "components":
+          contentPromise = new PlainComponentList(this.config.styleguide).build({ components: this.config.content });
           break;
         default:
           /** FOR UNKNOWN TYPES */
-          console.error("Page.buildContent - config.type unknown", this.config.type);
-          contentPromise = Promise.resolve(this);
+          warn("Page.buildContent - config.type unknown", this.config.type);
+          contentPromise = Promise.resolve(null);
 
       }
 
       return contentPromise.then((content: ICompilableContent) => {
-        this.content = content.compiled;
+        if (content !== null) {
+          this.content = content.compiled;
+        }
+
         return this;
       });
   }
@@ -114,13 +121,16 @@ export class Page {
   }
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
-    var pageContext:IPageLayoutContext = Object.assign({}, context);
-    pageContext.content = this.content;
+    if (!!this.content) {
+      var pageContext:IPageLayoutContext = Object.assign({}, context);
+      pageContext.content = this.content;
 
-    /** applying here, because of stupid method defintion with multiargs :/ */
-
-    return fsoutputfile.apply(this, [this.target, layout(pageContext)])
-    .then(page => this.writeChildren(layout, context))
-    .then((file:any) => this);
+      /** applying here, because of stupid type defintion with multiargs :/ */
+      return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+      .then(page => this.writeChildren(layout, context))
+      .then((file:any) => this);
+    } else {
+      return Promise.resolve(this);
+    }
   }
 }

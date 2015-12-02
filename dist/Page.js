@@ -5,6 +5,7 @@ var slug = require('slug');
 var denodeify = require('denodeify');
 var Doc_1 = require('./Doc');
 var PlainComponentList_1 = require('./PlainComponentList');
+var Logger_1 = require('./Logger');
 var fsoutputfile = denodeify(fs.outputFile);
 class Page {
     constructor(config, parent) {
@@ -45,7 +46,7 @@ class Page {
         // var docFactory = this.config.styleguide.docFactory;
         switch (this.config.type) {
             case "md":
-                contentPromise = Doc_1.Doc.create(path.resolve(this.config.content), this.config.label).load()
+                contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
                     .then((doc) => {
                     var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
                     doc.compiled = pageLayout({ content: doc.compiled });
@@ -53,15 +54,20 @@ class Page {
                 });
                 break;
             case "tags":
-                contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build(this.config.content);
+                contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ tags: this.config.content });
+                break;
+            case "components":
+                contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content });
                 break;
             default:
                 /** FOR UNKNOWN TYPES */
-                console.error("Page.buildContent - config.type unknown", this.config.type);
-                contentPromise = Promise.resolve(this);
+                Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
+                contentPromise = Promise.resolve(null);
         }
         return contentPromise.then((content) => {
-            this.content = content.compiled;
+            if (content !== null) {
+                this.content = content.compiled;
+            }
             return this;
         });
     }
@@ -80,12 +86,17 @@ class Page {
         }
     }
     write(layout, context) {
-        var pageContext = Object.assign({}, context);
-        pageContext.content = this.content;
-        /** applying here, because of stupid method defintion with multiargs :/ */
-        return fsoutputfile.apply(this, [this.target, layout(pageContext)])
-            .then(page => this.writeChildren(layout, context))
-            .then((file) => this);
+        if (!!this.content) {
+            var pageContext = Object.assign({}, context);
+            pageContext.content = this.content;
+            /** applying here, because of stupid type defintion with multiargs :/ */
+            return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+                .then(page => this.writeChildren(layout, context))
+                .then((file) => this);
+        }
+        else {
+            return Promise.resolve(this);
+        }
     }
 }
 exports.Page = Page;

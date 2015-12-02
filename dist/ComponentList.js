@@ -12,7 +12,10 @@ class ComponentList {
     keys() {
         return Object.keys(this.components);
     }
-    all() {
+    all(ids) {
+        if (!!ids && ids.length > 0) {
+            return ids.map(id => this.find(id));
+        }
         return this.keys().map(key => this.find(key));
     }
 }

@@ -21,7 +21,11 @@ export class ComponentList {
     return Object.keys(this.components);
   }
 
-  all():Component[] {
+  all(ids: string[]):Component[] {
+    if (!!ids && ids.length > 0) {
+      return ids.map(id => this.find(id));
+    }
+
     return this.keys().map(key => this.find(key));
   }
 }
