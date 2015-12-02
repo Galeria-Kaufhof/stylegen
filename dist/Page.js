@@ -5,6 +5,7 @@ var slug = require('slug');
 var denodeify = require('denodeify');
 var Doc_1 = require('./Doc');
 var PlainComponentList_1 = require('./PlainComponentList');
+var Logger_1 = require('./Logger');
 var fsoutputfile = denodeify(fs.outputFile);
 class Page {
     constructor(config, parent) {
@@ -57,7 +58,7 @@ class Page {
                 break;
             default:
                 /** FOR UNKNOWN TYPES */
-                console.error("Page.buildContent - config.type unknown", this.config.type);
+                Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
                 contentPromise = Promise.resolve(this);
         }
         return contentPromise.then((content) => {

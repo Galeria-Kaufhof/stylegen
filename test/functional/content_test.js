@@ -10,6 +10,8 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 var assert = require('chai').assert;
 
+var YAML = require('js-yaml');
+
 var cheerio = require("cheerio");
 
 var rewire = require('rewire');
@@ -57,6 +59,8 @@ describe('Configuration content:', function() {
     });
 
     it('should create a nested navigation for the content structure', function () {
+      let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
+
       let a = Cli.__get__('build')({ cwd: testCWD })
 
       // file  assertions!
@@ -69,8 +73,8 @@ describe('Configuration content:', function() {
             var navEntries = $('.test-stylegen-main-nav > a');
             var childLinks = nav.find('.children');
 
-            if (navEntries.length !== 3) {
-              return Promise.reject("Expected to have exactly 2 links in first nav layer");
+            if (navEntries.length !== sgConfig.content.length) {
+              return Promise.reject(`Expected to have exactly ${sgConfig.content.length} links in first nav layer`);
             }
 
             var mdPageText = 'MarkdownPage';

@@ -12,6 +12,7 @@ import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
+import {warn} from './Logger';
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -87,7 +88,7 @@ export class Page {
           break;
         default:
           /** FOR UNKNOWN TYPES */
-          console.error("Page.buildContent - config.type unknown", this.config.type);
+          warn("Page.buildContent - config.type unknown", this.config.type);
           contentPromise = Promise.resolve(this);
 
       }

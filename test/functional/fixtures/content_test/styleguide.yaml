@@ -18,3 +18,10 @@ content:
   - label: MarkdownPage2
     type: md
     content: 'test2.md'
+
+  - label: ManualCompListing
+    type: components
+    content:
+      - app.a
+      - app.b
+      - app.c
