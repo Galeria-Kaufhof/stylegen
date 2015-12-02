@@ -43,6 +43,17 @@ describe('Configuration content:', function() {
       return assert.isFulfilled(a, "files available");
     });
 
+    it('should create html files for each component list', function () {
+      let a = Cli.__get__('build')({ cwd: testCWD })
+
+      // file  assertions!
+      .then(res => {
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'manualcomplisting.html')));
+      });
+
+      return assert.isFulfilled(a, "files available");
+    });
+
     it('should create html files for each tag page', function () {
       let a = Cli.__get__('build')({ cwd: testCWD })
 

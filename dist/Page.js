@@ -59,10 +59,12 @@ class Page {
             default:
                 /** FOR UNKNOWN TYPES */
                 Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
-                contentPromise = Promise.resolve(this);
+                contentPromise = Promise.resolve(null);
         }
         return contentPromise.then((content) => {
-            this.content = content.compiled;
+            if (content !== null) {
+                this.content = content.compiled;
+            }
             return this;
         });
     }

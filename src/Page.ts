@@ -89,12 +89,15 @@ export class Page {
         default:
           /** FOR UNKNOWN TYPES */
           warn("Page.buildContent - config.type unknown", this.config.type);
-          contentPromise = Promise.resolve(this);
+          contentPromise = Promise.resolve(null);
 
       }
 
       return contentPromise.then((content: ICompilableContent) => {
-        this.content = content.compiled;
+        if (content !== null) {
+          this.content = content.compiled;
+        }
+        
         return this;
       });
   }
