@@ -14,8 +14,8 @@ var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
 describe('Configuration content:', function() {
-  var testCWD = "test/integration/fixtures/content_test";
-  var testResults = "test/integration/results/content_test";
+  var testResults = `${__dirname}/results/content_test`;
+  var testCWD = `${__dirname}/fixtures/content_test`;
 
   describe('with given pages', function () {
 

@@ -12,8 +12,8 @@ var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
 describe('Configuration assets:', function() {
-  var testResults = "test/integration/results/assets_test";
-  var testCWD = "test/integration/fixtures/assets_test";
+  var testResults = `${__dirname}/results/assets_test`;
+  var testCWD = `${__dirname}/fixtures/assets_test`;
 
   afterEach(function(done) {
     fs.remove(path.resolve(testResults), function() {
@@ -23,7 +23,6 @@ describe('Configuration assets:', function() {
 
   describe('with a styleguide default assets', function () {;
     it('should create a copy for each default asset in the target folder', function () {
-      let testCWD = "test/integration/fixtures/assets_test";
       let a = Cli.__get__('setupStyleguide')({ cwd: testCWD })
 
       .then(res => {
