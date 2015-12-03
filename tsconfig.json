@@ -36,7 +36,6 @@
         "src/StructureReader.ts",
         "src/StructureWriter.ts",
         "src/Styleguide.ts",
-        "src/TagListWriter.ts",
         "src/View.ts",
         "typings/denodeify/denodeify.d.ts",
         "typings/es6-promise/es6-promise.d.ts",

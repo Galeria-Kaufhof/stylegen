@@ -1,4 +1,7 @@
 "use strict";
+var fs = require('fs-extra');
+var path = require('path');
+var Logger_1 = require('./Logger');
 var ComponentRegistry_1 = require('./ComponentRegistry');
 var PlainComponentList_1 = require('./PlainComponentList');
 var ContentStructureWriter_1 = require('./ContentStructureWriter');
@@ -28,14 +31,44 @@ class StructureWriter {
         return new Promise((resolve, reject) => {
             var layoutContext = {};
             var type = 'plain';
-            try {
-                layoutContext.cssDeps = this.styleguide.config.dependencies.styles;
+            if (!!this.styleguide.config.dependencies) {
+                try {
+                    layoutContext.cssDeps = this.styleguide.config.dependencies.styles;
+                }
+                catch (e) { }
+                try {
+                    layoutContext.jsDeps = this.styleguide.config.dependencies.js;
+                }
+                catch (e) { }
+                if (!!this.styleguide.config.dependencies.templates) {
+                    if (!!this.styleguide.config.dependencies.templates.head) {
+                        try {
+                            layoutContext.head = this.styleguide.config.dependencies.templates.head;
+                            if (typeof layoutContext.head === "string") {
+                                layoutContext.head = [layoutContext.head];
+                            }
+                            layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+                        }
+                        catch (e) {
+                            Logger_1.warn("StructureWriter.write: dependencies.head", e.message);
+                            Logger_1.log(e.stack);
+                        }
+                    }
+                    if (!!this.styleguide.config.dependencies.templates.bottom) {
+                        try {
+                            layoutContext.bottom = this.styleguide.config.dependencies.templates.bottom;
+                            if (typeof layoutContext.bottom === "string") {
+                                layoutContext.bottom = [layoutContext.bottom];
+                            }
+                            layoutContext.bottom = layoutContext.bottom.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+                        }
+                        catch (e) {
+                            Logger_1.warn("StructureWriter.write: dependencies.bottom", e.message);
+                            Logger_1.log(e.stack);
+                        }
+                    }
+                }
             }
-            catch (e) { }
-            try {
-                layoutContext.jsDeps = this.styleguide.config.dependencies.js;
-            }
-            catch (e) { }
             if (!!this.styleguide.config.content) {
                 type = "content-config";
             }

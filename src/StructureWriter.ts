@@ -1,5 +1,8 @@
 "use strict";
 
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import {log, warn, error} from './Logger';
 import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
@@ -11,6 +14,7 @@ import {ContentStructureWriter} from './ContentStructureWriter';
 export interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
+  head?: string[];
   components?: any;
 }
 
@@ -48,10 +52,37 @@ export class StructureWriter {
       var layoutContext:ILayoutContext = {};
       var type:string = 'plain';
 
-      try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
+      if (!!this.styleguide.config.dependencies) {
+        try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /** ok, no style dependencies */ }
 
-      try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+        try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) { /** ok, no js dependencies */ }
 
+        if (!!this.styleguide.config.dependencies.templates) {
+          if (!!this.styleguide.config.dependencies.templates.head) {
+            try {
+              layoutContext.head = this.styleguide.config.dependencies.templates.head;
+
+              if (typeof layoutContext.head === "string") {
+                layoutContext.head = [layoutContext.head];
+              }
+
+              layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+            } catch(e) { warn("StructureWriter.write: dependencies.head", e.message); log(e.stack); }
+          }
+
+          if (!!this.styleguide.config.dependencies.templates.bottom) {
+            try {
+              layoutContext.bottom = this.styleguide.config.dependencies.templates.bottom;
+
+              if (typeof layoutContext.bottom === "string") {
+                layoutContext.bottom = [layoutContext.bottom];
+              }
+
+              layoutContext.bottom = layoutContext.bottom.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+            } catch(e) { warn("StructureWriter.write: dependencies.bottom", e.message); log(e.stack); }
+          }
+        }
+      }
       if (!!this.styleguide.config.content) {
         type = "content-config";
       }

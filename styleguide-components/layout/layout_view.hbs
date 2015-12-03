@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="{{this}}">
   {{/each}}
 
+  {{#if head}}
+    <!-- SYLEGEN: dependencies.templates.head -->
+    {{{ head }}}
+    <!-- SYLEGEN: dependencies.templates.head (end) -->
+  {{else}}
+    <!-- SYLEGEN: dependencies.templates.head NO DEPS -->
+  {{/if}}
   <link rel="stylesheet" href="/stylegen-assets/defaults.css">
 
   <style>
@@ -81,5 +88,13 @@
   {{#each jsDeps}}
     <script src="{{this}}"></script>
   {{/each}}
+
+  {{#if bottom}}
+    <!-- SYLEGEN: dependencies.templates.bottom -->
+    {{{ bottom }}}
+    <!-- SYLEGEN: dependencies.templates.bottom (end) -->
+  {{else}}
+    <!-- SYLEGEN: dependencies.templates.bottom NO DEPS -->
+  {{/if}}
 </body>
 </html>
