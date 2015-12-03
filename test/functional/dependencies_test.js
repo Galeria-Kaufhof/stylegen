@@ -86,4 +86,27 @@ describe('Configuration dependencies:', function() {
       return assert.isFulfilled(a, "templates available");
     });
   });
+
+  describe('with a defined foot template the page', function () {
+    it('should contain the template content at the end of the body tag', function () {
+      let a = Cli.__get__('build')({ cwd: testCWD })
+
+      .then(res => {
+          return fsreadfile(path.resolve(testResults, 'components.html'))
+          .then((content) => {
+            var $ = cheerio.load(content);
+
+            var jsRef = $('body script[src="test-bop.js"]');
+
+            if (jsRef.length !== 1) {
+              return Promise.reject(`Expected to have exactly one reference to the script tag, but found ${jsRef.length}`);
+            }
+
+            return Promise.resolve(true);
+          });
+      });
+
+      return assert.isFulfilled(a, "templates available");
+    });
+  });
 });

@@ -1,6 +1,7 @@
 "use strict";
 var fs = require('fs-extra');
 var path = require('path');
+var Logger_1 = require('./Logger');
 var ComponentRegistry_1 = require('./ComponentRegistry');
 var PlainComponentList_1 = require('./PlainComponentList');
 var ContentStructureWriter_1 = require('./ContentStructureWriter');
@@ -33,11 +34,17 @@ class StructureWriter {
             try {
                 layoutContext.cssDeps = this.styleguide.config.dependencies.styles;
             }
-            catch (e) { }
+            catch (e) {
+                Logger_1.warn("StructureWriter.write: dependencies.styles", e.message);
+                Logger_1.log(e.stack);
+            }
             try {
                 layoutContext.jsDeps = this.styleguide.config.dependencies.js;
             }
-            catch (e) { }
+            catch (e) {
+                Logger_1.warn("StructureWriter.write:  dependencies.js", e.message);
+                Logger_1.log(e.stack);
+            }
             try {
                 layoutContext.head = this.styleguide.config.dependencies.templates.head;
                 if (typeof layoutContext.head === "string") {
@@ -45,7 +52,21 @@ class StructureWriter {
                 }
                 layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
             }
-            catch (e) { }
+            catch (e) {
+                Logger_1.warn("StructureWriter.write: dependencies.head", e.message);
+                Logger_1.log(e.stack);
+            }
+            try {
+                layoutContext.bottom = this.styleguide.config.dependencies.templates.bottom;
+                if (typeof layoutContext.bottom === "string") {
+                    layoutContext.bottom = [layoutContext.bottom];
+                }
+                layoutContext.bottom = layoutContext.bottom.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+            }
+            catch (e) {
+                Logger_1.warn("StructureWriter.write: dependencies.bottom", e.message);
+                Logger_1.log(e.stack);
+            }
             if (!!this.styleguide.config.content) {
                 type = "content-config";
             }

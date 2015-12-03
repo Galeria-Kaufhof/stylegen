@@ -11,4 +11,4 @@ dependencies:
     head:
       - head_template.html
       - head2_template.html
-    eop: end_of_page_template.html
+    bottom: bottom_of_page_template.html

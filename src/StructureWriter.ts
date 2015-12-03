@@ -2,7 +2,7 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {error} from './Logger';
+import {log, warn, error} from './Logger';
 import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
@@ -52,9 +52,9 @@ export class StructureWriter {
       var layoutContext:ILayoutContext = {};
       var type:string = 'plain';
 
-      try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { /**  ok, no css deps */ }
+      try { layoutContext.cssDeps = this.styleguide.config.dependencies.styles; } catch(e) { warn("StructureWriter.write: dependencies.styles", e.message); log(e.stack); }
 
-      try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) {  /**  ok, no js deps */ }
+      try { layoutContext.jsDeps = this.styleguide.config.dependencies.js; } catch(e) { warn("StructureWriter.write:  dependencies.js", e.message); log(e.stack); }
 
       try {
         layoutContext.head = this.styleguide.config.dependencies.templates.head;
@@ -64,8 +64,17 @@ export class StructureWriter {
         }
 
         layoutContext.head = layoutContext.head.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
-        
-      } catch(e) { }
+      } catch(e) { warn("StructureWriter.write: dependencies.head", e.message); log(e.stack); }
+
+      try {
+        layoutContext.bottom = this.styleguide.config.dependencies.templates.bottom;
+
+        if (typeof layoutContext.bottom === "string") {
+          layoutContext.bottom = [layoutContext.bottom];
+        }
+
+        layoutContext.bottom = layoutContext.bottom.map(file => fs.readFileSync(path.resolve(this.styleguide.config.cwd, file))).join('\n');
+      } catch(e) { warn("StructureWriter.write: dependencies.bottom", e.message); log(e.stack); }
 
       if (!!this.styleguide.config.content) {
         type = "content-config";
