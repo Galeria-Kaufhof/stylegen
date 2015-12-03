@@ -36,6 +36,15 @@ This file must be located in the project root and declares the project settings.
 |---------------------------|-----------------------------|--------------------
 | styles                    |                             | styles that should be linked in the head section of your page
 | js                        |                             | js that is loaded at the end of your body tag
+| templates                 |                             | see dependecy templates
+
+#### Dependencies Templates
+
+| Property                  | Default                     | Description     
+|---------------------------|-----------------------------|--------------------
+| head                      | []                          | may contain a list of filepathes, of that each content is placed in the head tag
+| bottom                    | []                          | may contain a list of filepathes, of that each content is placed in right before the closing body tag
+
 
 #### Assets
 
