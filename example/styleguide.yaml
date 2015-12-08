@@ -55,6 +55,12 @@ dependencies:
     - https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.js
     - dist/app.js
 
+  templates:
+    head:
+      - "templates/custom-meta-tags.html"
+      - "templates/in-page-styles.html"
+    bottom: "templates/bottom.html"
+
 assets:
   - src: dist
     target: dist

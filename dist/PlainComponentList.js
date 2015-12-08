@@ -31,8 +31,7 @@ class PlainComponentList {
             var context = {
                 id: component.slug,
                 headline: component.config.label || component.id,
-                // TODO: insert component.context as context
-                template: component.view.template({}),
+                template: component.view.template(component.config.viewContext || {}),
                 docs: component.docs.map(d => {
                     return { "label": d.name, "content": d.compiled };
                 }),

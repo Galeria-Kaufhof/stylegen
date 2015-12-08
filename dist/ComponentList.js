@@ -16,7 +16,7 @@ class ComponentList {
         if (!!ids && ids.length > 0) {
             return ids.map(id => this.find(id));
         }
-        return this.keys().map(key => this.find(key));
+        return this.keys().map(key => this.find(key)).filter(x => !!x);
     }
 }
 exports.ComponentList = ComponentList;

@@ -18,6 +18,7 @@ export interface IComponentConfig {
   label?: string;
   docs?: Doc[];
   tags?: string[];
+  viewContext?: {};
 }
 
 /**
