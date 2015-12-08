@@ -15,6 +15,7 @@ export interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
   head?: string[];
+  bottom?: string[];
   components?: any;
 }
 
