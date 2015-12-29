@@ -60,12 +60,12 @@ class PlainComponentList {
             var context = {};
             try {
                 /** get all all components, registered in the styleguide */
-                var components = this.styleguide.components.all(config.components);
+                var components = this.styleguide.components.all(config && config.components);
                 if (!!config.tags) {
                     components = components.filter((c) => this.intersect(c.tags, config.tags).length == config.tags.length);
                 }
                 var componentViews = components
-                    .filter((c) => c.config.namespace === this.styleguide.config.namespace)
+                    .filter((c) => c && c.config && c.config.namespace === this.styleguide.config.namespace)
                     .map((c) => this.buildViewComponent(c))
                     .filter((c) => c !== null);
                 /** set context for rendering the component list */
