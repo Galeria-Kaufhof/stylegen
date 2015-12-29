@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Components</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- TODO: reference stylegen styles in here -->
+  <!-- TODO: make css deps more dynamic, maybe allow tag reference here -->
+    <link rel="stylesheet" href="assets/test.css">
+
+    <!-- SYLEGEN: dependencies.templates.head -->
+    <link rel="stylesheet" href="included/test.css">
+
+<link rel="stylesheet" href="included/test2.css">
+
+    <!-- SYLEGEN: dependencies.templates.head (end) -->
+  <link rel="stylesheet" href="/stylegen-assets/defaults.css">
+
+  <style>
+  .material-icons {
+    position: relative;
+    top: 50%;
+  }
+
+  .children {
+    padding-left: 1em;
+  }
+
+  .mdl-layout__drawer .mdl-navigation .children .mdl-navigation__link {
+    padding-top: .3em;
+    padding-bottom: .3em;
+  }
+  </style>
+
+  <!-- TODO: allow head js tags -->
+</head>
+<body class="mdl-color--grey-100">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+              mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                    mdl-textfield--floating-label mdl-textfield--align-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon"
+                 for="fixed-header-drawer-exp">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="sample"
+                   id="fixed-header-drawer-exp">
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Title</span>
+      <nav class="mdl-navigation test-stylegen-main-nav">
+
+
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <div class="components">
+</div>
+
+      </div>
+    </main>
+  </div>
+
+    <script src="assets/test.js"></script>
+
+    <!-- SYLEGEN: dependencies.templates.bottom -->
+    <script src="test-bop.js"></script>
+
+    <!-- SYLEGEN: dependencies.templates.bottom (end) -->
+</body>
+</html>

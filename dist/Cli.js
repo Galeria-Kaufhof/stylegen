@@ -1,12 +1,11 @@
 "use strict";
-var path = require('path');
 var Styleguide_1 = require('./Styleguide');
 var Logger_1 = require('./Logger');
 function setupStyleguide(options) {
     let cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
     Logger_1.success('Styleguide.new:', 'initialize styleguide ...');
     return new Styleguide_1.Styleguide()
-        .initialize(cwd, path.resolve(__dirname, '..'))
+        .initialize(cwd)
         .then(function (styleguide) {
         Logger_1.success('Styleguide.new:', 'initialize finished');
         if (!options || !options.prepare) {
@@ -71,7 +70,6 @@ function createExport(options) {
 /**
  * resolve commandline arguments and run the appropriate command
  *
- * TODO: manage commandline arguments :)
  * TODO: add argument to clean the dist folder in beforehand
  */
 function command(command, args) {

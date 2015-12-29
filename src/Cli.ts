@@ -19,7 +19,7 @@ function setupStyleguide(options?:IResolveOptions):Promise<Styleguide> {
    * initialize the styleguide with the current working
    * directory of the app and the root of the stylegen tool itself.
    */
-  .initialize(cwd, path.resolve(__dirname, '..'))
+  .initialize(cwd)
   /** resolve styleguide structure */
   .then(function(styleguide) {
     success('Styleguide.new:' ,'initialize finished');
@@ -89,7 +89,6 @@ function createExport(options?: {}):Promise<Styleguide> {
 /**
  * resolve commandline arguments and run the appropriate command
  *
- * TODO: manage commandline arguments :)
  * TODO: add argument to clean the dist folder in beforehand
  */
 export function command(command:string, args:[string]):Promise<any> {

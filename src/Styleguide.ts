@@ -30,7 +30,9 @@ var flatten = (list) => list.reduce(
 );
 
 interface IStyleguideOptions {
-  renderer?: IRenderer;
+  configPath?: string;
+  target?: string;
+  cwd?: string;
 }
 
 interface IAssetCopyConfig {
@@ -63,7 +65,7 @@ export class Styleguide {
   public components: ComponentList;
   // public docFactory: DocFactory;
 
-  constructor(options?: IStyleguideOptions) {
+  constructor(private options?: IStyleguideOptions) {
     // nodes build the structure of our styleguide
     this.nodes = [];
     this.components = new ComponentList();
@@ -73,20 +75,37 @@ export class Styleguide {
    * Styleguide setup method to collect and merge configurations,
    * to set defaults and allow to overwrite them in the styleguide.json
    */
-  initialize(cwd: string, stylegenRoot: string):Promise<Styleguide> {
+  initialize(cwd: string, stylegenRoot?: string):Promise<Styleguide> {
     return new Promise<Styleguide>((resolve, reject) => {
-      var jsonConfig = path.resolve(cwd, 'styleguide.json');
-      var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
+      var configPath:string;
 
-      var stat;
-      try { stat = fs.statSync(jsonConfig); } catch(e) {}
+      if (!stylegenRoot) {
+        stylegenRoot = path.resolve(__dirname, '..');
+      }
 
-      var configPath:string = !!stat ? jsonConfig : yamlConfig;
+      if(!!this.options && !!this.options.configPath) {
+        configPath = this.options.configPath;
+      } else {
+        var jsonConfig = path.resolve(cwd, 'styleguide.json');
+        var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
+
+        var stat;
+        try { stat = fs.statSync(jsonConfig); } catch(e) {}
+
+        configPath = !!stat ? jsonConfig : yamlConfig;
+      }
+
+      var configurations:any[] = [configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml')];
+
+      if (!!this.options) {
+        configurations.unshift(this.options);
+      }
+
       /**
        * retrieve the config and bootstrap the styleguide object.
        */
       return new Config()
-      .load(configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml'))
+      .load(...configurations)
       .then((mergedConfig: Config) => {
         this.config = mergedConfig;
 
@@ -114,7 +133,6 @@ export class Styleguide {
 
         if (this.config.partials) {
           rendererConfig.partialLibs = this.config.partials.map(p => {
-            // TODO: exists is deprecated
             try {
               var partialLibPath = path.resolve(this.config.cwd, p);
               if (fs.statSync(partialLibPath)) {
@@ -124,7 +142,6 @@ export class Styleguide {
           });
         }
 
-        // TODO: hand in options for renderers
         this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
         this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
 

@@ -19,6 +19,7 @@ var flatten = (list) => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatte
 class Styleguide {
     // public docFactory: DocFactory;
     constructor(options) {
+        this.options = options;
         // nodes build the structure of our styleguide
         this.nodes = [];
         this.components = new ComponentList_1.ComponentList();
@@ -29,19 +30,32 @@ class Styleguide {
      */
     initialize(cwd, stylegenRoot) {
         return new Promise((resolve, reject) => {
-            var jsonConfig = path.resolve(cwd, 'styleguide.json');
-            var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
-            var stat;
-            try {
-                stat = fs.statSync(jsonConfig);
+            var configPath;
+            if (!stylegenRoot) {
+                stylegenRoot = path.resolve(__dirname, '..');
             }
-            catch (e) { }
-            var configPath = !!stat ? jsonConfig : yamlConfig;
+            if (!!this.options && !!this.options.configPath) {
+                configPath = this.options.configPath;
+            }
+            else {
+                var jsonConfig = path.resolve(cwd, 'styleguide.json');
+                var yamlConfig = path.resolve(cwd, 'styleguide.yaml');
+                var stat;
+                try {
+                    stat = fs.statSync(jsonConfig);
+                }
+                catch (e) { }
+                configPath = !!stat ? jsonConfig : yamlConfig;
+            }
+            var configurations = [configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml')];
+            if (!!this.options) {
+                configurations.unshift(this.options);
+            }
             /**
              * retrieve the config and bootstrap the styleguide object.
              */
             return new Config_1.Config()
-                .load(configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml'))
+                .load(...configurations)
                 .then((mergedConfig) => {
                 this.config = mergedConfig;
                 /** lets assure, that we have the current working directory in reach for later access */
@@ -61,7 +75,6 @@ class Styleguide {
                 rendererConfig.namespace = this.config.namespace;
                 if (this.config.partials) {
                     rendererConfig.partialLibs = this.config.partials.map(p => {
-                        // TODO: exists is deprecated
                         try {
                             var partialLibPath = path.resolve(this.config.cwd, p);
                             if (fs.statSync(partialLibPath)) {
@@ -74,7 +87,6 @@ class Styleguide {
                         }
                     });
                 }
-                // TODO: hand in options for renderers
                 this.htmlRenderer = new HandlebarsRenderer_1.HandlebarsRenderer(rendererConfig);
                 this.docRenderer = new MarkdownRenderer_1.MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
                 Doc_1.Doc.setRenderer(this.docRenderer);
