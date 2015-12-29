@@ -161,6 +161,33 @@ describe('Configuration content:', function() {
 
         return assert.isFulfilled(a, "navigation entries available");
       });
+
+      it('should have a preflight document if it is configured for that page', function () {
+        let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
+
+        let a = Cli.__get__('build')({ cwd: testCWD })
+
+        // file  assertions!
+        .then(res => {
+            return fsreadfile(path.resolve(testResults, 'complistingwithpreflight.html'))
+            .then((content) => {
+              var $ = cheerio.load(content);
+
+              var components = $('.components > [id^="component"]');
+
+              let compListConfig = sgConfig.content.filter(c => c.label === "CompListingWithPreflight")[0].content;
+
+              if ($('.preflight-text').length !== 1) {
+                return Promise.reject(`expected preflight text to be rendered exactly once, but found "${$('.preflight-text').length}"`);
+              }
+
+              return Promise.resolve(true);
+            });
+
+        });
+
+        return assert.isFulfilled(a, "navigation entries available");
+      });
     });
   });
 });

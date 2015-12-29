@@ -57,7 +57,17 @@ class Page {
                 contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ tags: this.config.content });
                 break;
             case "components":
-                contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content });
+                if (!!this.config.preflight) {
+                    contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
+                        .load()
+                        .then((preflight) => {
+                        console.log('PREFLIGHT:', preflight.compiled);
+                        return new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content, preflight: preflight.compiled });
+                    });
+                }
+                else {
+                    contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content });
+                }
                 break;
             default:
                 /** FOR UNKNOWN TYPES */

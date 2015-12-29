@@ -24,6 +24,7 @@ export interface IPageConfig {
   styleguide?: Styleguide;
   mdRenderer?: IRenderer;
   target?: string;
+  preflight?: string;
 }
 
 
@@ -87,7 +88,16 @@ export class Page {
           contentPromise = new PlainComponentList(this.config.styleguide).build({tags: this.config.content});
           break;
         case "components":
-          contentPromise = new PlainComponentList(this.config.styleguide).build({ components: this.config.content });
+          if (!!this.config.preflight) {
+            contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
+              .load()
+              .then((preflight) => {
+                console.log('PREFLIGHT:', preflight.compiled)
+                return new PlainComponentList(this.config.styleguide).build({ components: this.config.content, preflight: preflight.compiled });
+              });
+          } else {
+            contentPromise = new PlainComponentList(this.config.styleguide).build({ components: this.config.content});
+          }
           break;
         default:
           /** FOR UNKNOWN TYPES */

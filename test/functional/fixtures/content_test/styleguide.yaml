@@ -3,7 +3,7 @@ target: ../../results/content_test
 content:
   - label: MarkdownPage
     type: md
-    content: 'test.md'
+    content: test.md
 
   - label: Atoms
     type: tags
@@ -18,11 +18,17 @@ content:
 
   - label: MarkdownPage2
     type: md
-    content: 'test2.md'
+    content: test2.md
 
   - label: ManualCompListing
     type: components
     content:
       - app.c
       - app.b
+      - app.a
+
+  - label: CompListingWithPreflight
+    type: components
+    preflight: preflight.md
+    content:
       - app.a
