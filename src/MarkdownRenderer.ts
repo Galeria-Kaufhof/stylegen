@@ -4,7 +4,7 @@ import {IRenderer, IRendererOptions} from './Renderer';
 
 import * as Remarkable from 'remarkable';
 import {RemarkableStylegen} from './lib/RemarkableStylegen';
-var md = new Remarkable({ quotes: '' });
+var md = new Remarkable({ quotes: '', html: true });
 
 
 /**

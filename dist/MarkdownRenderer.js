@@ -1,7 +1,7 @@
 "use strict";
 var Remarkable = require('remarkable');
 var RemarkableStylegen_1 = require('./lib/RemarkableStylegen');
-var md = new Remarkable({ quotes: '' });
+var md = new Remarkable({ quotes: '', html: true });
 /**
  * Build in renderer, that is taken as default if no external is given.
  */
