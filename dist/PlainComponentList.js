@@ -57,7 +57,7 @@ class PlainComponentList {
     build(config) {
         config = config || {};
         return new Promise((resolve, reject) => {
-            var context = {};
+            var context = Object.assign({}, config);
             try {
                 /** get all all components, registered in the styleguide */
                 var components = this.styleguide.components.all(config.components);

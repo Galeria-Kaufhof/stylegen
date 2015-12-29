@@ -17,6 +17,7 @@ interface IComponentLayoutContext {
 interface IBuildConfig {
   tags?: string[];
   components?: string[];
+  preflight?: string;
 }
 
 var fsoutputfile = denodeify(fs.outputFile);
@@ -83,7 +84,7 @@ export class PlainComponentList implements IComponentWriter {
 
     return new Promise((resolve, reject) => {
 
-      var context:IComponentLayoutContext = {};
+      var context:IComponentLayoutContext = Object.assign({}, config);
 
       try {
         /** get all all components, registered in the styleguide */
