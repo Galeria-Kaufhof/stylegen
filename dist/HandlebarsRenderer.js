@@ -5,6 +5,9 @@ var atob = require('atob');
 Handlebars.registerHelper("pp", function (object) {
     return new Handlebars.SafeString(JSON.stringify(object));
 });
+Handlebars.registerHelper("eq", function (a, b) {
+    return a === b;
+});
 /**
  * Build in renderer, that is taken as default if no external is given.
  */
