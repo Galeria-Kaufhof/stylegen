@@ -16,6 +16,9 @@
     "slug": "^0.9.1",
     "unicorn": "0.0.1"
   },
+  "bin": {
+    "stylegen": "bin/stylegen"
+  },
   "scripts": {
     "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha --recursive --harmony"
   },

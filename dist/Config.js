@@ -69,14 +69,8 @@ class Config {
      * or the may also be an options hash,
      * or even a string containing json content.
      */
-    load(options, defaults) {
-        var _options = this.resolve(options);
-        var _defaults;
-        if (defaults != null) {
-            _defaults = this.resolve(defaults);
-        }
-        /** cleanup defaults promise if not there ;) */
-        var promises = [_defaults, _options].filter((x) => !!x);
+    load(...options) {
+        var promises = options.map(x => this.resolve(x)).reverse();
         /** resolve config files */
         return Promise.all(promises)
             .then(function (configs) {

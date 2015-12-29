@@ -52,7 +52,7 @@ export class Config implements IAbstractConfig {
    * If it is a file, load the file, if it is a string containing
    * a json string parse it, and if it is an object it is already fine.
    */
-  private resolve<T>(path_or_object: T):Promise<{}> {
+  private resolve(path_or_object: any):Promise<{}> {
     var result:Object;
     return new Promise((resolve, reject) => {
 
@@ -85,16 +85,8 @@ export class Config implements IAbstractConfig {
    * or the may also be an options hash,
    * or even a string containing json content.
    */
-  load<T,V>(options: T, defaults?: V):Promise<Config> {
-    var _options:Promise<{}> = this.resolve(options);
-    var _defaults:Promise<{}>;
-
-    if (defaults != null) {
-       _defaults = this.resolve(defaults);
-    }
-
-    /** cleanup defaults promise if not there ;) */
-    var promises = [_defaults, _options].filter((x) => !!x);
+  load(...options: any[]):Promise<Config> {
+    var promises = options.map(x => this.resolve(x)).reverse();
 
     /** resolve config files */
     return Promise.all(promises)
