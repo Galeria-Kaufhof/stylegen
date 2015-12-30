@@ -12,6 +12,10 @@ Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));
 });
 
+Handlebars.registerHelper("eq", function(a: {}, b: {}){
+  return a === b;
+});
+
 export interface ITemplateRenderer {
   partialLibs: any[];
   registerablePartial(name: string, content: string): string;
