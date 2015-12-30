@@ -38,10 +38,10 @@ content:
 
     children:
       - label: Forms
-        type: tags
+        type: components
         content:
-          - moleculars
-          - forms
+          - example.button
+          - example.text-field
 
 dependencies:
   styles:

@@ -1,6 +1,7 @@
 "use strict";
 
 import {Component} from './Component';
+import {warn} from './Logger';
 
 export class ComponentList {
   private components: {[s: string]:Component }
@@ -10,7 +11,13 @@ export class ComponentList {
   }
 
   find(name: string):Component {
-    return this.components[name];
+    let component = this.components[name];
+
+    if (!component) {
+      warn("ComponentList.find", `The component "${name}" could not be found.`, "Maybe it is not defined yet?!")
+    }
+
+    return component;
   }
 
   set(name: string, component: Component):void {
