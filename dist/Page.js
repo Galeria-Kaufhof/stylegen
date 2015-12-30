@@ -13,7 +13,7 @@ class Page {
         this.parent = parent;
         this.mdRenderer = this.config.mdRenderer;
         this.label = this.config.label;
-        this.slug = slug(this.label.toLowerCase());
+        this.slug = this.config.slug || slug(this.label.toLowerCase());
         if (!parent && this.config.target) {
             this.target = this.config.target;
         }

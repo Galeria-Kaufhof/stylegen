@@ -18,6 +18,7 @@ var fsoutputfile = denodeify(fs.outputFile);
 
 export interface IPageConfig {
   label?: string;
+  slug?: string;
   type?: string;
   content?: any;
   children?: Page[];
@@ -41,7 +42,7 @@ export class Page {
     this.mdRenderer = this.config.mdRenderer;
 
     this.label = this.config.label;
-    this.slug = slug(this.label.toLowerCase());
+    this.slug = this.config.slug || slug(this.label.toLowerCase());
 
     if(!parent && this.config.target) {
       this.target = this.config.target;
