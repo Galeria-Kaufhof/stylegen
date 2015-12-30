@@ -1,5 +1,8 @@
 "use strict";
 var path = require('path');
+var fs = require('fs-extra');
+var denodeify = require('denodeify');
+var fsreaddir = denodeify(fs.readdir);
 var Logger_1 = require('./Logger');
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
@@ -12,11 +15,10 @@ var Doc_1 = require('./Doc');
 class Component {
     /**
      * @param config - the parsed component.json file, enriched with current path and namespace.
-     * @param parent - the parent is used to distuingish components and "sub"-components
      */
-    constructor(config, parent) {
+    constructor(config, node) {
         this.config = config;
-        /** TODO: handle parent resolution and sub component naming, atm. it is useless */
+        this.node = node;
         this.id = this.config.id || path.basename(config.path);
         this.slug = `${this.config.namespace}-${this.id}`;
         this.id = `${this.config.namespace}.${this.id}`;
@@ -27,31 +29,34 @@ class Component {
      * that are reusable by other partials or view components.
      */
     buildPartials() {
+        var partialPromises;
         if (!!this.config.partials) {
             /**
              * load all Partials
              */
-            var partialPromises = this.config.partials.map((partialName) => {
+            partialPromises = this.config.partials.map((partialName) => {
                 var p = path.resolve(this.config.path, partialName);
                 /** add partial loading promise to promise collection */
                 return Partial_1.Partial.create(p, this.config.namespace).load();
             });
-            return Promise.all(partialPromises)
-                .then((partials) => {
-                this.partials = partials;
-                return this;
-            });
         }
         else if (!this.config.partials) {
-            // TODO: try to find  *_partial files in component path (this.config.path)
-            this.partials = [];
-            return Promise.resolve(this);
+            // TODO: make _partial suffix configurable, along with the other references to it
+            partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName) => {
+                var p = path.resolve(this.config.path, partialName);
+                return Partial_1.Partial.create(p, this.config.namespace).load();
+            });
         }
         else {
             this.partials = [];
             Logger_1.warn("WARN:", "Component.buildPartials", "Did not found any partials for Component", this.id);
             return Promise.resolve(this);
         }
+        return Promise.all(partialPromises)
+            .then((partials) => {
+            this.partials = partials;
+            return this;
+        });
     }
     /**
      * at the moment a Component can have exactly one view,
@@ -61,22 +66,22 @@ class Component {
      * to have a reusable snippet, register a Partial instead.
      */
     buildView() {
+        var viewPath;
         if (!!this.config.view) {
-            var p = path.resolve(this.config.path, this.config.view);
-            return View_1.View.create(p).load()
-                .then((view) => {
-                this.view = view;
-                return this;
-            });
+            viewPath = path.resolve(this.config.path, this.config.view);
         }
         else if (!this.config.view) {
-            // TODO: try to find  *_view files in component path (this.config.path)
-            return Promise.resolve(this);
+            viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x));
         }
         else {
             Logger_1.warn("WARN:", "Component.buildView", "Did not found a view for Component", this.id);
             return Promise.resolve(this);
         }
+        return View_1.View.create(viewPath).load()
+            .then((view) => {
+            this.view = view;
+            return this;
+        });
     }
     /**
      */

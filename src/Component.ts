@@ -1,11 +1,16 @@
 "use strict";
 
 import * as path from 'path';
+import * as fs from 'fs-extra';
+import * as denodeify from 'denodeify';
+
+var fsreaddir = denodeify(fs.readdir);
 
 import {warn} from './Logger';
 import {IRenderer} from './Renderer';
 import {Partial} from './Partial';
 import {View} from './View';
+import {Node} from './Node';
 import {Doc} from './Doc';
 
 /** configuration structure for the component settings, aka. component.json */
@@ -30,7 +35,6 @@ export class Component {
   id: string;
   partials: Partial[];
   view: View;
-  config: IComponentConfig;
   docs: Doc[];
   slug: string;
   tags: string[];
@@ -38,11 +42,8 @@ export class Component {
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
-   * @param parent - the parent is used to distuingish components and "sub"-components
    */
-  constructor(config:IComponentConfig, parent?: Component) {
-    this.config = config;
-    /** TODO: handle parent resolution and sub component naming, atm. it is useless */
+  constructor(public config:IComponentConfig, private node:Node) {
     this.id = this.config.id || path.basename(config.path);
     this.slug = `${this.config.namespace}-${this.id}`;
     this.id = `${this.config.namespace}.${this.id}`;
@@ -54,28 +55,27 @@ export class Component {
    * that are reusable by other partials or view components.
    */
   private buildPartials():Promise<Component> {
+    var partialPromises:Promise<Partial>[];
+
     if(!!this.config.partials) {
 
       /**
        * load all Partials
        */
-      var partialPromises:Promise<Partial>[] = this.config.partials.map((partialName:Partial) => {
+      partialPromises = this.config.partials.map((partialName:string) => {
         var p = path.resolve(this.config.path, partialName);
+
         /** add partial loading promise to promise collection */
         return Partial.create(p, this.config.namespace).load();
       });
 
-      return Promise.all(partialPromises)
-      .then((partials:Partial[]) => {
-        this.partials = partials;
-        return this;
-      });
-
     /** when no partials are configured, look for _partial.hbs files in the current path */
     } else if(!this.config.partials) {
-      // TODO: try to find  *_partial files in component path (this.config.path)
-      this.partials = [];
-      return Promise.resolve(this);
+      // TODO: make _partial suffix configurable, along with the other references to it
+      partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName:string) => {
+        var p = path.resolve(this.config.path, partialName);
+        return Partial.create(p, this.config.namespace).load();
+      });
 
     /** no partials configured, no problem.  */
     } else {
@@ -83,6 +83,12 @@ export class Component {
       warn("WARN:", "Component.buildPartials", "Did not found any partials for Component", this.id);
       return Promise.resolve(this);
     }
+
+    return Promise.all(partialPromises)
+    .then((partials:Partial[]) => {
+      this.partials = partials;
+      return this;
+    });
   }
 
   /**
@@ -93,25 +99,25 @@ export class Component {
    * to have a reusable snippet, register a Partial instead.
    */
   private buildView():Promise<Component> {
+    var viewPath:string;
     if(!!this.config.view) {
-      var p = path.resolve(this.config.path, this.config.view);
-
-      return View.create(p).load()
-      .then((view) => {
-        this.view = view;
-        return this;
-      });
+      viewPath = path.resolve(this.config.path, this.config.view);
 
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
     } else if(!this.config.view) {
-      // TODO: try to find  *_view files in component path (this.config.path)
-      return Promise.resolve(this);
+      viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x))
 
     /** no view found, no problem :) */
     } else {
       warn("WARN:", "Component.buildView", "Did not found a view for Component", this.id);
       return Promise.resolve(this);
     }
+
+    return View.create(viewPath).load()
+    .then((view) => {
+      this.view = view;
+      return this;
+    });
   }
 
   /**
