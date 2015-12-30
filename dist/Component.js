@@ -49,7 +49,6 @@ class Component {
         }
         else {
             this.partials = [];
-            Logger_1.warn("WARN:", "Component.buildPartials", "Did not found any partials for Component", this.id);
             return Promise.resolve(this);
         }
         return Promise.all(partialPromises)
@@ -74,7 +73,7 @@ class Component {
             viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x));
         }
         else {
-            Logger_1.warn("WARN:", "Component.buildView", "Did not found a view for Component", this.id);
+            Logger_1.warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
             return Promise.resolve(this);
         }
         return View_1.View.create(viewPath).load()
@@ -104,9 +103,6 @@ class Component {
         }
         else {
             this.docs = [];
-            if (!!this.config.namespace && this.config.namespace != 'sg') {
-                Logger_1.warn("WARN:", "Component.buildDocs", "Did not found any docs for Component", this.id);
-            }
             return Promise.resolve(this);
         }
     }

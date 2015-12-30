@@ -1,10 +1,15 @@
 "use strict";
+var Logger_1 = require('./Logger');
 class ComponentList {
     constructor() {
         this.components = {};
     }
     find(name) {
-        return this.components[name];
+        let component = this.components[name];
+        if (!component) {
+            Logger_1.warn("ComponentList.find", `The component "${name}" could not be found.`, "Maybe it is not defined yet?!");
+        }
+        return component;
     }
     set(name, component) {
         this.components[name] = component;

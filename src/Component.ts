@@ -80,7 +80,6 @@ export class Component {
     /** no partials configured, no problem.  */
     } else {
       this.partials = [];
-      warn("WARN:", "Component.buildPartials", "Did not found any partials for Component", this.id);
       return Promise.resolve(this);
     }
 
@@ -109,7 +108,7 @@ export class Component {
 
     /** no view found, no problem :) */
     } else {
-      warn("WARN:", "Component.buildView", "Did not found a view for Component", this.id);
+      warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
       return Promise.resolve(this);
     }
 
@@ -143,11 +142,6 @@ export class Component {
     /** no partials configured, no problem.  */
     } else {
       this.docs = [];
-
-      if (!!this.config.namespace && this.config.namespace != 'sg') {
-        warn("WARN:", "Component.buildDocs", "Did not found any docs for Component", this.id);
-      }
-
       return Promise.resolve(this);
     }
   }
