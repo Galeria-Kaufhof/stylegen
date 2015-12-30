@@ -93,7 +93,6 @@ export class Page {
             contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
               .load()
               .then((preflight) => {
-                console.log('PREFLIGHT:', preflight.compiled)
                 return new PlainComponentList(this.config.styleguide).build({ components: this.config.content, preflight: preflight.compiled });
               });
           } else {

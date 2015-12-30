@@ -66,14 +66,7 @@ class Node {
                 else if (!config.namespace) {
                     config.namespace = 'app';
                 }
-                /**
-                 * if the parent node is also a component, lets handle this node
-                 * as sub component to the parent one.
-                 */
-                if (!!this.parent && this.parent.isComponent()) {
-                    parentComponent = this.parent.component;
-                }
-                return new Component_1.Component(config, parentComponent).build()
+                return new Component_1.Component(config, this).build()
                     .then((component) => {
                     this.component = component;
                     return this;
