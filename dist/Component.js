@@ -71,6 +71,10 @@ class Component {
         }
         else if (!this.config.view) {
             viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x));
+            if (!viewPath) {
+                return Promise.resolve(this);
+            }
+            viewPath = path.resolve(this.config.path, viewPath);
         }
         else {
             Logger_1.warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
