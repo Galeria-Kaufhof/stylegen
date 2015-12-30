@@ -88,7 +88,7 @@ export class PlainComponentList implements IComponentWriter {
 
       try {
         /** get all all components, registered in the styleguide */
-        var components:Component[] = this.styleguide.components.all(config.components);
+        var components:Component[] = this.styleguide.components.all(config && config.components);
 
         if (!!config.tags) {
           components = components.filter((c:Component) => this.intersect(c.tags, config.tags).length == config.tags.length);
@@ -97,7 +97,7 @@ export class PlainComponentList implements IComponentWriter {
         var componentViews:IViewComponent[] = components
 
         /** remove components not element of this styleguide configuration */
-        .filter((c:Component) => c.config.namespace === this.styleguide.config.namespace)
+        .filter((c:Component) => c && c.config && c.config.namespace === this.styleguide.config.namespace)
 
         /** build the collected IViewComponents */
         .map((c:Component) => this.buildViewComponent(c))
