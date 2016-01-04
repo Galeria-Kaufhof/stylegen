@@ -16,7 +16,7 @@ import {Doc} from './Doc';
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
   id?: string;
-  partials?: Partial[];
+  partials?: string[];
   view?: View;
   path?: string;
   namespace?: string;
@@ -64,8 +64,6 @@ export class Component {
        */
       partialPromises = this.config.partials.map((partialName:string) => {
         var p = path.resolve(this.config.path, partialName);
-
-        /** add partial loading promise to promise collection */
         return Partial.create(p, this.config.namespace).load();
       });
 
@@ -76,11 +74,6 @@ export class Component {
         var p = path.resolve(this.config.path, partialName);
         return Partial.create(p, this.config.namespace).load();
       });
-
-    /** no partials configured, no problem.  */
-    } else {
-      this.partials = [];
-      return Promise.resolve(this);
     }
 
     return Promise.all(partialPromises)
@@ -111,10 +104,6 @@ export class Component {
       }
 
       viewPath = path.resolve(this.config.path, viewPath);
-    /** no view found, no problem :) */
-    } else {
-      warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
-      return Promise.resolve(this);
     }
 
     return View.create(viewPath).load()
@@ -144,7 +133,7 @@ export class Component {
         return this;
       });
 
-    /** no partials configured, no problem.  */
+    /** no docs configured, no problem.  */
     } else {
       this.docs = [];
       return Promise.resolve(this);
