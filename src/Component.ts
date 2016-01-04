@@ -68,7 +68,7 @@ export class Component {
       });
 
     /** when no partials are configured, look for _partial.hbs files in the current path */
-    } else if(!this.config.partials) {
+    } else {
       // TODO: make _partial suffix configurable, along with the other references to it
       partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName:string) => {
         var p = path.resolve(this.config.path, partialName);
@@ -96,7 +96,7 @@ export class Component {
       viewPath = path.resolve(this.config.path, this.config.view);
 
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
-    } else if(!this.config.view) {
+    } else {
       viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x))
 
       if (!viewPath) {
