@@ -16,7 +16,7 @@ import {Doc} from './Doc';
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
   id?: string;
-  partials?: Partial[];
+  partials?: string[];
   view?: View;
   path?: string;
   namespace?: string;
@@ -64,23 +64,16 @@ export class Component {
        */
       partialPromises = this.config.partials.map((partialName:string) => {
         var p = path.resolve(this.config.path, partialName);
-
-        /** add partial loading promise to promise collection */
         return Partial.create(p, this.config.namespace).load();
       });
 
     /** when no partials are configured, look for _partial.hbs files in the current path */
-    } else if(!this.config.partials) {
+    } else {
       // TODO: make _partial suffix configurable, along with the other references to it
       partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName:string) => {
         var p = path.resolve(this.config.path, partialName);
         return Partial.create(p, this.config.namespace).load();
       });
-
-    /** no partials configured, no problem.  */
-    } else {
-      this.partials = [];
-      return Promise.resolve(this);
     }
 
     return Promise.all(partialPromises)
@@ -103,7 +96,7 @@ export class Component {
       viewPath = path.resolve(this.config.path, this.config.view);
 
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
-    } else if(!this.config.view) {
+    } else {
       viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x))
 
       if (!viewPath) {
@@ -111,10 +104,6 @@ export class Component {
       }
 
       viewPath = path.resolve(this.config.path, viewPath);
-    /** no view found, no problem :) */
-    } else {
-      warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
-      return Promise.resolve(this);
     }
 
     return View.create(viewPath).load()
@@ -127,28 +116,31 @@ export class Component {
   /**
    */
   private buildDocs():Promise<Component> {
+    var docPromises:Promise<Doc>[];
+
     if(!!this.config.docs) {
       /**
        * load all Docs
        */
       var docs = this.config.docs;
-      var docPromises:Promise<Doc>[] = Object.keys(docs).map((doc:string) => {
+      docPromises = Object.keys(docs).map((doc:string) => {
         var p = path.resolve(this.config.path, docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });
 
-      return Promise.all(docPromises)
-      .then((loadedDocs:Doc[]) => {
-        this.docs = loadedDocs;
-        return this;
-      });
-
-    /** no partials configured, no problem.  */
     } else {
-      this.docs = [];
-      return Promise.resolve(this);
+      docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc:string) => {
+        var p = path.resolve(this.config.path, doc);
+        return Doc.create(p, doc).load();
+      });
     }
+
+    return Promise.all(docPromises)
+    .then((loadedDocs:Doc[]) => {
+      this.docs = loadedDocs;
+      return this;
+    });
   }
 
   /**
