@@ -39,7 +39,8 @@ describe('Configuration content:', function() {
         })
         .then(res => {
           return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage2.html')));
-        });
+        })
+        .catch(e => { console.log(e.stack) ; throw(e) });
 
         return assert.isFulfilled(a, "files available");
       });
@@ -65,7 +66,8 @@ describe('Configuration content:', function() {
 
         .then(res => {
           return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms', 'forms.html')));
-        });
+        })
+        .catch(e => { console.log(e.stack) ; throw(e) });
 
         return assert.isFulfilled(a, "files available");
       });
@@ -118,7 +120,8 @@ describe('Configuration content:', function() {
               return Promise.resolve(true);
             });
 
-        });
+        })
+        .catch(e => { console.log(e.stack) ; throw(e) });
 
         return assert.isFulfilled(a, "navigation entries available");
       });
@@ -157,7 +160,8 @@ describe('Configuration content:', function() {
               return Promise.resolve(true);
             });
 
-        });
+        })
+        .catch(e => { console.log(e.stack) ; throw(e) });
 
         return assert.isFulfilled(a, "navigation entries available");
       });
@@ -184,7 +188,8 @@ describe('Configuration content:', function() {
               return Promise.resolve(true);
             });
 
-        });
+        })
+        .catch(e => { console.log(e.stack) ; throw(e) });
 
         return assert.isFulfilled(a, "navigation entries available");
       });

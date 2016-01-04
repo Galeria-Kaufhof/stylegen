@@ -58,7 +58,8 @@ describe('Configuration dependencies:', function() {
             return Promise.resolve(true);
           });
 
-      });
+      })
+      .catch(e => { console.log(e.stack) ; throw(e) });
 
       return assert.isFulfilled(a, "dependencies available");
     });
@@ -81,7 +82,8 @@ describe('Configuration dependencies:', function() {
 
             return Promise.resolve(true);
           });
-      });
+      })
+      .catch(e => { console.log(e.stack) ; throw(e) });
 
       return assert.isFulfilled(a, "templates available");
     });
@@ -104,7 +106,8 @@ describe('Configuration dependencies:', function() {
 
             return Promise.resolve(true);
           });
-      });
+      })
+      .catch(e => { console.log(e.stack) ; throw(e) });
 
       return assert.isFulfilled(a, "templates available");
     });
