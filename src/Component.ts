@@ -116,28 +116,31 @@ export class Component {
   /**
    */
   private buildDocs():Promise<Component> {
+    var docPromises:Promise<Doc>[];
+
     if(!!this.config.docs) {
       /**
        * load all Docs
        */
       var docs = this.config.docs;
-      var docPromises:Promise<Doc>[] = Object.keys(docs).map((doc:string) => {
+      docPromises = Object.keys(docs).map((doc:string) => {
         var p = path.resolve(this.config.path, docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });
 
-      return Promise.all(docPromises)
-      .then((loadedDocs:Doc[]) => {
-        this.docs = loadedDocs;
-        return this;
-      });
-
-    /** no docs configured, no problem.  */
     } else {
-      this.docs = [];
-      return Promise.resolve(this);
+      docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc:string) => {
+        var p = path.resolve(this.config.path, doc);
+        return Doc.create(p, doc).load();
+      });
     }
+
+    return Promise.all(docPromises)
+    .then((loadedDocs:Doc[]) => {
+      this.docs = loadedDocs;
+      return this;
+    });
   }
 
   /**

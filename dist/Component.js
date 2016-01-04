@@ -3,7 +3,6 @@ var path = require('path');
 var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var fsreaddir = denodeify(fs.readdir);
-var Logger_1 = require('./Logger');
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var Doc_1 = require('./Doc');
@@ -36,20 +35,15 @@ class Component {
              */
             partialPromises = this.config.partials.map((partialName) => {
                 var p = path.resolve(this.config.path, partialName);
-                /** add partial loading promise to promise collection */
                 return Partial_1.Partial.create(p, this.config.namespace).load();
             });
         }
-        else if (!this.config.partials) {
+        else {
             // TODO: make _partial suffix configurable, along with the other references to it
             partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName) => {
                 var p = path.resolve(this.config.path, partialName);
                 return Partial_1.Partial.create(p, this.config.namespace).load();
             });
-        }
-        else {
-            this.partials = [];
-            return Promise.resolve(this);
         }
         return Promise.all(partialPromises)
             .then((partials) => {
@@ -69,16 +63,12 @@ class Component {
         if (!!this.config.view) {
             viewPath = path.resolve(this.config.path, this.config.view);
         }
-        else if (!this.config.view) {
+        else {
             viewPath = this.node.files.find(x => new RegExp("^view.hbs$").test(x));
             if (!viewPath) {
                 return Promise.resolve(this);
             }
             viewPath = path.resolve(this.config.path, viewPath);
-        }
-        else {
-            Logger_1.warn("WARN:", "Component.buildView", "Did not found a view for Component, the component will NOT be listed in the Styleguide", this.id);
-            return Promise.resolve(this);
         }
         return View_1.View.create(viewPath).load()
             .then((view) => {
@@ -89,26 +79,29 @@ class Component {
     /**
      */
     buildDocs() {
+        var docPromises;
         if (!!this.config.docs) {
             /**
              * load all Docs
              */
             var docs = this.config.docs;
-            var docPromises = Object.keys(docs).map((doc) => {
+            docPromises = Object.keys(docs).map((doc) => {
                 var p = path.resolve(this.config.path, docs[doc]);
                 /** add partial loading promise to promise collection */
                 return Doc_1.Doc.create(p, doc).load();
             });
-            return Promise.all(docPromises)
-                .then((loadedDocs) => {
-                this.docs = loadedDocs;
-                return this;
-            });
         }
         else {
-            this.docs = [];
-            return Promise.resolve(this);
+            docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc) => {
+                var p = path.resolve(this.config.path, doc);
+                return Doc_1.Doc.create(p, doc).load();
+            });
         }
+        return Promise.all(docPromises)
+            .then((loadedDocs) => {
+            this.docs = loadedDocs;
+            return this;
+        });
     }
     /**
      * building a component means to retrieve the flesh and bones of the component,

@@ -78,9 +78,9 @@ As well as for styleguides we recommend the usage of yaml as configuration langu
 | label                     |                             | label is used for the component headline for example
 | namespace                 | styleguide namespace        | prefix for partials
 | tags                      | []                          | list of tags, that is used for content structure building
-| partials                  | []                          | reusable list of partials for creating entities of this component. Partials are prefixed with the configured namespace.
-| view                      | ""                          | the view is the renderable preview inside of the component
-| docs                      | []                          | list of markdown documents, that describe the component. See "Documentation"
+| partials                  | [*_partial.hbs]             | reusable list of partials for creating entities of this component. Partials are prefixed with the configured namespace.
+| view                      | "view.hbs"                  | the view is the renderable preview inside of the component
+| docs                      | [*.md]                      | list of markdown documents, that describe the component. See "Documentation"
 
 #### Documentation
 
