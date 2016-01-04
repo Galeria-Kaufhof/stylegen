@@ -1,0 +1,9 @@
+target: ../../results/view_config_test
+namespace: test
+
+content:
+  - label: ManualCompListing
+    type: components
+    content:
+      - test.a
+      - test.b

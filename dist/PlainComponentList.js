@@ -31,7 +31,7 @@ class PlainComponentList {
             var context = {
                 id: component.slug,
                 headline: component.config.label || component.id,
-                template: component.view.template(component.config.viewContext || {}),
+                template: component.view.template(component.config.viewContext || component.view.config || {}),
                 docs: component.docs.map(d => {
                     return { "label": d.name, "content": d.compiled };
                 }),
