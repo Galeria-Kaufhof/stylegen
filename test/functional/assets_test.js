@@ -27,7 +27,8 @@ describe('Configuration assets:', function() {
 
       .then(res => {
         return Promise.resolve(fs.statSync(path.resolve(testResults, 'stylegen-assets', 'defaults.css')));
-      });
+      })
+      .catch(e => { console.log(e.stack) ; throw(e) });
 
       return assert.isFulfilled(a, "files available");
     });
@@ -43,7 +44,8 @@ describe('Configuration assets:', function() {
       })
       .then(res => {
         return Promise.resolve(fs.statSync(path.resolve(testResults, 'assets2', 'test.js')));
-      });
+      })
+      .catch(e => { console.log(e.stack) ; throw(e) });
 
       return assert.isFulfilled(a, "files available");
     });
