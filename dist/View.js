@@ -1,16 +1,21 @@
 "use strict";
 var path = require('path');
 var CompilableContent_1 = require('./CompilableContent');
+// fm = require('front-matter')
+var fm = require('front-matter');
 class View extends CompilableContent_1.CompilableContent {
     constructor(filePath) {
         // TODO: remove fixed _view suffix
-        super(filePath, path.basename(filePath, '_view.hbs'));
+        super(filePath, path.basename(filePath, '(_view)?.hbs'));
     }
-    // changing return type, because View has additional properties
     load() {
         return super.load()
             .then(view => {
-            this.template = this.renderer.engine.compile(this.raw);
+            var content = fm(this.raw);
+            if (Object.keys(content.attributes).length) {
+                this.config = content.attributes;
+            }
+            this.template = this.renderer.engine.compile(content.body);
             return this;
         });
     }
