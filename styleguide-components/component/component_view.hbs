@@ -1,8 +1,9 @@
 
   <article id="component-{{id}}">
     <header>
-      <h2 class="mdl-card__title-text">{{headline}}</h2>
+      <h2>{{headline}}</h2>
     </header>
+
 
     <ul>
       {{#each docs}}
@@ -16,7 +17,7 @@
       </div>
     {{/each}}
 
-    <div id="{{id}}-config">
+    <!-- <div id="{{id}}-config">
       <dl>
         <dd>ID:</dd>
         <dt>{{component.id}}</dt>
@@ -26,18 +27,29 @@
           {{#each component.partials}}{{this.name}}{{#unless @last}},{{/unless}}{{/each}}
         </dt>
       </dl>
-    </div>
+    </div> -->
 
-    <div class="mdl-card mdl-shadow--2d mdl-cell mdl-cell--12-col">
-      <div class="mdl-card__supporting-text">
+    {{#unless states}}
+      {{! just show the default template }}
+      <div>
         {{{template}}}
       </div>
-    </div>
 
-    <div class="mdl-card mdl-shadow--2d  mdl-cell mdl-cell--12-col">
-      <div class="mdl-card__supporting-text">
+      <!-- <div class="mdl-card__supporting-text">
         <code class="language-markup">{{template}}</code>
-      </div>
-    </div>
+      </div> -->
+    {{else}}
+      {{! show the rendering of each modifier (default view should be configured as a modifier, if it should be listed too) }}
+      {{#each states}}
+        {{#with this as |state| }}
+          <h3>{{state.label}}</h3>
+          <p>{{state.doc}}</p>
+          <div>
+            {{{state.content}}}
+          </div>
+        {{/with}}
+      {{/each}}
+
+    {{/unless}}
 
   </article>

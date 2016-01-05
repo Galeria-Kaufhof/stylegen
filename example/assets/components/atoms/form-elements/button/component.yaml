@@ -6,7 +6,17 @@ partials:
   - button_partial.hbs
   - button_primary_partial.hbs
   - button_danger_partial.hbs
-view: button_view.hbs
+view: view.hbs
 docs:
   business: business.md
   technical: technical.md
+states:
+  default:
+    label: Standard Button
+    doc: 'state_default.md'
+  primary:
+    label: Primäre Aktion
+    doc: 'state_primary.md'
+    context:
+      text: SO OMG!
+      classes: primary
