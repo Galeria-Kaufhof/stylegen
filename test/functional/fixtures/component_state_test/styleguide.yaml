@@ -1,0 +1,8 @@
+target: ../../results/component_state_test
+namespace: test
+
+content:
+  - label: ManualCompListing
+    type: components
+    content:
+      - test.a
