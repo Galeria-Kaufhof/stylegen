@@ -146,7 +146,6 @@ var Styleguide = (function () {
             var _this3 = this;
 
             return new StructureWriter_1.StructureWriter(this.renderer, this.nodes, this).setup().then(function (structureWriter) {
-                Logger_1.success("Styleguide.write", "writer setup finished");
                 return structureWriter.write();
             }).then(function (result) {
                 return _this3;

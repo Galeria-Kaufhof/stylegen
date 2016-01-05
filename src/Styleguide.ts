@@ -186,7 +186,6 @@ export class Styleguide {
     return new StructureWriter(this.renderer, this.nodes, this)
     .setup()
     .then((structureWriter) => {
-      success("Styleguide.write", "writer setup finished");
       return structureWriter.write();
     })
     .then((result) => this);
