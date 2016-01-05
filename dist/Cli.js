@@ -1,29 +1,25 @@
 "use strict";
+
 var Styleguide_1 = require('./Styleguide');
 var Logger_1 = require('./Logger');
 function setupStyleguide(options) {
-    let cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
+    var cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
     Logger_1.success('Styleguide.new:', 'initialize styleguide ...');
-    return new Styleguide_1.Styleguide()
-        .initialize(cwd)
-        .then(function (styleguide) {
+    return new Styleguide_1.Styleguide().initialize(cwd).then(function (styleguide) {
         Logger_1.success('Styleguide.new:', 'initialize finished');
         if (!options || !options.prepare) {
             Logger_1.success('Styleguide.prepare:', 'preparing the styleguide target ...');
             return styleguide.prepare();
-        }
-        else {
+        } else {
             return Promise.resolve(styleguide);
         }
     });
 }
 function resolveStyleguide(options) {
-    return setupStyleguide(options)
-        .then(function (styleguide) {
+    return setupStyleguide(options).then(function (styleguide) {
         Logger_1.success('Styleguide.read:', 'start reading ...');
         return styleguide.read();
-    })
-        .then(function (styleguide) {
+    }).then(function (styleguide) {
         Logger_1.success('Styleguide.read:', 'finished reading');
         return Promise.resolve(styleguide);
     });
@@ -33,19 +29,16 @@ function resolveStyleguide(options) {
  */
 function build(options) {
     var options = Object.assign({}, options);
-    return resolveStyleguide(options)
-        .then(function (styleguide) {
+    return resolveStyleguide(options).then(function (styleguide) {
         Logger_1.success('Styleguide.write:', 'start writing ...');
         return styleguide.write();
-    })
-        .then(function (styleguide) {
+    }).then(function (styleguide) {
         Logger_1.success('Styleguide.write:', 'finished writing');
         return styleguide;
-    })
-        .catch(function (e) {
+    }).catch(function (e) {
         Logger_1.error("Cli.build", "failed to build Styleguide", e);
         console.log(e.callee, e.stack);
-        throw (e);
+        throw e;
     });
 }
 ;
@@ -55,14 +48,12 @@ function build(options) {
 function createExport(options) {
     var options = Object.assign({}, options, { prepare: false });
     /** we need no styleguide preparation, like asset copying etc. */
-    return resolveStyleguide(options)
-        .then(function (styleguide) {
+    return resolveStyleguide(options).then(function (styleguide) {
         return styleguide.export();
-    })
-        .catch(function (e) {
+    }).catch(function (e) {
         Logger_1.error("Cli.createExport", "failed to build Styleguide", e);
         console.log(e.callee, e.stack);
-        throw (e);
+        throw e;
     });
     /** create static styleguide structure */
 }

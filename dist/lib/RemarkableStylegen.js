@@ -1,6 +1,15 @@
+'use strict';
+
 function stylegenBlock(engine) {
     return function (state, startLine, endLine, silent) {
-        var marker, len, params, nextLine, mem, haveEndMarker = false, pos = state.bMarks[startLine] + state.tShift[startLine], max = state.eMarks[startLine];
+        var marker,
+            len,
+            params,
+            nextLine,
+            mem,
+            haveEndMarker = false,
+            pos = state.bMarks[startLine] + state.tShift[startLine],
+            max = state.eMarks[startLine];
         /** if line is shorter that 3 chars omit */
         if (pos + 3 > max) {
             return false;
@@ -8,8 +17,8 @@ function stylegenBlock(engine) {
         marker = state.src.charCodeAt(pos);
         /** if marker doesn't start with character leave */
         if (marker !== 0x5B /* [ */) {
-            return false;
-        }
+                return false;
+            }
         // scan marker length
         mem = pos;
         pos = state.skipChars(pos, marker);
@@ -78,19 +87,25 @@ function stylegenBlock(engine) {
 }
 function stylegenInline(engine) {
     return function (state, silent) {
-        var start, max, marker, matchStart, matchEnd, pos = state.pos, ch = state.src.charCodeAt(pos), closed = false;
+        var start,
+            max,
+            marker,
+            matchStart,
+            matchEnd,
+            pos = state.pos,
+            ch = state.src.charCodeAt(pos),
+            closed = false;
         // look forward to a potential start
         if (ch !== 0x5B /* [ */) {
-            return false;
-        }
+                return false;
+            }
         start = pos;
         pos++;
         max = state.posMax;
         while (pos < max) {
             if (state.src.charCodeAt(pos) !== 0x5D /* ] */) {
-                pos++;
-            }
-            else {
+                    pos++;
+                } else {
                 closed = true;
                 break;
             }
@@ -110,13 +125,11 @@ function stylegenInline(engine) {
                     state.pending += "";
                 }
                 state.pos += marker.length + 2;
-            }
-            else {
+            } else {
                 return false;
             }
             return true;
-        }
-        else {
+        } else {
             state.pos = start;
             return false;
         }

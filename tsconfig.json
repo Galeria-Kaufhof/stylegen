@@ -5,6 +5,7 @@
         "moduleResolution": "node",
         "target": "ES6",
         "removeComments": false,
+        "rootDir": "src",
         "outDir": "dist"
     },
     "filesGlob": [
