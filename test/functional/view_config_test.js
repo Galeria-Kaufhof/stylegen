@@ -10,8 +10,6 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 var assert = require('chai').assert;
 
-var YAML = require('js-yaml');
-
 var cheerio = require("cheerio");
 
 var rewire = require('rewire');
