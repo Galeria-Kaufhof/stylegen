@@ -6,6 +6,7 @@
   "dependencies": {
     "atob": "^1.1.2",
     "btoa": "^1.1.2",
+    "chalk": "^1.1.1",
     "denodeify": "^1.2.1",
     "front-matter": "^2.0.4",
     "fs-extra": "^0.26.2",
@@ -14,8 +15,7 @@
     "js-yaml": "^3.4.3",
     "minimist": "^1.2.0",
     "remarkable": "^1.6.0",
-    "slug": "^0.9.1",
-    "unicorn": "0.0.1"
+    "slug": "^0.9.1"
   },
   "bin": {
     "stylegen": "bin/stylegen"

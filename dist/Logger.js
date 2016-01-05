@@ -1,6 +1,6 @@
 "use strict";
 
-require('unicorn').install();
+var chalk = require('chalk');
 function log() {
     if (!process.env.MUTE_CLI_LOG) {
         for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -17,7 +17,7 @@ function error() {
     }
 
     if (args.length > 1) {
-        args[0] = args[0].red();
+        args[0] = chalk.red(args[0]);
     }
     if (!process.env.MUTE_CLI_LOG) {
         console.error.apply(console, args);
@@ -30,7 +30,7 @@ function warn() {
     }
 
     if (args.length > 1) {
-        args[0] = args[0].yellow();
+        args[0] = chalk.yellow(args[0]);
     }
     log.apply(console, args);
 }
@@ -41,7 +41,7 @@ function success() {
     }
 
     if (args.length > 1) {
-        args[0] = args[0].green();
+        args[0] = chalk.green(args[0]);
     }
     log.apply(console, args);
 }
