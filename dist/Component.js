@@ -11,6 +11,7 @@ var fsreaddir = denodeify(fs.readdir);
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var Doc_1 = require('./Doc');
+var State_1 = require('./State');
 /**
  * Components are the representation of the real asset components,
  * that are represented by a component.json file inside of an component folder.
@@ -128,6 +129,29 @@ var Component = (function () {
             });
         }
         /**
+         */
+
+    }, {
+        key: 'buildStates',
+        value: function buildStates() {
+            var _this4 = this;
+
+            var statePromises;
+            if (!!this.config.states) {
+                /** prepare states (and especially their docs) */
+                statePromises = Object.keys(this.config.states).map(function (id) {
+                    var config = _this4.config.states[id];
+                    return new State_1.State(id, _this4, config).load();
+                });
+            } else {
+                statePromises = [Promise.resolve(null)];
+            }
+            return Promise.all(statePromises).then(function (loadedStates) {
+                _this4.states = loadedStates;
+                return _this4;
+            });
+        }
+        /**
          * building a component means to retrieve the flesh and bones of the component,
          * that are described in its config
          *
@@ -137,13 +161,15 @@ var Component = (function () {
     }, {
         key: 'build',
         value: function build() {
-            var _this4 = this;
+            var _this5 = this;
 
             /** resolve the component partials at first */
             return this.buildPartials().then(function () {
-                return _this4.buildView();
+                return _this5.buildView();
             }).then(function () {
-                return _this4.buildDocs();
+                return _this5.buildStates();
+            }).then(function () {
+                return _this5.buildDocs();
             });
         }
     }]);

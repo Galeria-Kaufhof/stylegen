@@ -38,16 +38,26 @@ var PlainComponentList = (function () {
              * In case it has no view, we will not display the component for now.
              */
             if (!!component.view && !!component.view.template) {
+                var viewContext = component.config.viewContext || {};
+                var viewConfig = component.view.config || {};
+                var viewBaseContext = Object.assign({}, viewConfig, viewContext);
                 /** build the render context for the current component */
                 var context = {
                     id: component.slug,
                     headline: component.config.label || component.id,
-                    template: component.view.template(component.config.viewContext || component.view.config || {}),
+                    template: component.view.template(viewBaseContext),
                     docs: component.docs.map(function (d) {
                         return { "label": d.name, "content": d.compiled };
                     }),
                     component: component
                 };
+                if (!!component.config.states) {
+                    context.states = component.states.map(function (state) {
+                        var stateConfig = state.context || {};
+                        var stateContext = Object.assign({}, viewBaseContext, stateConfig);
+                        return { label: state.label, doc: state.doc.compiled, content: component.view.template(stateContext) };
+                    });
+                }
                 /** lookup the styleguide component template */
                 // TODO: handle/secure this law of demeter disaster :D
                 var compTemplate = this.styleguide.components.find('sg.component').view.template;

@@ -12,6 +12,11 @@ import {Partial} from './Partial';
 import {View} from './View';
 import {Node} from './Node';
 import {Doc} from './Doc';
+import {State, IStateConfig} from './State';
+
+interface IStateConfigs {
+  [id: string]: IStateConfig;
+}
 
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
@@ -24,6 +29,7 @@ export interface IComponentConfig {
   docs?: Doc[];
   tags?: string[];
   viewContext?: {};
+  states?: IStateConfigs[];
 }
 
 /**
@@ -39,6 +45,8 @@ export class Component {
   slug: string;
   tags: string[];
   htmlRenderer: IRenderer;
+  states: State[];
+
 
   /**
    * @param config - the parsed component.json file, enriched with current path and namespace.
@@ -144,6 +152,29 @@ export class Component {
   }
 
   /**
+   */
+  private buildStates():Promise<Component> {
+    var statePromises:Promise<State>[];
+
+    if(!!this.config.states) {
+      /** prepare states (and especially their docs) */
+      statePromises = Object.keys(this.config.states).map((id) => {
+        let config = this.config.states[id];
+        return new State(id, this, config).load();
+      });
+
+    } else {
+      statePromises = [Promise.resolve(null)];
+    }
+
+    return Promise.all(statePromises)
+    .then((loadedStates:State[]) => {
+      this.states = loadedStates;
+      return this;
+    });
+  }
+
+  /**
    * building a component means to retrieve the flesh and bones of the component,
    * that are described in its config
    *
@@ -154,6 +185,7 @@ export class Component {
     return this.buildPartials()
     /** after that lets read and build its view */
     .then(() => this.buildView())
+    .then(() => this.buildStates())
     .then(() => this.buildDocs());
   }
 }
