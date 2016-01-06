@@ -61,6 +61,7 @@ This file must be located in the project root and declares the project settings.
 | type                      |                             | either one of "md" or "tags", to define a page to be a plain markdown document or a list of components grouped by tags
 | content                   |                             | in case type is "md", content must be a relative path to that document, otherwise a list of tags is expected
 | children                  |                             | like content itself this is a list of page configurations
+| preflight                 |                             | a preflight markdown document that is rendered in front of a component listing (so it is only "valid" for nodes of type 'tags' or 'components')  
 
 
 
@@ -76,17 +77,31 @@ As well as for styleguides we recommend the usage of yaml as configuration langu
 |---------------------------|-----------------------------|--------------------
 | id                        | directory basename          | namespace unique identifier
 | label                     |                             | label is used for the component headline for example
-| namespace                 | styleguide namespace        | prefix for partials
+| namespace                 | app                         | prefix e.g. for components and partials
 | tags                      | []                          | list of tags, that is used for content structure building
 | partials                  | [*_partial.hbs]             | reusable list of partials for creating entities of this component. Partials are prefixed with the configured namespace.
 | view                      | "view.hbs"                  | the view is the renderable preview inside of the component
 | docs                      | [*.md]                      | list of markdown documents, that describe the component. See "Documentation"
+| states                    | {}                          | list of states a component may have, e.g. hover, disabled, active, etc. --> "States"
+| viewContext               |                             | Object context that is passed to the rendered view
 
 #### Documentation
 
 | Property                  | Default                     | Description     
 |---------------------------|-----------------------------|--------------------
 | key: value                |                             | key determines the label of a document, while the value is a component relative path to the document. (e.g. "business": "component-business.md")
+
+#### States
+
+| Property                  | Default                     | Description     
+|---------------------------|-----------------------------|--------------------
+| id: State                 |                             | an object with key as "id" for the state and a "State" as value
+
+#### States
+
+| Property                  | Default                     | Description     
+|---------------------------|-----------------------------|--------------------
+| id: State                 |                             |
 
 
 
