@@ -1,13 +1,11 @@
 <div class="components">
   {{#if preflight}}
-  <header class="preflight-text">
-    {{{preflight}}}
-  </header>
-
+    <header class="preflight-text">
+      {{{preflight}}}
+    </header>
   {{/if}}
-{{#each components}}
-  {{{compiled}}}
 
-  <hr>
-{{/each}}
+  {{#each components}}
+    {{{compiled}}}
+  {{/each}}
 </div>
