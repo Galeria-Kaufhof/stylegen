@@ -35,8 +35,8 @@ describe('Configured Components:', function() {
 
           var componentA = $('#component-test-a');
 
-          if (componentA.find('.base').length !== 2) {
-            return Promise.reject(`expected component a to have a view rendered for both states, but found "${componentA.find('.base').length}"`);
+          if (componentA.find('.base').length !== 3) {
+            return Promise.reject(`expected component a to have a view rendered for three states, but found "${componentA.find('.base').length}"`);
           }
 
           if (componentA.find('.base.hover').length !== 1 || componentA.find('.base.hover').text() !== "in hover state") {

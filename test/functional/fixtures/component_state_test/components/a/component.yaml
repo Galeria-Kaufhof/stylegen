@@ -2,6 +2,10 @@ states:
   default:
     label: Default Button
     doc: 'state_default.md'
+  withoutDoc:
+    label: Default Button
+    context:
+      text: Button without any description...
   hover:
     label: Hover
     doc: 'state_hover.md'
