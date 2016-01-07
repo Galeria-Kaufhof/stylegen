@@ -51,6 +51,7 @@ var Styleguide = function () {
                 var _ref;
 
                 var configPath;
+                _this.options = !!_this.options ? _this.options : {};
                 if (!stylegenRoot) {
                     stylegenRoot = path.resolve(__dirname, '..');
                 }
@@ -66,9 +67,7 @@ var Styleguide = function () {
                     configPath = !!stat ? jsonConfig : yamlConfig;
                 }
                 var configurations = [configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml')];
-                if (!!_this.options) {
-                    configurations.unshift(_this.options);
-                }
+                configurations.unshift(_this.options);
                 /**
                  * retrieve the config and bootstrap the styleguide object.
                  */
@@ -80,6 +79,9 @@ var Styleguide = function () {
                     _this.config.stylegenRoot = stylegenRoot;
                     _this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
                     _this.config.target = path.resolve(cwd, _this.config.target);
+                    if (!_this.config.sgTemplateRoot) {
+                        _this.config.sgTemplateRoot = path.resolve(path.dirname(require.resolve('stylegen-flatwhite')), 'dist');
+                    }
                     /** each and every styleguide should have a name ;) */
                     if (!_this.config.name) {
                         _this.config.name = path.basename(_this.config.cwd);
@@ -187,9 +189,9 @@ var Styleguide = function () {
             var _this5 = this;
 
             return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets')).then(function () {
-                return fscopy(path.resolve(_this5.config.stylegenRoot, 'styleguide-assets'),
+                return fscopy(path.resolve(_this5.config.sgTemplateRoot, 'styleguide-assets'),
                 // TODO: make "assets" path configurable
-                path.resolve(_this5.config.cwd, _this5.config.target, 'stylegen-assets'));
+                path.resolve(_this5.config.cwd, _this5.config.target, 'styleguide-assets'));
             }).then(function () {
                 if (!!_this5.config.assets) {
                     var copyPromises = _this5.config.assets.map(function (asset) {

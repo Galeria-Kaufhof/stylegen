@@ -53,6 +53,7 @@ export interface IStyleguideConfig {
   assets?: IAssetCopyConfig[];
   version?: string;
   partials?: string[];
+  sgTemplateRoot?: string;
 }
 
 export class Styleguide {
@@ -78,6 +79,7 @@ export class Styleguide {
   initialize(cwd: string, stylegenRoot?: string):Promise<Styleguide> {
     return new Promise<Styleguide>((resolve, reject) => {
       var configPath:string;
+      this.options = !!this.options ? this.options : {}
 
       if (!stylegenRoot) {
         stylegenRoot = path.resolve(__dirname, '..');
@@ -95,11 +97,11 @@ export class Styleguide {
         configPath = !!stat ? jsonConfig : yamlConfig;
       }
 
+
       var configurations:any[] = [configPath, path.resolve(stylegenRoot, 'styleguide-defaults.yaml')];
 
-      if (!!this.options) {
-        configurations.unshift(this.options);
-      }
+      configurations.unshift(this.options);
+
 
       /**
        * retrieve the config and bootstrap the styleguide object.
@@ -118,6 +120,10 @@ export class Styleguide {
         this.config.componentPaths.push(path.resolve(stylegenRoot, "styleguide-components"));
 
         this.config.target = path.resolve(cwd, this.config.target);
+
+        if (!this.config.sgTemplateRoot) {
+          this.config.sgTemplateRoot = path.resolve(path.dirname(require.resolve('stylegen-flatwhite')), 'dist');
+        }
 
         /** each and every styleguide should have a name ;) */
         if (!this.config.name) {
@@ -223,9 +229,9 @@ export class Styleguide {
     /** copy the styleguide related assets */
     .then(() => {
       return fscopy(
-        path.resolve(this.config.stylegenRoot, 'styleguide-assets'),
+        path.resolve(this.config.sgTemplateRoot, 'styleguide-assets'),
         // TODO: make "assets" path configurable
-        path.resolve(this.config.cwd, this.config.target, 'stylegen-assets'));
+        path.resolve(this.config.cwd, this.config.target, 'styleguide-assets'));
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {

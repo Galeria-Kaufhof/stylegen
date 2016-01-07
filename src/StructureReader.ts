@@ -49,7 +49,9 @@ export class StructureReader {
      * just a category folder (or maybe just empty :/)
      */
     var nodeLookups = componentPaths.map((p) => {
-      var nodeConfig:INodeOptions = {};
+      var nodeConfig:INodeOptions = {
+        styleguide: this.styleguide
+      };
 
       if (!!this.styleguide.config.namespace) {
         nodeConfig.namespace = this.styleguide.config.namespace;

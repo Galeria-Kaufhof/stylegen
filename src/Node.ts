@@ -5,6 +5,7 @@ import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 
 import {Config} from './Config';
+import {Styleguide} from './Styleguide';
 import {IComponentConfig} from './Component';
 import {Component} from './Component';
 import {Partial} from './Partial';
@@ -16,6 +17,7 @@ var fsreaddir = denodeify(fs.readdir);
 /** options, that can be handed to nodes */
 export interface INodeOptions {
   namespace?: string;
+  styleguide?: Styleguide;
 }
 
 /**

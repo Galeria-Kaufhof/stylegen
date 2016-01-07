@@ -42,8 +42,12 @@
     "cheerio": "^0.19.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
+    "gulp-plumber": "^1.0.1",
+    "gulp-stylus": "^2.2.0",
     "gulp-typescript": "^2.10.0",
+    "gulp-util": "^3.0.7",
     "mocha": "^2.3.4",
-    "rewire": "^2.5.0"
+    "rewire": "^2.5.0",
+    "stylegen-flatwhite": "git+ssh://git@gitlab.gkh-setu.de:gkh/stylegen-flatwhite.git"
   }
 }
