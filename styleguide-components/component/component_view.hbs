@@ -40,14 +40,14 @@
       </div> -->
     {{else}}
       {{! show the rendering of each modifier (default view should be configured as a modifier, if it should be listed too) }}
-      {{#each states}}
-        {{#with this as |state| }}
-          <h3>{{state.label}}</h3>
-          <p>{{state.doc}}</p>
-          <div>
-            {{{state.content}}}
-          </div>
-        {{/with}}
+      {{#each states as |state| }}
+        <h3>{{state.label}}</h3>
+        <p>{{state.doc}}</p>
+        <div>
+          {{#each state.content as |c| }}
+            {{{c}}}
+          {{/each}}
+        </div>
       {{/each}}
 
     {{/unless}}

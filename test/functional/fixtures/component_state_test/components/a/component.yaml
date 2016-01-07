@@ -6,5 +6,7 @@ states:
     label: Hover
     doc: 'state_hover.md'
     context:
-      text: in hover state
-      classes: hover
+      - text: in hover state
+        classes: hover
+      - text: in hover state
+        classes: hover
