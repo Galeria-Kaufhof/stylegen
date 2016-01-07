@@ -79,7 +79,7 @@ export class PlainComponentList implements IComponentWriter {
           var stateConfig = state.context || {};
           var stateContext = Object.assign({}, viewBaseContext, stateConfig);
 
-          return { label: state.label, doc: state.doc.compiled, content: component.view.template(stateContext) };
+          return { label: state.label, doc: state.doc && state.doc.compiled, content: component.view.template(stateContext) };
         })
       }
 
