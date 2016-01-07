@@ -1,6 +1,6 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -14,7 +14,7 @@ var denodeify = require('denodeify');
 var CompilableContent_1 = require('./CompilableContent');
 var fsreadfile = denodeify(fs.readFile);
 
-var Partial = (function (_CompilableContent_1$) {
+var Partial = function (_CompilableContent_1$) {
     _inherits(Partial, _CompilableContent_1$);
 
     function Partial(filePath, namespace) {
@@ -53,6 +53,6 @@ var Partial = (function (_CompilableContent_1$) {
     }]);
 
     return Partial;
-})(CompilableContent_1.CompilableContent);
+}(CompilableContent_1.CompilableContent);
 
 exports.Partial = Partial;
