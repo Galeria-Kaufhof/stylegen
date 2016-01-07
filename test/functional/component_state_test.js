@@ -35,12 +35,12 @@ describe('Configured Components:', function() {
 
           var componentA = $('#component-test-a');
 
-          if (componentA.find('.base').length !== 3) {
-            return Promise.reject(`expected component a to have a view rendered for three states, but found "${componentA.find('.base').length}"`);
+          if (componentA.find('.base').length !== 4) {
+            return Promise.reject(`expected component a to have a view rendered for three states (and it sub state), but found "${componentA.find('.base').length}"`);
           }
 
-          if (componentA.find('.base.hover').length !== 1 || componentA.find('.base.hover').text() !== "in hover state") {
-            return Promise.reject(`expected component a to have a view rendered with context.text equal to "in hover state" but found "${componentA.find('.base.hover').text()}"`);
+          if (componentA.find('.base.hover').length !== 2 || $(componentA.find('.base.hover')[0]).text() !== "in hover state") {
+            return Promise.reject(`expected component a to have a view rendered with context.text equal to "in hover state" but found "${$(componentA.find('.base.hover')[0]).text()}"`);
           }
 
           return Promise.resolve(true);
