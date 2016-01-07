@@ -12,14 +12,14 @@ interface IState {
   id?: string;
   label?: string;
   doc?: Doc;
-  context?: string;
+  context?: {}|{}[];
 }
 
 
 export class State implements IState {
   public label: string;
   public doc: Doc;
-  public context: string;
+  public context: {}|{}[];
 
   constructor(public id:string, private component:Component, private config: IStateConfig) {
     this.label = config.label;

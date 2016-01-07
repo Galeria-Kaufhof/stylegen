@@ -53,9 +53,17 @@ var PlainComponentList = function () {
                 };
                 if (!!component.config.states) {
                     context.states = component.states.map(function (state) {
-                        var stateConfig = state.context || {};
-                        var stateContext = Object.assign({}, viewBaseContext, stateConfig);
-                        return { label: state.label, doc: state.doc && state.doc.compiled, content: component.view.template(stateContext) };
+                        var stateContent = [];
+                        if (state.context instanceof Array) {
+                            stateContent = state.context.map(function (context) {
+                                var stateContext = Object.assign({}, viewBaseContext, context);
+                                return component.view.template(stateContext);
+                            });
+                        } else {
+                            var stateContext = Object.assign({}, viewBaseContext, state.context);
+                            stateContent.push(component.view.template(stateContext));
+                        }
+                        return { label: state.label, doc: state.doc && state.doc.compiled, content: stateContent };
                     });
                 }
                 /** lookup the styleguide component template */

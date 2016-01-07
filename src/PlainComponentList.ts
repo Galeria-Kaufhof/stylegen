@@ -24,7 +24,7 @@ interface IComponentTemplateContext {
   id: string;
   headline: string;
   docs: {label: string, content: string}[];
-  states?: {label: string, doc: string, content: string}[];
+  states?: {label: string, doc: string, content: string[]}[];
   template: string;
   component: Component;
 }
@@ -76,10 +76,19 @@ export class PlainComponentList implements IComponentWriter {
 
       if (!!component.config.states) {
         context.states = component.states.map(state => {
-          var stateConfig = state.context || {};
-          var stateContext = Object.assign({}, viewBaseContext, stateConfig);
+          var stateContent:string[] = [];
 
-          return { label: state.label, doc: state.doc && state.doc.compiled, content: component.view.template(stateContext) };
+          if (state.context instanceof Array) {
+            stateContent = state.context.map(context => {
+              let stateContext = Object.assign({}, viewBaseContext, context);
+              return component.view.template(stateContext);
+            });
+          } else {
+            let stateContext = Object.assign({}, viewBaseContext, state.context);
+            stateContent.push(component.view.template(stateContext));
+          }
+
+          return { label: state.label, doc: state.doc && state.doc.compiled, content: stateContent };
         })
       }
 
