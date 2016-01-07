@@ -25,6 +25,9 @@
     },
     "fs-extra/fs-extra.d.ts": {
       "commit": "c2433e49a8b9ebf872ab26642c11adc613d89da9"
+    },
+    "chalk/chalk.d.ts": {
+      "commit": "81b951f1ac437d1eb5ff5171a0bfa6c467634b13"
     }
   }
 }
