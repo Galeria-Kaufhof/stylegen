@@ -88,7 +88,6 @@ export class PlainComponentList implements IComponentWriter {
             stateContent.push(component.view.template(stateContext));
           }
 
-
           return { label: state.label, doc: state.doc && state.doc.compiled, content: stateContent };
         })
       }
