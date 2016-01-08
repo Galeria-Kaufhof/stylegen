@@ -189,9 +189,9 @@ var Styleguide = function () {
             var _this5 = this;
 
             return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets')).then(function () {
-                return fscopy(path.resolve(_this5.config.sgTemplateRoot, 'styleguide-assets'),
+                return fscopy(path.resolve(_this5.config.sgTemplateRoot, 'stylegen-assets'),
                 // TODO: make "assets" path configurable
-                path.resolve(_this5.config.cwd, _this5.config.target, 'styleguide-assets'));
+                path.resolve(_this5.config.cwd, _this5.config.target, 'stylegen-assets'));
             }).then(function () {
                 if (!!_this5.config.assets) {
                     var copyPromises = _this5.config.assets.map(function (asset) {

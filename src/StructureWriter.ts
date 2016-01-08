@@ -14,8 +14,8 @@ import {ContentStructureWriter} from './ContentStructureWriter';
 export interface ILayoutContext {
   cssDeps?: string[];
   jsDeps?: string[];
-  head?: string[];
-  bottom?: string[];
+  head?: string|string[];
+  bottom?: string|string[];
   components?: any;
 }
 

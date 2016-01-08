@@ -26,7 +26,7 @@ describe('Configuration assets:', function() {
       let a = Cli.__get__('setupStyleguide')({ cwd: testCWD })
 
       .then(res => {
-        return Promise.resolve(fs.statSync(path.resolve(testResults, 'styleguide-assets', 'styles/stylegen-flatwhite.css')));
+        return Promise.resolve(fs.statSync(path.resolve(testResults, 'stylegen-assets', 'styles/stylegen-flatwhite.css')));
       })
       .catch(e => { console.log(e.stack) ; throw(e) });
 

@@ -229,9 +229,9 @@ export class Styleguide {
     /** copy the styleguide related assets */
     .then(() => {
       return fscopy(
-        path.resolve(this.config.sgTemplateRoot, 'styleguide-assets'),
+        path.resolve(this.config.sgTemplateRoot, 'stylegen-assets'),
         // TODO: make "assets" path configurable
-        path.resolve(this.config.cwd, this.config.target, 'styleguide-assets'));
+        path.resolve(this.config.cwd, this.config.target, 'stylegen-assets'));
     })
     /** copy the app specific assets, configured in styleguide config */
     .then(() => {
