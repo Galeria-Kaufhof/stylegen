@@ -15,6 +15,7 @@ interface IComponentLayoutContext {
 }
 
 interface IBuildConfig {
+  label?: string;
   tags?: string[];
   components?: string[];
   preflight?: string;

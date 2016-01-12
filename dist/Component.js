@@ -32,6 +32,7 @@ var Component = function () {
         this.slug = this.config.namespace + '-' + this.id;
         this.id = this.config.namespace + '.' + this.id;
         this.tags = this.config.tags;
+        this.path = this.config.namespace !== "sg" ? this.config.path : this.node.options.styleguide.config.sgTemplateRoot;
     }
     /**
      * a component may have several partials, that are component related view snippets,
@@ -49,7 +50,7 @@ var Component = function () {
                  * load all Partials
                  */
                 partialPromises = this.config.partials.map(function (partialName) {
-                    var p = path.resolve(_this.config.path, partialName);
+                    var p = path.resolve(_this.path, partialName);
                     return Partial_1.Partial.create(p, _this.config.namespace).load();
                 });
             } else {
@@ -57,7 +58,7 @@ var Component = function () {
                 partialPromises = this.node.files.filter(function (x) {
                     return new RegExp("^.*?_partial.hbs$").test(x);
                 }).map(function (partialName) {
-                    var p = path.resolve(_this.config.path, partialName);
+                    var p = path.resolve(_this.path, partialName);
                     return Partial_1.Partial.create(p, _this.config.namespace).load();
                 });
             }
@@ -81,7 +82,7 @@ var Component = function () {
 
             var viewPath;
             if (!!this.config.view) {
-                viewPath = path.resolve(this.config.path, this.config.view);
+                viewPath = path.resolve(this.path, this.config.view);
             } else {
                 viewPath = this.node.files.find(function (x) {
                     return new RegExp("^view.hbs$").test(x);
@@ -89,7 +90,7 @@ var Component = function () {
                 if (!viewPath) {
                     return Promise.resolve(this);
                 }
-                viewPath = path.resolve(this.config.path, viewPath);
+                viewPath = path.resolve(this.path, viewPath);
             }
             return View_1.View.create(viewPath).load().then(function (view) {
                 _this2.view = view;
@@ -111,7 +112,7 @@ var Component = function () {
                  */
                 var docs = this.config.docs;
                 docPromises = Object.keys(docs).map(function (doc) {
-                    var p = path.resolve(_this3.config.path, docs[doc]);
+                    var p = path.resolve(_this3.path, docs[doc]);
                     /** add partial loading promise to promise collection */
                     return Doc_1.Doc.create(p, doc).load();
                 });
@@ -119,7 +120,7 @@ var Component = function () {
                 docPromises = this.node.files.filter(function (x) {
                     return new RegExp("^.*?.md$").test(x);
                 }).map(function (doc) {
-                    var p = path.resolve(_this3.config.path, doc);
+                    var p = path.resolve(_this3.path, doc);
                     return Doc_1.Doc.create(p, doc).load();
                 });
             }

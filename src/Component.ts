@@ -46,6 +46,7 @@ export class Component {
   tags: string[];
   htmlRenderer: IRenderer;
   states: State[];
+  private path: string;
 
 
   /**
@@ -56,6 +57,7 @@ export class Component {
     this.slug = `${this.config.namespace}-${this.id}`;
     this.id = `${this.config.namespace}.${this.id}`;
     this.tags = this.config.tags;
+    this.path = this.config.namespace !== "sg" ? this.config.path : this.node.options.styleguide.config.sgTemplateRoot;
   }
 
   /**
@@ -71,7 +73,7 @@ export class Component {
        * load all Partials
        */
       partialPromises = this.config.partials.map((partialName:string) => {
-        var p = path.resolve(this.config.path, partialName);
+        var p = path.resolve(this.path, partialName);
         return Partial.create(p, this.config.namespace).load();
       });
 
@@ -79,7 +81,7 @@ export class Component {
     } else {
       // TODO: make _partial suffix configurable, along with the other references to it
       partialPromises = this.node.files.filter(x => new RegExp("^.*?_partial.hbs$").test(x)).map((partialName:string) => {
-        var p = path.resolve(this.config.path, partialName);
+        var p = path.resolve(this.path, partialName);
         return Partial.create(p, this.config.namespace).load();
       });
     }
@@ -101,7 +103,7 @@ export class Component {
   private buildView():Promise<Component> {
     var viewPath:string;
     if(!!this.config.view) {
-      viewPath = path.resolve(this.config.path, this.config.view);
+      viewPath = path.resolve(this.path, this.config.view);
 
     /** no view configured, ok, lets look inside the current path for _view.hbs files */
     } else {
@@ -111,7 +113,7 @@ export class Component {
         return Promise.resolve(this);
       }
 
-      viewPath = path.resolve(this.config.path, viewPath);
+      viewPath = path.resolve(this.path, viewPath);
     }
 
     return View.create(viewPath).load()
@@ -132,14 +134,14 @@ export class Component {
        */
       var docs = this.config.docs;
       docPromises = Object.keys(docs).map((doc:string) => {
-        var p = path.resolve(this.config.path, docs[doc]);
+        var p = path.resolve(this.path, docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });
 
     } else {
       docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc:string) => {
-        var p = path.resolve(this.config.path, doc);
+        var p = path.resolve(this.path, doc);
         return Doc.create(p, doc).load();
       });
     }

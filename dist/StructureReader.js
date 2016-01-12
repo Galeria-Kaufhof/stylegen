@@ -77,7 +77,9 @@ var StructureReader = function () {
              * just a category folder (or maybe just empty :/)
              */
             var nodeLookups = componentPaths.map(function (p) {
-                var nodeConfig = {};
+                var nodeConfig = {
+                    styleguide: _this.styleguide
+                };
                 if (!!_this.styleguide.config.namespace) {
                     nodeConfig.namespace = _this.styleguide.config.namespace;
                 }
