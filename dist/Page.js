@@ -66,15 +66,15 @@ var Page = function () {
                     });
                     break;
                 case "tags":
-                    contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ tags: this.config.content });
+                    contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, tags: this.config.content });
                     break;
                 case "components":
                     if (!!this.config.preflight) {
                         contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
-                            return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ components: _this2.config.content, preflight: preflight.compiled });
+                            return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
                         });
                     } else {
-                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ components: this.config.content });
+                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content });
                     }
                     break;
                 default:

@@ -86,17 +86,17 @@ export class Page {
           });
           break;
         case "tags":
-          contentPromise = new PlainComponentList(this.config.styleguide).build({tags: this.config.content});
+          contentPromise = new PlainComponentList(this.config.styleguide).build({label: this.label, tags: this.config.content});
           break;
         case "components":
           if (!!this.config.preflight) {
             contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
               .load()
               .then((preflight) => {
-                return new PlainComponentList(this.config.styleguide).build({ components: this.config.content, preflight: preflight.compiled });
+                return new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content, preflight: preflight.compiled });
               });
           } else {
-            contentPromise = new PlainComponentList(this.config.styleguide).build({ components: this.config.content});
+            contentPromise = new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content});
           }
           break;
         default:
