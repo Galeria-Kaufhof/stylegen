@@ -15,7 +15,8 @@
     "js-yaml": "^3.4.3",
     "minimist": "^1.2.0",
     "remarkable": "^1.6.0",
-    "slug": "^0.9.1"
+    "slug": "^0.9.1",
+    "stylegen-flatwhite": "git+ssh://git@gitlab.gkh-setu.de:gkh/stylegen-flatwhite.git"
   },
   "bin": {
     "stylegen": "bin/stylegen"
@@ -46,8 +47,6 @@
     "gulp-stylus": "^2.2.0",
     "gulp-typescript": "^2.10.0",
     "gulp-util": "^3.0.7",
-    "mocha": "^2.3.4",
-    "rewire": "^2.5.0",
-    "stylegen-flatwhite": "git+ssh://git@gitlab.gkh-setu.de:gkh/stylegen-flatwhite.git"
+    "mocha": "^2.3.4"
   }
 }
