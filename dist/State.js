@@ -6,6 +6,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var path = require('path');
 var Doc_1 = require('./Doc');
+var slug = require('slug');
 
 var State = function () {
     function State(id, component, config) {
@@ -15,6 +16,8 @@ var State = function () {
         this.component = component;
         this.config = config;
         this.label = config.label;
+        this.id = config.id || slug(this.label.toLowerCase());
+        this.slug = this.component.slug + '-' + (this.config.slug || this.id);
         this.context = config.context;
     }
 

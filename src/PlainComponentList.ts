@@ -25,7 +25,7 @@ interface IComponentTemplateContext {
   id: string;
   headline: string;
   docs: {label: string, content: string}[];
-  states?: {label: string, doc: string, content: string[]}[];
+  states?: {label: string, slug: string, doc: string, content: string[]}[];
   template: string;
   component: Component;
 }
@@ -89,7 +89,7 @@ export class PlainComponentList implements IComponentWriter {
             stateContent.push(component.view.template(stateContext));
           }
 
-          return { label: state.label, doc: state.doc && state.doc.compiled, content: stateContent };
+          return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
         })
       }
 
