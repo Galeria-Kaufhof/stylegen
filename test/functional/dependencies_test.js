@@ -23,9 +23,10 @@ describe('Configuration dependencies:', function() {
   var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
   afterEach(function(done) {
-    fs.remove(path.resolve(testResults), function() {
-      return done();
-    });
+    // fs.remove(path.resolve(testResults), function() {
+    //   return done();
+    // });
+    return done();
   });
 
   describe('with configured js and style deps the page', function () {
