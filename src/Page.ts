@@ -53,7 +53,7 @@ export class Page {
     }
 
     this.target = path.resolve(this.target, this.slug + '.html');
-    this.link = path.resolve("/", path.relative(this.config.styleguide.config.target, this.target));
+    this.link = this.target;
   }
 
   resolveChildren():Promise<Page> {
@@ -134,6 +134,8 @@ export class Page {
     if (!!this.content) {
       var pageContext:IPageLayoutContext = Object.assign({}, context);
       pageContext.content = this.content;
+      pageContext.pageroot = this.config.styleguide.config.target;
+      pageContext.pagecwd = path.dirname(this.target);
 
       /** applying here, because of stupid type defintion with multiargs :/ */
       return fsoutputfile.apply(this, [this.target, layout(pageContext)])

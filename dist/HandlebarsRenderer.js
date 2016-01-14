@@ -5,6 +5,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Handlebars = require('handlebars');
+var path = require('path');
 var btoa = require('btoa');
 var atob = require('atob');
 Handlebars.registerHelper("pp", function (object) {
@@ -12,6 +13,18 @@ Handlebars.registerHelper("pp", function (object) {
 });
 Handlebars.registerHelper("eq", function (a, b) {
     return a === b;
+});
+Handlebars.registerHelper("rellink", function (link, options) {
+    try {
+        if (options.data.root.pagecwd) {
+            return path.relative(options.data.root.pagecwd, path.resolve(options.data.root.pageroot, link));
+        } else {
+            return link;
+        }
+    } catch (e) {
+        console.log(e);
+        return link;
+    }
 });
 /**
  * Build in renderer, that is taken as default if no external is given.

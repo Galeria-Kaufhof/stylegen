@@ -16,6 +16,20 @@ Handlebars.registerHelper("eq", function(a: {}, b: {}){
   return a === b;
 });
 
+Handlebars.registerHelper("rellink", function(link, options){
+  try {
+    if (options.data.root.pagecwd) {
+      return path.relative(options.data.root.pagecwd, path.resolve(options.data.root.pageroot, link));
+    } else {
+      return link;
+    }
+  } catch(e) {
+    console.log(e)
+    return link;
+  }
+});
+
+
 export interface ITemplateRenderer {
   partialLibs: any[];
   registerablePartial(name: string, content: string): string;
