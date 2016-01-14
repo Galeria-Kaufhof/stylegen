@@ -6,4 +6,6 @@ export interface IPageLayoutContext {
 
   pages?: Page[];
   content?: string;
+  pagecwd?: string;
+  pageroot?: string;
 }

@@ -30,7 +30,7 @@ var Page = function () {
             throw "No target for the styleguide specified";
         }
         this.target = path.resolve(this.target, this.slug + '.html');
-        this.link = path.resolve("/", path.relative(this.config.styleguide.config.target, this.target));
+        this.link = this.target;
     }
 
     _createClass(Page, [{
@@ -123,6 +123,8 @@ var Page = function () {
             if (!!this.content) {
                 var pageContext = Object.assign({}, context);
                 pageContext.content = this.content;
+                pageContext.pageroot = this.config.styleguide.config.target;
+                pageContext.pagecwd = path.dirname(this.target);
                 /** applying here, because of stupid type defintion with multiargs :/ */
                 return fsoutputfile.apply(this, [this.target, layout(pageContext)]).then(function (page) {
                     return _this5.writeChildren(layout, context);
