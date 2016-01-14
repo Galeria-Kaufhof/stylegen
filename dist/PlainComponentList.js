@@ -63,7 +63,7 @@ var PlainComponentList = function () {
                             var stateContext = Object.assign({}, viewBaseContext, state.context);
                             stateContent.push(component.view.template(stateContext));
                         }
-                        return { label: state.label, doc: state.doc && state.doc.compiled, content: stateContent };
+                        return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
                     });
                 }
                 /** lookup the styleguide component template */
