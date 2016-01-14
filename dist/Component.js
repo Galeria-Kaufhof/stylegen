@@ -7,6 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var path = require('path');
 var fs = require('fs-extra');
 var denodeify = require('denodeify');
+var slug = require('slug');
 var fsreaddir = denodeify(fs.readdir);
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
@@ -29,7 +30,7 @@ var Component = function () {
         this.config = config;
         this.node = node;
         this.id = this.config.id || path.basename(config.path);
-        this.slug = this.config.namespace + '-' + this.id;
+        this.slug = this.config.namespace + '-' + (this.config.slug || slug(this.id.toLowerCase()));
         this.id = this.config.namespace + '.' + this.id;
         this.tags = this.config.tags;
         this.path = this.config.namespace !== "sg" ? this.config.path : this.node.options.styleguide.config.sgTemplateRoot;
