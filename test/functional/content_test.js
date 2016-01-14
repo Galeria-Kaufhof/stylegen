@@ -86,8 +86,8 @@ describe('Configuration content:', function() {
               var $ = cheerio.load(content);
 
               var nav = $('.test-stylegen-main-nav');
-              var navEntries = $('.test-stylegen-main-nav > a');
-              var childLinks = nav.find('.children');
+              var navEntries = $('.test-stylegen-main-nav > ul > li > a');
+              var childLinks = nav.find('.test-stylegen-children');
 
               if (navEntries.length !== sgConfig.content.length) {
                 return Promise.reject(`Expected to have exactly ${sgConfig.content.length} links in first nav layer, but found ${navEntries.length}`);
@@ -181,7 +181,7 @@ describe('Configuration content:', function() {
 
               let compListConfig = sgConfig.content.filter(c => c.label === "CompListingWithPreflight")[0].content;
 
-              if ($('.preflight-text').length !== 1) {
+              if ($('.test-stylegen-preflight').length !== 1) {
                 return Promise.reject(`expected preflight text to be rendered exactly once, but found "${$('.preflight-text').length}"`);
               }
 
