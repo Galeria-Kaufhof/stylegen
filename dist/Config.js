@@ -10,7 +10,6 @@ var fs = require('fs-extra');
 var path = require('path');
 var denodeify = require('denodeify');
 var YAML = require('js-yaml');
-var Logger_1 = require('./Logger');
 var fsreadfile = denodeify(fs.readFile);
 /**
  * Config resolver for conveniant merging of configuration options and defaults.
@@ -25,12 +24,17 @@ var Config = function () {
         key: 'parseFileContent',
         value: function parseFileContent(filePath, buffer) {
             var result;
-            if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
-                result = YAML.safeLoad(buffer.toString());
-            } else {
-                result = JSON.parse(buffer.toString());
-            }
-            return result;
+            return new Promise(function (resolve, reject) {
+                try {
+                    if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
+                        resolve(YAML.safeLoad(buffer.toString()));
+                    } else {
+                        resolve(JSON.parse(buffer.toString()));
+                    }
+                } catch (e) {
+                    reject(e);
+                }
+            });
         }
     }, {
         key: 'resolveFile',
@@ -38,14 +42,7 @@ var Config = function () {
             var _this = this;
 
             return fsreadfile(filePath).then(function (buffer) {
-                /** catch and return json parsing errors */
-                try {
-                    return _this.parseFileContent(filePath, buffer);
-                } catch (e) {
-                    Logger_1.error("Config.resolveFile:", "ParseError", filePath);
-                    Logger_1.error(e.stack);
-                    return Promise.reject(e);
-                }
+                return _this.parseFileContent(filePath, buffer);
             });
         }
         /**

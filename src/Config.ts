@@ -18,32 +18,27 @@ interface IAbstractConfig {
  * Config resolver for conveniant merging of configuration options and defaults.
  */
 export class Config implements IAbstractConfig {
-  private parseFileContent(filePath: string, buffer: Buffer):Object {
+  private parseFileContent(filePath: string, buffer: Buffer):Promise<Object> {
     var result: Object;
 
-    if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
-
-      result = YAML.safeLoad(buffer.toString());
-    } else {
-      result = JSON.parse(buffer.toString());
-    }
-
-    return result;
+    return new Promise((resolve, reject) => {
+      try {
+        if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
+          resolve(YAML.safeLoad(buffer.toString()));
+        } else {
+          resolve(JSON.parse(buffer.toString()));
+        }
+      } catch(e) {
+        reject(e);
+      }
+    });
   }
 
 
   private resolveFile(filePath:string):Promise<{}> {
     return fsreadfile(filePath)
     .then((buffer:Buffer) => {
-      /** catch and return json parsing errors */
-
-      try {
-        return this.parseFileContent(filePath, buffer);
-      } catch(e) {
-        error("Config.resolveFile:", "ParseError", filePath);
-        error(e.stack);
-        return Promise.reject(e);
-      }
+      return this.parseFileContent(filePath, buffer);
     });
   }
 
