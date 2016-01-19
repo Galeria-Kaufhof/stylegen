@@ -7,6 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var path = require('path');
 var denodeify = require('denodeify');
 var fs = require('fs-extra');
+var Logger_1 = require('./Logger');
 var fsoutputfile = denodeify(fs.outputFile);
 /**
  * describes an app.component that has been wrapped in the component view,
@@ -41,16 +42,23 @@ var PlainComponentList = function () {
                 var viewContext = component.config.viewContext || {};
                 var viewConfig = component.view.config || {};
                 var viewBaseContext = Object.assign({}, viewConfig, viewContext);
-                /** build the render context for the current component */
-                var context = {
-                    id: component.slug,
-                    headline: component.config.label || component.id,
-                    template: component.view.template(viewBaseContext),
-                    docs: component.docs.map(function (d) {
-                        return { "label": d.name, "content": d.compiled };
-                    }),
-                    component: component
-                };
+                try {
+                    /** build the render context for the current component */
+                    var context = {
+                        id: component.slug,
+                        headline: component.config.label || component.id,
+                        template: component.view.template(viewBaseContext),
+                        docs: component.docs.map(function (d) {
+                            return { "label": d.name, "content": d.compiled };
+                        }),
+                        component: component
+                    };
+                } catch (e) {
+                    Logger_1.error("PlainComponentList.buildViewComponent", component.view.filePath);
+                    Logger_1.error(e);
+                    Logger_1.error(e.stack);
+                    throw e;
+                }
                 if (!!component.config.states) {
                     context.states = component.states.map(function (state) {
                         var stateContent = [];
@@ -113,13 +121,13 @@ var PlainComponentList = function () {
                     context.components = componentViews;
                 } catch (e) {
                     /** if some of the above fails, go to hell!! :) */
-                    reject(e);
+                    return reject(e);
                 }
                 // TODO: handle/secure this law of demeter disaster :D
                 var compListTemplate = _this.styleguide.components.find('sg.plain-list-layout').view.template;
                 /** shorthand to the styleguide config */
                 _this.compiled = compListTemplate(context);
-                resolve(_this);
+                return resolve(_this);
             });
         }
         /**
