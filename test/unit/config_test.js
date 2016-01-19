@@ -17,6 +17,7 @@ describe('Config', function() {
     });
 
     it('should parse yaml content, if a yaml filepath is given', function () {
+      var result;
       var yamlTest = `
         test:
           - a
@@ -24,32 +25,32 @@ describe('Config', function() {
           - c
       `;
 
-      var result = config.parseFileContent("fubar.yaml", yamlTest)
-
-      assert.deepEqual(result.test, ["a", "b", "c"], "Parsed yaml content should include the complete array");
+      result = config.parseFileContent("fubar.yaml", yamlTest);
+      return assert.becomes(result, { test: ["a", "b", "c"] });
     });
 
     it('should fail if errorneous yaml content is delivered', function () {
+      var result;
       // missing bracket at the end
       var yamlTest = `{ "test": ["a", "b", "c" }`;
 
-      assert.throws(function() { config.parseFileContent("fubar.yaml", yamlTest) }, "YAMLException", "Boom! as expected :)");
-      // config.parseFileContent;
+      result = config.parseFileContent("fubar.yaml", yamlTest);
+      return assert.isRejected(result);
     });
 
     it('should parse json content, if a json filepath is given', function () {
       var jsonTest = `{ "test": ["a", "b", "c"]}`;
 
       var result = config.parseFileContent("fubar.json", jsonTest);
-
-      assert.deepEqual(result.test, ["a", "b", "c"], "Parsed json content should include the complete array");
+      return assert.becomes(result, { test: ["a", "b", "c"] });
     });
 
     it('should fail if errorneous json content is delivered', function () {
       // missing bracket at the end
       var jsonTest = `{ "test": ["a", "b", "c" }`;
 
-      assert.throws(function() { config.parseFileContent("fubar.json", jsonTest) }, "Unexpected", "Boom! as expected :)");
+      result = config.parseFileContent("fubar.json", jsonTest);
+      return assert.isRejected(result);
     });
 
   });
