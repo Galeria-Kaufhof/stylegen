@@ -17,6 +17,7 @@ import {warn} from './Logger';
 var fsoutputfile = denodeify(fs.outputFile);
 
 export interface IPageConfig {
+  id?: string;
   label?: string;
   slug?: string;
   type?: string;
@@ -30,6 +31,7 @@ export interface IPageConfig {
 
 
 export class Page {
+  id: string;
   target: string;
   link: string;
   label: string;
@@ -42,7 +44,9 @@ export class Page {
     this.mdRenderer = this.config.mdRenderer;
 
     this.label = this.config.label;
-    this.slug = this.config.slug || slug(this.label.toLowerCase());
+    this.id = this.config.id || slug(this.config.label.toLowerCase());
+    // this.slug = `${this.config.styleguide.config.namespace}-${this.config.slug || slug(this.id.toLowerCase())}`;
+    this.slug = this.config.slug || this.id;
 
     if(!parent && this.config.target) {
       this.target = this.config.target;
