@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as YAML from 'js-yaml';
 
-import {error} from './Logger';
+import {error, log} from './Logger';
 
 var fsreadfile = denodeify(fs.readFile);
 
@@ -22,15 +22,21 @@ export class Config implements IAbstractConfig {
     var result: Object;
 
     return new Promise((resolve, reject) => {
+      var content:string;
+
       try {
         if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
-          resolve(YAML.safeLoad(buffer.toString()));
+          content = YAML.safeLoad(buffer.toString());
         } else {
-          resolve(JSON.parse(buffer.toString()));
+          content = JSON.parse(buffer.toString());
         }
       } catch(e) {
+        error("Config.parseFileContent", `failed to load ${filePath}`);
+        log(e.callee, e.stack)
         reject(e);
       }
+
+      resolve(content);
     });
   }
 
