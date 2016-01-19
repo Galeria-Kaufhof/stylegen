@@ -59,30 +59,34 @@ var Page = function () {
 
             var contentPromise;
             // var docFactory = this.config.styleguide.docFactory;
-            switch (this.config.type) {
-                case "md":
-                    contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load().then(function (doc) {
-                        var pageLayout = _this2.config.styleguide.components.find('sg.page').view.template;
-                        doc.compiled = pageLayout({ content: doc.compiled });
-                        return doc;
-                    });
-                    break;
-                case "tags":
-                    contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, tags: this.config.content });
-                    break;
-                case "components":
-                    if (!!this.config.preflight) {
-                        contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
-                            return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
+            try {
+                switch (this.config.type) {
+                    case "md":
+                        contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load().then(function (doc) {
+                            var pageLayout = _this2.config.styleguide.components.find('sg.page').view.template;
+                            doc.compiled = pageLayout({ content: doc.compiled });
+                            return doc;
                         });
-                    } else {
-                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content });
-                    }
-                    break;
-                default:
-                    /** FOR UNKNOWN TYPES */
-                    Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
-                    contentPromise = Promise.resolve(null);
+                        break;
+                    case "tags":
+                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, tags: this.config.content });
+                        break;
+                    case "components":
+                        if (!!this.config.preflight) {
+                            contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
+                                return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
+                            });
+                        } else {
+                            contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content });
+                        }
+                        break;
+                    default:
+                        /** FOR UNKNOWN TYPES */
+                        Logger_1.warn("Page.buildContent - config.type unknown", this.config.type);
+                        contentPromise = Promise.resolve(null);
+                }
+            } catch (e) {
+                return Promise.reject(e);
             }
             return contentPromise.then(function (content) {
                 if (content !== null) {

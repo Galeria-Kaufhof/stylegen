@@ -76,8 +76,9 @@ export class Page {
   }
 
   buildContent():Promise<Page> {
-      var contentPromise:Promise<any>;
-      // var docFactory = this.config.styleguide.docFactory;
+    var contentPromise:Promise<any>;
+    // var docFactory = this.config.styleguide.docFactory;
+    try {
       switch(this.config.type) {
         case "md":
           contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
@@ -107,16 +108,18 @@ export class Page {
           /** FOR UNKNOWN TYPES */
           warn("Page.buildContent - config.type unknown", this.config.type);
           contentPromise = Promise.resolve(null);
+      }
+    } catch(e) {
+      return Promise.reject(e);
+    }
 
+    return contentPromise.then((content: ICompilableContent) => {
+      if (content !== null) {
+        this.content = content.compiled;
       }
 
-      return contentPromise.then((content: ICompilableContent) => {
-        if (content !== null) {
-          this.content = content.compiled;
-        }
-
-        return this;
-      });
+      return this;
+    });
   }
 
   build():Promise<Page> {

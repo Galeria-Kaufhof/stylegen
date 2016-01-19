@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as fs from 'fs-extra';
 
+import {error} from './Logger';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';
@@ -64,23 +65,30 @@ export class PlainComponentList implements IComponentWriter {
       var viewConfig = component.view.config || {};
       var viewBaseContext = Object.assign({}, viewConfig, viewContext);
 
-      /** build the render context for the current component */
-      var context:IComponentTemplateContext = {
-        id: component.slug,
-        headline: component.config.label || component.id,
-        template: component.view.template(viewBaseContext),
-        docs: component.docs.map(d => {
-          return { "label": d.name, "content": d.compiled };
-        }),
-        component: component
-      };
+      try {
+        /** build the render context for the current component */
+        var context:IComponentTemplateContext = {
+          id: component.slug,
+          headline: component.config.label || component.id,
+          template: component.view.template(viewBaseContext),
+          docs: component.docs.map(d => {
+            return { "label": d.name, "content": d.compiled };
+          }),
+          component: component
+        };
+      } catch(e) {
+        error("PlainComponentList.buildViewComponent", component.view.filePath);
+        error(e);
+        error(e.stack);
+        throw(e);
+      }
 
       if (!!component.config.states) {
         context.states = component.states.map(state => {
           var stateContent:string[] = [];
 
           if (state.context instanceof Array) {
-            stateContent = state.context.map(context => {
+            stateContent = state.context.map((context:IComponentTemplateContext) => {
               let stateContext = Object.assign({}, viewBaseContext, context);
               return component.view.template(stateContext);
             });
@@ -90,7 +98,7 @@ export class PlainComponentList implements IComponentWriter {
           }
 
           return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
-        })
+        });
       }
 
       /** lookup the styleguide component template */
@@ -143,7 +151,7 @@ export class PlainComponentList implements IComponentWriter {
         context.components = componentViews;
       } catch(e) {
         /** if some of the above fails, go to hell!! :) */
-        reject(e);
+        return reject(e);
       }
 
       // TODO: handle/secure this law of demeter disaster :D
@@ -151,7 +159,7 @@ export class PlainComponentList implements IComponentWriter {
 
       /** shorthand to the styleguide config */
       this.compiled = compListTemplate(context);
-      resolve(this);
+      return resolve(this);
     });
   }
 
@@ -170,7 +178,6 @@ export class PlainComponentList implements IComponentWriter {
       return fsoutputfile(path.resolve(config.cwd, config.target, "components.html"), layout(layoutContext))
       .then(() => resolve(this))
       .catch((e:Error) => reject(e));
-
     });
   }
 }
