@@ -10,6 +10,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var denodeify = require('denodeify');
 var YAML = require('js-yaml');
+var Logger_1 = require('./Logger');
 var fsreadfile = denodeify(fs.readFile);
 /**
  * Config resolver for conveniant merging of configuration options and defaults.
@@ -25,15 +26,19 @@ var Config = function () {
         value: function parseFileContent(filePath, buffer) {
             var result;
             return new Promise(function (resolve, reject) {
+                var content;
                 try {
                     if (path.extname(filePath) === '.yml' || path.extname(filePath) === '.yaml') {
-                        resolve(YAML.safeLoad(buffer.toString()));
+                        content = YAML.safeLoad(buffer.toString());
                     } else {
-                        resolve(JSON.parse(buffer.toString()));
+                        content = JSON.parse(buffer.toString());
                     }
                 } catch (e) {
+                    Logger_1.error("Config.parseFileContent", 'failed to load ' + filePath);
+                    Logger_1.log(e.callee, e.stack);
                     reject(e);
                 }
+                resolve(content);
             });
         }
     }, {
