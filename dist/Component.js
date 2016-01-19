@@ -9,6 +9,7 @@ var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var slug = require('slug');
 var fsreaddir = denodeify(fs.readdir);
+var Logger_1 = require('./Logger');
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var Doc_1 = require('./Doc');
@@ -31,6 +32,7 @@ var Component = function () {
         this.node = node;
         this.id = this.config.id || path.basename(config.path);
         this.slug = this.config.namespace + '-' + (this.config.slug || slug(this.id.toLowerCase()));
+        // TODO: this is ugly and error-prone, we should clean this up to a separate property (falk)
         this.id = this.config.namespace + '.' + this.id;
         this.tags = this.config.tags;
         this.path = this.config.namespace !== "sg" ? this.config.path : this.node.options.styleguide.config.sgTemplateRoot;
@@ -172,6 +174,10 @@ var Component = function () {
                 return _this5.buildStates();
             }).then(function () {
                 return _this5.buildDocs();
+            }).catch(function (e) {
+                Logger_1.error(e);
+                Logger_1.error(e.stack);
+                throw e;
             });
         }
     }]);

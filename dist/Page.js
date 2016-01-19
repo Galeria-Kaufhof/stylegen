@@ -21,7 +21,9 @@ var Page = function () {
         this.parent = parent;
         this.mdRenderer = this.config.mdRenderer;
         this.label = this.config.label;
-        this.slug = this.config.slug || slug(this.label.toLowerCase());
+        this.id = this.config.id || slug(this.config.label.toLowerCase());
+        // this.slug = `${this.config.styleguide.config.namespace}-${this.config.slug || slug(this.id.toLowerCase())}`;
+        this.slug = this.config.slug || this.id;
         if (!parent && this.config.target) {
             this.target = this.config.target;
         } else if (!!parent) {

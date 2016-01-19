@@ -7,7 +7,7 @@ import * as slug from 'slug';
 
 var fsreaddir = denodeify(fs.readdir);
 
-import {warn} from './Logger';
+import {warn, error} from './Logger';
 import {IRenderer} from './Renderer';
 import {Partial} from './Partial';
 import {View} from './View';
@@ -56,6 +56,8 @@ export class Component {
   constructor(public config:IComponentConfig, private node:Node) {
     this.id = this.config.id || path.basename(config.path);
     this.slug = `${this.config.namespace}-${this.config.slug || slug(this.id.toLowerCase())}`;
+
+    // TODO: this is ugly and error-prone, we should clean this up to a separate property (falk)
     this.id = `${this.config.namespace}.${this.id}`;
     this.tags = this.config.tags;
     this.path = this.config.namespace !== "sg" ? this.config.path : this.node.options.styleguide.config.sgTemplateRoot;
@@ -189,6 +191,11 @@ export class Component {
     /** after that lets read and build its view */
     .then(() => this.buildView())
     .then(() => this.buildStates())
-    .then(() => this.buildDocs());
+    .then(() => this.buildDocs())
+    .catch(e => {
+      error(e);
+      error(e.stack);
+      throw(e);
+    });
   }
 }
