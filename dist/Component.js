@@ -9,6 +9,7 @@ var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var slug = require('slug');
 var fsreaddir = denodeify(fs.readdir);
+var Logger_1 = require('./Logger');
 var Partial_1 = require('./Partial');
 var View_1 = require('./View');
 var Doc_1 = require('./Doc');
@@ -173,6 +174,10 @@ var Component = function () {
                 return _this5.buildStates();
             }).then(function () {
                 return _this5.buildDocs();
+            }).catch(function (e) {
+                Logger_1.error(e);
+                Logger_1.error(e.stack);
+                throw e;
             });
         }
     }]);

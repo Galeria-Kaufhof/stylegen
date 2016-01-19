@@ -7,7 +7,7 @@ import * as slug from 'slug';
 
 var fsreaddir = denodeify(fs.readdir);
 
-import {warn} from './Logger';
+import {warn, error} from './Logger';
 import {IRenderer} from './Renderer';
 import {Partial} from './Partial';
 import {View} from './View';
@@ -191,6 +191,11 @@ export class Component {
     /** after that lets read and build its view */
     .then(() => this.buildView())
     .then(() => this.buildStates())
-    .then(() => this.buildDocs());
+    .then(() => this.buildDocs())
+    .catch(e => {
+      error(e);
+      error(e.stack);
+      throw(e);
+    });
   }
 }
