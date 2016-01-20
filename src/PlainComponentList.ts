@@ -63,6 +63,17 @@ export class PlainComponentList implements IComponentWriter {
     return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
   }
 
+  private buildComponentTemplateContext(component:Component):IComponentTemplateContext {
+    return {
+      id: component.slug,
+      headline: component.config.label || component.id,
+      docs: component.docs.map(d => {
+        return { "label": d.name, "content": d.compiled };
+      }),
+      component: component
+    };
+  }
+
   /**
    * view component building is the process of wrapping
    * a component inside the styleguides component view,
@@ -80,20 +91,12 @@ export class PlainComponentList implements IComponentWriter {
      * In case it has no view, we will not display the component for now.
      */
     if (!!component.view && !!component.view.template) {
-
       var viewContext = component.config.viewContext || {};
       var viewConfig = component.view.config || {};
       var viewBaseContext = Object.assign({}, viewConfig, viewContext);
 
-        /** build the render context for the current component */
-        var context:IComponentTemplateContext = {
-          id: component.slug,
-          headline: component.config.label || component.id,
-          docs: component.docs.map(d => {
-            return { "label": d.name, "content": d.compiled };
-          }),
-          component: component
-        };
+      /** build the render context for the current component */
+      var context = this.buildComponentTemplateContext(component);
 
       try {
         if (!component.config.states) {

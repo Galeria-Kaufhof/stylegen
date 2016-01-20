@@ -32,6 +32,18 @@ var PlainComponentList = function () {
             });
             return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
         }
+    }, {
+        key: 'buildComponentTemplateContext',
+        value: function buildComponentTemplateContext(component) {
+            return {
+                id: component.slug,
+                headline: component.config.label || component.id,
+                docs: component.docs.map(function (d) {
+                    return { "label": d.name, "content": d.compiled };
+                }),
+                component: component
+            };
+        }
         /**
          * view component building is the process of wrapping
          * a component inside the styleguides component view,
@@ -57,14 +69,7 @@ var PlainComponentList = function () {
                 var viewConfig = component.view.config || {};
                 var viewBaseContext = Object.assign({}, viewConfig, viewContext);
                 /** build the render context for the current component */
-                var context = {
-                    id: component.slug,
-                    headline: component.config.label || component.id,
-                    docs: component.docs.map(function (d) {
-                        return { "label": d.name, "content": d.compiled };
-                    }),
-                    component: component
-                };
+                var context = this.buildComponentTemplateContext(component);
                 try {
                     if (!component.config.states) {
                         context.template = component.view.template(viewBaseContext);
