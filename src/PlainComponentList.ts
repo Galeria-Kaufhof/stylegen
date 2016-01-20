@@ -35,7 +35,7 @@ interface IComponentTemplateContext {
   headline: string;
   docs: {label: string, content: string}[];
   states?: ITemplateState[];
-  template: string;
+  template?: string;
   component: Component;
 }
 
@@ -90,7 +90,6 @@ export class PlainComponentList implements IComponentWriter {
         var context:IComponentTemplateContext = {
           id: component.slug,
           headline: component.config.label || component.id,
-          template: component.view.template(viewBaseContext),
           docs: component.docs.map(d => {
             return { "label": d.name, "content": d.compiled };
           }),
@@ -103,7 +102,9 @@ export class PlainComponentList implements IComponentWriter {
         throw(e);
       }
 
-      if (!!component.config.states) {
+      if (!component.config.states) {
+        context.template = component.view.template(viewBaseContext);
+      } else {
         context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
       }
 

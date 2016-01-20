@@ -61,7 +61,6 @@ var PlainComponentList = function () {
                     var context = {
                         id: component.slug,
                         headline: component.config.label || component.id,
-                        template: component.view.template(viewBaseContext),
                         docs: component.docs.map(function (d) {
                             return { "label": d.name, "content": d.compiled };
                         }),
@@ -73,7 +72,9 @@ var PlainComponentList = function () {
                     Logger_1.error(e.stack);
                     throw e;
                 }
-                if (!!component.config.states) {
+                if (!component.config.states) {
+                    context.template = component.view.template(viewBaseContext);
+                } else {
                     context.states = component.states.map(function (state) {
                         return _this.buildStateContext(component, state, viewBaseContext);
                     });
