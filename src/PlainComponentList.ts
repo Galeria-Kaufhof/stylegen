@@ -28,6 +28,7 @@ interface ITemplateState {
   slug: string;
   doc: string;
   content: string[];
+  contentPath?: string[];
 }
 
 interface IComponentTemplateContext {
@@ -36,9 +37,14 @@ interface IComponentTemplateContext {
   docs: {label: string, content: string}[];
   states?: ITemplateState[];
   template?: string;
+  templatePath?: string;
   component: Component;
 }
 
+export interface IRelatedComponentFiles {
+  slug: string;
+  content: string;
+}
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -49,7 +55,11 @@ var fsoutputfile = denodeify(fs.outputFile);
 
 export class PlainComponentList implements IComponentWriter {
   compiled: string;
-  constructor(private styleguide: Styleguide) {}
+  dependendViews: IRelatedComponentFiles[];
+
+  constructor(private styleguide: Styleguide) {
+    this.dependendViews = [];
+  }
 
   private buildStateContext(component: Component, state:IState, baseContext: {}):ITemplateState {
     var stateContent:string[] = [];
@@ -57,7 +67,9 @@ export class PlainComponentList implements IComponentWriter {
 
     stateContent = state.context.map((context:IComponentTemplateContext) => {
       let stateContext = Object.assign({}, baseContext, context);
-      return component.view.template(stateContext);
+      let renderedView = component.view.template(stateContext);
+      this.dependendViews.push({ slug: state.slug, content: renderedView });
+      return renderedView;
     });
 
     return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
@@ -100,7 +112,9 @@ export class PlainComponentList implements IComponentWriter {
 
       try {
         if (!component.config.states) {
-          context.template = component.view.template(viewBaseContext);
+          let renderedView = component.view.template(viewBaseContext);
+          this.dependendViews.push({ slug: `${component.slug}-view`, content: renderedView });
+          context.template = renderedView;
         } else {
           context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
         }
@@ -131,7 +145,7 @@ export class PlainComponentList implements IComponentWriter {
     return array1.filter((a:T) => array2.indexOf(a) != -1);
   }
 
-  public build(config:IBuildConfig):Promise<IComponentWriter> {
+  public build(config:IBuildConfig):Promise<PlainComponentList> {
     config = config || {};
 
     return new Promise((resolve, reject) => {
@@ -177,7 +191,7 @@ export class PlainComponentList implements IComponentWriter {
    * the most basic writer, that handles the resolution of how to
    * integrated the rendered component views in the target file structure.
    */
-  public write(layoutContext?: IComponentLayoutContext):Promise<IComponentWriter> {
+  public write(layoutContext?: IComponentLayoutContext):Promise<PlainComponentList> {
     return new Promise((resolve, reject) => {
       var config = this.styleguide.config;
 

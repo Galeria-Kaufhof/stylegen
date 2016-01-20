@@ -19,16 +19,21 @@ var PlainComponentList = function () {
         _classCallCheck(this, PlainComponentList);
 
         this.styleguide = styleguide;
+        this.dependendViews = [];
     }
 
     _createClass(PlainComponentList, [{
         key: 'buildStateContext',
         value: function buildStateContext(component, state, baseContext) {
+            var _this = this;
+
             var stateContent = [];
             state.context = [].concat(state.context);
             stateContent = state.context.map(function (context) {
                 var stateContext = Object.assign({}, baseContext, context);
-                return component.view.template(stateContext);
+                var renderedView = component.view.template(stateContext);
+                _this.dependendViews.push({ slug: state.slug, content: renderedView });
+                return renderedView;
             });
             return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
         }
@@ -55,7 +60,7 @@ var PlainComponentList = function () {
     }, {
         key: 'buildViewComponent',
         value: function buildViewComponent(component) {
-            var _this = this;
+            var _this2 = this;
 
             var viewComponent = {
                 component: component
@@ -72,10 +77,12 @@ var PlainComponentList = function () {
                 var context = this.buildComponentTemplateContext(component);
                 try {
                     if (!component.config.states) {
-                        context.template = component.view.template(viewBaseContext);
+                        var renderedView = component.view.template(viewBaseContext);
+                        this.dependendViews.push({ slug: component.slug + '-view', content: renderedView });
+                        context.template = renderedView;
                     } else {
                         context.states = component.states.map(function (state) {
-                            return _this.buildStateContext(component, state, viewBaseContext);
+                            return _this2.buildStateContext(component, state, viewBaseContext);
                         });
                     }
                 } catch (e) {
@@ -107,23 +114,23 @@ var PlainComponentList = function () {
     }, {
         key: 'build',
         value: function build(config) {
-            var _this2 = this;
+            var _this3 = this;
 
             config = config || {};
             return new Promise(function (resolve, reject) {
                 var context = Object.assign({}, config);
                 try {
                     /** get all all components, registered in the styleguide */
-                    var components = _this2.styleguide.components.all(config && config.components);
+                    var components = _this3.styleguide.components.all(config && config.components);
                     if (!!config.tags) {
                         components = components.filter(function (c) {
-                            return _this2.intersect(c.tags, config.tags).length == config.tags.length;
+                            return _this3.intersect(c.tags, config.tags).length == config.tags.length;
                         });
                     }
                     var componentViews = components.filter(function (c) {
-                        return c && c.config && c.config.namespace === _this2.styleguide.config.namespace;
+                        return c && c.config && c.config.namespace === _this3.styleguide.config.namespace;
                     }).map(function (c) {
-                        return _this2.buildViewComponent(c);
+                        return _this3.buildViewComponent(c);
                     }).filter(function (c) {
                         return c !== null;
                     });
@@ -134,10 +141,10 @@ var PlainComponentList = function () {
                     return reject(e);
                 }
                 // TODO: handle/secure this law of demeter disaster :D
-                var compListTemplate = _this2.styleguide.components.find('sg.plain-list-layout').view.template;
+                var compListTemplate = _this3.styleguide.components.find('sg.plain-list-layout').view.template;
                 /** shorthand to the styleguide config */
-                _this2.compiled = compListTemplate(context);
-                return resolve(_this2);
+                _this3.compiled = compListTemplate(context);
+                return resolve(_this3);
             });
         }
         /**
@@ -148,14 +155,14 @@ var PlainComponentList = function () {
     }, {
         key: 'write',
         value: function write(layoutContext) {
-            var _this3 = this;
+            var _this4 = this;
 
             return new Promise(function (resolve, reject) {
-                var config = _this3.styleguide.config;
-                var layout = _this3.styleguide.components.find('sg.layout').view.template;
-                layoutContext = Object.assign({}, layoutContext, { content: _this3.compiled });
+                var config = _this4.styleguide.config;
+                var layout = _this4.styleguide.components.find('sg.layout').view.template;
+                layoutContext = Object.assign({}, layoutContext, { content: _this4.compiled });
                 return fsoutputfile(path.resolve(config.cwd, config.target, "components.html"), layout(layoutContext)).then(function () {
-                    return resolve(_this3);
+                    return resolve(_this4);
                 }).catch(function (e) {
                     return reject(e);
                 });

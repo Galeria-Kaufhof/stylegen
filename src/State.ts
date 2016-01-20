@@ -20,7 +20,6 @@ export interface IState {
 
 
 export class State implements IState {
-  id: string;
   public label: string;
   public doc: Doc;
   public context: {}|{}[];

@@ -10,7 +10,7 @@ import {View} from './View';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
-import {PlainComponentList} from './PlainComponentList';
+import {PlainComponentList, IRelatedComponentFiles} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
 import {warn} from './Logger';
 
@@ -29,6 +29,12 @@ export interface IPageConfig {
   preflight?: string;
 }
 
+interface IPlainComponentListBuildOptions {
+  label: string;
+  tags?: string[];
+  components?: string[];
+  preflight?: string;
+}
 
 export class Page {
   id: string;
@@ -75,6 +81,28 @@ export class Page {
     }
   }
 
+  // for component lists we want to create for each rendered view a separate file,
+  // so that we may link it inside of an iFrame.
+  private writeDependendViewFiles(plainComponentList: PlainComponentList):Promise<PlainComponentList> {
+    let rootDirectory = this.config.styleguide.config.target;
+    let dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
+
+    if (plainComponentList.dependendViews.length > 0) {
+      let filePromises = plainComponentList.dependendViews.map(relatedFile => {
+        return fsoutputfile.apply(this, [path.resolve(dependentViewFolder, `${relatedFile.slug}.html`), relatedFile.content]);
+      });
+
+      return Promise.all(filePromises).then(() => plainComponentList);
+    }
+
+    return Promise.resolve(plainComponentList);
+  }
+
+  private buildComponentList(options: IPlainComponentListBuildOptions):Promise<PlainComponentList> {
+    return new PlainComponentList(this.config.styleguide).build(options)
+    .then(componentList => this.writeDependendViewFiles(componentList));
+  }
+
   buildContent():Promise<Page> {
     var contentPromise:Promise<any>;
     // var docFactory = this.config.styleguide.docFactory;
@@ -91,17 +119,17 @@ export class Page {
           });
           break;
         case "tags":
-          contentPromise = new PlainComponentList(this.config.styleguide).build({label: this.label, tags: this.config.content});
+          contentPromise = this.buildComponentList({label: this.label, tags: this.config.content});
           break;
         case "components":
           if (!!this.config.preflight) {
             contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
               .load()
               .then((preflight) => {
-                return new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content, preflight: preflight.compiled });
+                return this.buildComponentList({ label: this.label, components: this.config.content, preflight: preflight.compiled });
               });
           } else {
-            contentPromise = new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content});
+            contentPromise = this.buildComponentList({ label: this.label, components: this.config.content});
           }
           break;
         default:
@@ -125,7 +153,7 @@ export class Page {
   build():Promise<Page> {
     return this.resolveChildren()
     .then((page) => this.buildContent())
-    .then(() => {return this; });
+    .then(() => { return this; });
   }
 
   writeChildren(layout: Function, context: IPageLayoutContext):Promise<Page> {
@@ -141,6 +169,8 @@ export class Page {
     if (!!this.content) {
       var pageContext:IPageLayoutContext = Object.assign({}, context);
       pageContext.content = this.content;
+
+      /** pageroot and pagecwd are important properties for the relative link helper we made available in the handlebars engine */
       pageContext.pageroot = this.config.styleguide.config.target;
       pageContext.pagecwd = path.dirname(this.target);
 

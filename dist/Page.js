@@ -52,10 +52,39 @@ var Page = function () {
                 return Promise.resolve(this);
             }
         }
+        // for component lists we want to create for each rendered view a separate file,
+        // so that we may link it inside of an iFrame.
+
+    }, {
+        key: 'writeDependendViewFiles',
+        value: function writeDependendViewFiles(plainComponentList) {
+            var _this2 = this;
+
+            var rootDirectory = this.config.styleguide.config.target;
+            var dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
+            if (plainComponentList.dependendViews.length > 0) {
+                var filePromises = plainComponentList.dependendViews.map(function (relatedFile) {
+                    return fsoutputfile.apply(_this2, [path.resolve(dependentViewFolder, relatedFile.slug + '.html'), relatedFile.content]);
+                });
+                return Promise.all(filePromises).then(function () {
+                    return plainComponentList;
+                });
+            }
+            return Promise.resolve(plainComponentList);
+        }
+    }, {
+        key: 'buildComponentList',
+        value: function buildComponentList(options) {
+            var _this3 = this;
+
+            return new PlainComponentList_1.PlainComponentList(this.config.styleguide).build(options).then(function (componentList) {
+                return _this3.writeDependendViewFiles(componentList);
+            });
+        }
     }, {
         key: 'buildContent',
         value: function buildContent() {
-            var _this2 = this;
+            var _this4 = this;
 
             var contentPromise;
             // var docFactory = this.config.styleguide.docFactory;
@@ -63,21 +92,21 @@ var Page = function () {
                 switch (this.config.type) {
                     case "md":
                         contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load().then(function (doc) {
-                            var pageLayout = _this2.config.styleguide.components.find('sg.page').view.template;
+                            var pageLayout = _this4.config.styleguide.components.find('sg.page').view.template;
                             doc.compiled = pageLayout({ content: doc.compiled });
                             return doc;
                         });
                         break;
                     case "tags":
-                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, tags: this.config.content });
+                        contentPromise = this.buildComponentList({ label: this.label, tags: this.config.content });
                         break;
                     case "components":
                         if (!!this.config.preflight) {
                             contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
-                                return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
+                                return _this4.buildComponentList({ label: _this4.label, components: _this4.config.content, preflight: preflight.compiled });
                             });
                         } else {
-                            contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content });
+                            contentPromise = this.buildComponentList({ label: this.label, components: this.config.content });
                         }
                         break;
                     default:
@@ -90,32 +119,32 @@ var Page = function () {
             }
             return contentPromise.then(function (content) {
                 if (content !== null) {
-                    _this2.content = content.compiled;
+                    _this4.content = content.compiled;
                 }
-                return _this2;
+                return _this4;
             });
         }
     }, {
         key: 'build',
         value: function build() {
-            var _this3 = this;
+            var _this5 = this;
 
             return this.resolveChildren().then(function (page) {
-                return _this3.buildContent();
+                return _this5.buildContent();
             }).then(function () {
-                return _this3;
+                return _this5;
             });
         }
     }, {
         key: 'writeChildren',
         value: function writeChildren(layout, context) {
-            var _this4 = this;
+            var _this6 = this;
 
             if (!!this.children) {
                 return Promise.all(this.children.map(function (child) {
                     return child.write(layout, context);
                 })).then(function (children) {
-                    return _this4;
+                    return _this6;
                 });
             } else {
                 return Promise.resolve(this);
@@ -124,18 +153,19 @@ var Page = function () {
     }, {
         key: 'write',
         value: function write(layout, context) {
-            var _this5 = this;
+            var _this7 = this;
 
             if (!!this.content) {
                 var pageContext = Object.assign({}, context);
                 pageContext.content = this.content;
+                /** pageroot and pagecwd are important properties for the relative link helper we made available in the handlebars engine */
                 pageContext.pageroot = this.config.styleguide.config.target;
                 pageContext.pagecwd = path.dirname(this.target);
                 /** applying here, because of stupid type defintion with multiargs :/ */
                 return fsoutputfile.apply(this, [this.target, layout(pageContext)]).then(function (page) {
-                    return _this5.writeChildren(layout, context);
+                    return _this7.writeChildren(layout, context);
                 }).then(function (file) {
-                    return _this5;
+                    return _this7;
                 });
             } else {
                 return Promise.resolve(this);
