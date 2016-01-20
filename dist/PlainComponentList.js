@@ -56,28 +56,28 @@ var PlainComponentList = function () {
                 var viewContext = component.config.viewContext || {};
                 var viewConfig = component.view.config || {};
                 var viewBaseContext = Object.assign({}, viewConfig, viewContext);
+                /** build the render context for the current component */
+                var context = {
+                    id: component.slug,
+                    headline: component.config.label || component.id,
+                    docs: component.docs.map(function (d) {
+                        return { "label": d.name, "content": d.compiled };
+                    }),
+                    component: component
+                };
                 try {
-                    /** build the render context for the current component */
-                    var context = {
-                        id: component.slug,
-                        headline: component.config.label || component.id,
-                        docs: component.docs.map(function (d) {
-                            return { "label": d.name, "content": d.compiled };
-                        }),
-                        component: component
-                    };
+                    if (!component.config.states) {
+                        context.template = component.view.template(viewBaseContext);
+                    } else {
+                        context.states = component.states.map(function (state) {
+                            return _this.buildStateContext(component, state, viewBaseContext);
+                        });
+                    }
                 } catch (e) {
                     Logger_1.error("PlainComponentList.buildViewComponent", component.view.filePath);
                     Logger_1.error(e);
                     Logger_1.error(e.stack);
                     throw e;
-                }
-                if (!component.config.states) {
-                    context.template = component.view.template(viewBaseContext);
-                } else {
-                    context.states = component.states.map(function (state) {
-                        return _this.buildStateContext(component, state, viewBaseContext);
-                    });
                 }
                 /** lookup the styleguide component template */
                 // TODO: handle/secure this law of demeter disaster :D

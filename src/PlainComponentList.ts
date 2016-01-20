@@ -85,7 +85,6 @@ export class PlainComponentList implements IComponentWriter {
       var viewConfig = component.view.config || {};
       var viewBaseContext = Object.assign({}, viewConfig, viewContext);
 
-      try {
         /** build the render context for the current component */
         var context:IComponentTemplateContext = {
           id: component.slug,
@@ -95,17 +94,18 @@ export class PlainComponentList implements IComponentWriter {
           }),
           component: component
         };
+
+      try {
+        if (!component.config.states) {
+          context.template = component.view.template(viewBaseContext);
+        } else {
+          context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
+        }
       } catch(e) {
         error("PlainComponentList.buildViewComponent", component.view.filePath);
         error(e);
         error(e.stack);
         throw(e);
-      }
-
-      if (!component.config.states) {
-        context.template = component.view.template(viewBaseContext);
-      } else {
-        context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
       }
 
       /** lookup the styleguide component template */
