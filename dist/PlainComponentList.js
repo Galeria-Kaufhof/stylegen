@@ -20,17 +20,31 @@ var PlainComponentList = function () {
 
         this.styleguide = styleguide;
     }
-    /**
-     * view component building is the process of wrapping
-     * a component inside the styleguides component view,
-     * so that we may render it inside a component listing,
-     * with the meta information etc. displayed as well,
-     * as the compiled component view itself.
-     */
 
     _createClass(PlainComponentList, [{
+        key: 'buildStateContext',
+        value: function buildStateContext(component, state, baseContext) {
+            var stateContent = [];
+            state.context = [].concat(state.context);
+            stateContent = state.context.map(function (context) {
+                var stateContext = Object.assign({}, baseContext, context);
+                return component.view.template(stateContext);
+            });
+            return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
+        }
+        /**
+         * view component building is the process of wrapping
+         * a component inside the styleguides component view,
+         * so that we may render it inside a component listing,
+         * with the meta information etc. displayed as well,
+         * as the compiled component view itself.
+         */
+
+    }, {
         key: 'buildViewComponent',
         value: function buildViewComponent(component) {
+            var _this = this;
+
             var viewComponent = {
                 component: component
             };
@@ -61,17 +75,7 @@ var PlainComponentList = function () {
                 }
                 if (!!component.config.states) {
                     context.states = component.states.map(function (state) {
-                        var stateContent = [];
-                        if (state.context instanceof Array) {
-                            stateContent = state.context.map(function (context) {
-                                var stateContext = Object.assign({}, viewBaseContext, context);
-                                return component.view.template(stateContext);
-                            });
-                        } else {
-                            var stateContext = Object.assign({}, viewBaseContext, state.context);
-                            stateContent.push(component.view.template(stateContext));
-                        }
-                        return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
+                        return _this.buildStateContext(component, state, viewBaseContext);
                     });
                 }
                 /** lookup the styleguide component template */
@@ -97,23 +101,23 @@ var PlainComponentList = function () {
     }, {
         key: 'build',
         value: function build(config) {
-            var _this = this;
+            var _this2 = this;
 
             config = config || {};
             return new Promise(function (resolve, reject) {
                 var context = Object.assign({}, config);
                 try {
                     /** get all all components, registered in the styleguide */
-                    var components = _this.styleguide.components.all(config && config.components);
+                    var components = _this2.styleguide.components.all(config && config.components);
                     if (!!config.tags) {
                         components = components.filter(function (c) {
-                            return _this.intersect(c.tags, config.tags).length == config.tags.length;
+                            return _this2.intersect(c.tags, config.tags).length == config.tags.length;
                         });
                     }
                     var componentViews = components.filter(function (c) {
-                        return c && c.config && c.config.namespace === _this.styleguide.config.namespace;
+                        return c && c.config && c.config.namespace === _this2.styleguide.config.namespace;
                     }).map(function (c) {
-                        return _this.buildViewComponent(c);
+                        return _this2.buildViewComponent(c);
                     }).filter(function (c) {
                         return c !== null;
                     });
@@ -124,10 +128,10 @@ var PlainComponentList = function () {
                     return reject(e);
                 }
                 // TODO: handle/secure this law of demeter disaster :D
-                var compListTemplate = _this.styleguide.components.find('sg.plain-list-layout').view.template;
+                var compListTemplate = _this2.styleguide.components.find('sg.plain-list-layout').view.template;
                 /** shorthand to the styleguide config */
-                _this.compiled = compListTemplate(context);
-                return resolve(_this);
+                _this2.compiled = compListTemplate(context);
+                return resolve(_this2);
             });
         }
         /**
@@ -138,14 +142,14 @@ var PlainComponentList = function () {
     }, {
         key: 'write',
         value: function write(layoutContext) {
-            var _this2 = this;
+            var _this3 = this;
 
             return new Promise(function (resolve, reject) {
-                var config = _this2.styleguide.config;
-                var layout = _this2.styleguide.components.find('sg.layout').view.template;
-                layoutContext = Object.assign({}, layoutContext, { content: _this2.compiled });
+                var config = _this3.styleguide.config;
+                var layout = _this3.styleguide.components.find('sg.layout').view.template;
+                layoutContext = Object.assign({}, layoutContext, { content: _this3.compiled });
                 return fsoutputfile(path.resolve(config.cwd, config.target, "components.html"), layout(layoutContext)).then(function () {
-                    return resolve(_this2);
+                    return resolve(_this3);
                 }).catch(function (e) {
                     return reject(e);
                 });

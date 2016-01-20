@@ -10,7 +10,7 @@ export interface IStateConfig {
   slug?: string;
 }
 
-interface IState {
+export interface IState {
   id?: string;
   label?: string;
   doc?: Doc;

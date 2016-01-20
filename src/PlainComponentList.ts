@@ -8,6 +8,7 @@ import {error} from './Logger';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';
+import {IState} from './State';
 
 interface IComponentLayoutContext {
   components?: IViewComponent[];
@@ -22,11 +23,18 @@ interface IBuildConfig {
   preflight?: string;
 }
 
+interface ITemplateState {
+  label: string;
+  slug: string;
+  doc: string;
+  content: string[];
+}
+
 interface IComponentTemplateContext {
   id: string;
   headline: string;
   docs: {label: string, content: string}[];
-  states?: {label: string, slug: string, doc: string, content: string[]}[];
+  states?: ITemplateState[];
   template: string;
   component: Component;
 }
@@ -42,6 +50,18 @@ var fsoutputfile = denodeify(fs.outputFile);
 export class PlainComponentList implements IComponentWriter {
   compiled: string;
   constructor(private styleguide: Styleguide) {}
+
+  private buildStateContext(component: Component, state:IState, baseContext: {}):ITemplateState {
+    var stateContent:string[] = [];
+    state.context = [].concat(state.context);
+
+    stateContent = state.context.map((context:IComponentTemplateContext) => {
+      let stateContext = Object.assign({}, baseContext, context);
+      return component.view.template(stateContext);
+    });
+
+    return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
+  }
 
   /**
    * view component building is the process of wrapping
@@ -84,21 +104,7 @@ export class PlainComponentList implements IComponentWriter {
       }
 
       if (!!component.config.states) {
-        context.states = component.states.map(state => {
-          var stateContent:string[] = [];
-
-          if (state.context instanceof Array) {
-            stateContent = state.context.map((context:IComponentTemplateContext) => {
-              let stateContext = Object.assign({}, viewBaseContext, context);
-              return component.view.template(stateContext);
-            });
-          } else {
-            let stateContext = Object.assign({}, viewBaseContext, state.context);
-            stateContent.push(component.view.template(stateContext));
-          }
-
-          return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
-        });
+        context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
       }
 
       /** lookup the styleguide component template */
