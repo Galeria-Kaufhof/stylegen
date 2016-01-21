@@ -21,8 +21,14 @@ var PlainComponentList = function () {
         this.styleguide = styleguide;
         this.dependendViews = [];
     }
+    // TODO: this is redundant logic to the page writing process, we should unify this path lookup
 
     _createClass(PlainComponentList, [{
+        key: 'relatedViewPath',
+        value: function relatedViewPath(viewKey) {
+            return path.resolve(this.styleguide.config.target, 'preview-files', viewKey + '.html');
+        }
+    }, {
         key: 'buildStateContext',
         value: function buildStateContext(component, state, baseContext) {
             var _this = this;
@@ -33,7 +39,10 @@ var PlainComponentList = function () {
                 var stateContext = Object.assign({}, baseContext, context);
                 var renderedView = component.view.template(stateContext);
                 _this.dependendViews.push({ slug: state.slug, content: renderedView });
-                return renderedView;
+                return {
+                    content: renderedView,
+                    path: _this.relatedViewPath(state.slug)
+                };
             });
             return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
         }
@@ -79,7 +88,10 @@ var PlainComponentList = function () {
                     if (!component.config.states) {
                         var renderedView = component.view.template(viewBaseContext);
                         this.dependendViews.push({ slug: component.slug + '-view', content: renderedView });
-                        context.template = renderedView;
+                        context.template = {
+                            content: renderedView,
+                            path: this.relatedViewPath(component.slug + '-view')
+                        };
                     } else {
                         context.states = component.states.map(function (state) {
                             return _this2.buildStateContext(component, state, viewBaseContext);

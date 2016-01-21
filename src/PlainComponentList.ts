@@ -23,12 +23,12 @@ interface IBuildConfig {
   preflight?: string;
 }
 
+
 interface ITemplateState {
   label: string;
   slug: string;
   doc: string;
-  content: string[];
-  contentPath?: string[];
+  content: IViewContent[];
 }
 
 interface IComponentTemplateContext {
@@ -36,8 +36,7 @@ interface IComponentTemplateContext {
   headline: string;
   docs: {label: string, content: string}[];
   states?: ITemplateState[];
-  template?: string;
-  templatePath?: string;
+  template?: IViewContent;
   component: Component;
 }
 
@@ -45,6 +44,12 @@ export interface IRelatedComponentFiles {
   slug: string;
   content: string;
 }
+
+interface IViewContent {
+  path: string;
+  content: string;
+}
+
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -61,15 +66,25 @@ export class PlainComponentList implements IComponentWriter {
     this.dependendViews = [];
   }
 
+  // TODO: this is redundant logic to the page writing process, we should unify this path lookup
+  private relatedViewPath(viewKey: string):string {
+    return path.resolve(this.styleguide.config.target, 'preview-files', `${viewKey}.html`);
+  }
+
+
   private buildStateContext(component: Component, state:IState, baseContext: {}):ITemplateState {
-    var stateContent:string[] = [];
+    var stateContent:IViewContent[] = [];
     state.context = [].concat(state.context);
 
     stateContent = state.context.map((context:IComponentTemplateContext) => {
       let stateContext = Object.assign({}, baseContext, context);
       let renderedView = component.view.template(stateContext);
       this.dependendViews.push({ slug: state.slug, content: renderedView });
-      return renderedView;
+
+      return {
+        content: renderedView,
+        path: this.relatedViewPath(state.slug)
+      };
     });
 
     return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };
@@ -114,7 +129,10 @@ export class PlainComponentList implements IComponentWriter {
         if (!component.config.states) {
           let renderedView = component.view.template(viewBaseContext);
           this.dependendViews.push({ slug: `${component.slug}-view`, content: renderedView });
-          context.template = renderedView;
+          context.template = {
+            content: renderedView,
+            path: this.relatedViewPath(`${component.slug}-view`)
+          };
         } else {
           context.states = component.states.map(state => this.buildStateContext(component, state, viewBaseContext));
         }

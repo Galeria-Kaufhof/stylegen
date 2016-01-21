@@ -4,6 +4,7 @@ import {Component} from './Component';
 import * as slug from 'slug';
 
 export interface IStateConfig {
+  id?: string;
   label?: string;
   doc?: string;
   context?: any;
