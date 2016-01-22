@@ -58,6 +58,18 @@ var PlainComponentList = function () {
                 component: component
             };
         }
+    }, {
+        key: 'renderViewComponents',
+        value: function renderViewComponents(context) {
+            var components = context.components;
+            var compTemplate = this.styleguide.components.find('sg.component').view.template;
+            return components.map(function (c) {
+                // console.log(c.component)
+                var ctx = Object.assign({}, context, c.componentContext);
+                c.compiled = compTemplate(ctx);
+                return c;
+            });
+        }
         /**
          * view component building is the process of wrapping
          * a component inside the styleguides component view,
@@ -82,7 +94,7 @@ var PlainComponentList = function () {
                 var viewContext = component.config.viewContext || {};
                 var viewConfig = component.view.config || {};
                 var viewBaseContext = Object.assign({}, viewConfig, viewContext);
-                /** build the render context for the current component */
+                // /** build the render context for the current component */
                 var context = this.buildComponentTemplateContext(component);
                 try {
                     if (!component.config.states) {
@@ -103,11 +115,9 @@ var PlainComponentList = function () {
                     Logger_1.error(e.stack);
                     throw e;
                 }
-                /** lookup the styleguide component template */
-                // TODO: handle/secure this law of demeter disaster :D
-                var compTemplate = this.styleguide.components.find('sg.component').view.template;
                 /** build the representation of the current component for the styleguide */
-                viewComponent.compiled = compTemplate(context);
+                // viewComponent.compiled = compTemplate(context);
+                viewComponent.componentContext = context;
                 return viewComponent;
             } else {
                 return null;
@@ -123,26 +133,51 @@ var PlainComponentList = function () {
                 return array2.indexOf(a) != -1;
             });
         }
+        // for component lists we want to create for each rendered view a separate file,
+        // so that we may link it inside of an iFrame.
+
+    }, {
+        key: 'writeDependendViewFiles',
+        value: function writeDependendViewFiles(context) {
+            var _this3 = this;
+
+            var config = this.styleguide.config;
+            var rootDirectory = config.target;
+            var dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
+            var dependendViewTemplate = this.styleguide.components.find('sg.dependend-view-layout').view.template;
+            if (this.dependendViews.length > 0) {
+                var filePromises = this.dependendViews.map(function (relatedFile) {
+                    var ctx = Object.assign({}, context, { content: relatedFile.content });
+                    return fsoutputfile.apply(_this3, [path.resolve(dependentViewFolder, relatedFile.slug + '.html'), dependendViewTemplate(ctx)]);
+                });
+                return Promise.all(filePromises).then(function () {
+                    return _this3;
+                }).catch(function (e) {
+                    return Logger_1.error("PlainComponentList.writeDependendViewFiles", e);
+                });
+            }
+            return Promise.resolve(this);
+        }
     }, {
         key: 'build',
         value: function build(config) {
-            var _this3 = this;
+            var _this4 = this;
 
             config = config || {};
             return new Promise(function (resolve, reject) {
                 var context = Object.assign({}, config);
                 try {
                     /** get all all components, registered in the styleguide */
-                    var components = _this3.styleguide.components.all(config && config.components);
+                    var components = _this4.styleguide.components.all(config && config.components);
                     if (!!config.tags) {
                         components = components.filter(function (c) {
-                            return _this3.intersect(c.tags, config.tags).length == config.tags.length;
+                            return _this4.intersect(c.tags, config.tags).length == config.tags.length;
                         });
                     }
                     var componentViews = components.filter(function (c) {
-                        return c && c.config && c.config.namespace === _this3.styleguide.config.namespace;
+                        return c && c.config && c.config.namespace === _this4.styleguide.config.namespace;
                     }).map(function (c) {
-                        return _this3.buildViewComponent(c);
+                        return _this4.buildViewComponent(c);
                     }).filter(function (c) {
                         return c !== null;
                     });
@@ -152,12 +187,25 @@ var PlainComponentList = function () {
                     /** if some of the above fails, go to hell!! :) */
                     return reject(e);
                 }
-                // TODO: handle/secure this law of demeter disaster :D
-                var compListTemplate = _this3.styleguide.components.find('sg.plain-list-layout').view.template;
-                /** shorthand to the styleguide config */
-                _this3.compiled = compListTemplate(context);
-                return resolve(_this3);
+                _this4.context = context;
+                return resolve(_this4);
             });
+        }
+    }, {
+        key: 'render',
+        value: function render(layoutContext) {
+            this.layoutContext = layoutContext;
+            try {
+                // TODO: handle/secure this law of demeter disaster :D
+                var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
+                var ctx = Object.assign({}, this.layoutContext, this.context);
+                ctx.components = this.renderViewComponents(ctx);
+                /** shorthand to the styleguide config */
+                this.compiled = compListTemplate(ctx);
+                return this.writeDependendViewFiles(ctx);
+            } catch (e) {
+                return Promise.reject(e);
+            }
         }
         /**
          * the most basic writer, that handles the resolution of how to
@@ -167,14 +215,14 @@ var PlainComponentList = function () {
     }, {
         key: 'write',
         value: function write(layoutContext) {
-            var _this4 = this;
+            var _this5 = this;
 
             return new Promise(function (resolve, reject) {
-                var config = _this4.styleguide.config;
-                var layout = _this4.styleguide.components.find('sg.layout').view.template;
-                layoutContext = Object.assign({}, layoutContext, { content: _this4.compiled });
+                var config = _this5.styleguide.config;
+                var layout = _this5.styleguide.components.find('sg.layout').view.template;
+                layoutContext = Object.assign({}, layoutContext, { content: _this5.compiled });
                 return fsoutputfile(path.resolve(config.cwd, config.target, "components.html"), layout(layoutContext)).then(function () {
-                    return resolve(_this4);
+                    return resolve(_this5);
                 }).catch(function (e) {
                     return reject(e);
                 });

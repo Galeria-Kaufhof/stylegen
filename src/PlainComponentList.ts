@@ -4,16 +4,15 @@ import * as path from 'path';
 import * as denodeify from 'denodeify';
 import * as fs from 'fs-extra';
 
-import {error} from './Logger';
+import {error, log} from './Logger';
 import {Component} from './Component';
 import {Styleguide} from './Styleguide';
 import {IComponentWriter, IViewComponent} from './ComponentWriter';
 import {IState} from './State';
+import {IPageLayoutContext} from './PageLayout';
 
-interface IComponentLayoutContext {
+interface IComponentLayoutContext extends IPageLayoutContext {
   components?: IViewComponent[];
-  cssDeps?: string[];
-  jsDeps?: string[];
 }
 
 interface IBuildConfig {
@@ -21,8 +20,9 @@ interface IBuildConfig {
   tags?: string[];
   components?: string[];
   preflight?: string;
+  // page?: IPageTemplateConfig;
+  layoutContext?: IComponentLayoutContext;
 }
-
 
 interface ITemplateState {
   label: string;
@@ -38,6 +38,7 @@ interface IComponentTemplateContext {
   states?: ITemplateState[];
   template?: IViewContent;
   component: Component;
+  page?: IComponentLayoutContext;
 }
 
 export interface IRelatedComponentFiles {
@@ -61,6 +62,8 @@ var fsoutputfile = denodeify(fs.outputFile);
 export class PlainComponentList implements IComponentWriter {
   compiled: string;
   dependendViews: IRelatedComponentFiles[];
+  private layoutContext: IComponentLayoutContext;
+  private context: IComponentLayoutContext;
 
   constructor(private styleguide: Styleguide) {
     this.dependendViews = [];
@@ -101,6 +104,19 @@ export class PlainComponentList implements IComponentWriter {
     };
   }
 
+  private renderViewComponents(context: IPageLayoutContext):IViewComponent[] {
+    var components = context.components;
+    var compTemplate = this.styleguide.components.find('sg.component').view.template;
+
+    return components.map((c:IViewComponent) => {
+      // console.log(c.component)
+      let ctx = Object.assign({}, context, c.componentContext);
+      c.compiled = compTemplate(ctx);
+
+      return c;
+    });
+  }
+
   /**
    * view component building is the process of wrapping
    * a component inside the styleguides component view,
@@ -122,7 +138,7 @@ export class PlainComponentList implements IComponentWriter {
       var viewConfig = component.view.config || {};
       var viewBaseContext = Object.assign({}, viewConfig, viewContext);
 
-      /** build the render context for the current component */
+      // /** build the render context for the current component */
       var context = this.buildComponentTemplateContext(component);
 
       try {
@@ -143,13 +159,10 @@ export class PlainComponentList implements IComponentWriter {
         throw(e);
       }
 
-      /** lookup the styleguide component template */
-      // TODO: handle/secure this law of demeter disaster :D
-      var compTemplate = this.styleguide.components.find('sg.component').view.template;
-
       /** build the representation of the current component for the styleguide */
-      viewComponent.compiled = compTemplate(context);
+      // viewComponent.compiled = compTemplate(context);
 
+      viewComponent.componentContext = context;
       return viewComponent;
     } else {
       return null;
@@ -162,6 +175,31 @@ export class PlainComponentList implements IComponentWriter {
     }
     return array1.filter((a:T) => array2.indexOf(a) != -1);
   }
+
+
+
+
+  // for component lists we want to create for each rendered view a separate file,
+  // so that we may link it inside of an iFrame.
+  private writeDependendViewFiles(context: IPageLayoutContext):Promise<PlainComponentList> {
+    let config = this.styleguide.config;
+    let rootDirectory = config.target;
+    let dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
+    let dependendViewTemplate = this.styleguide.components.find('sg.dependend-view-layout').view.template;
+
+    if (this.dependendViews.length > 0) {
+      let filePromises = this.dependendViews.map(relatedFile => {
+        let ctx = Object.assign({}, context, {content: relatedFile.content});
+        return fsoutputfile.apply(this, [ path.resolve(dependentViewFolder, `${relatedFile.slug}.html`), dependendViewTemplate(ctx) ])
+      });
+
+      return Promise.all(filePromises).then(() => this)
+      .catch(e => error("PlainComponentList.writeDependendViewFiles", e));
+    }
+
+    return Promise.resolve(this);
+  }
+
 
   public build(config:IBuildConfig):Promise<PlainComponentList> {
     config = config || {};
@@ -196,14 +234,30 @@ export class PlainComponentList implements IComponentWriter {
         return reject(e);
       }
 
-      // TODO: handle/secure this law of demeter disaster :D
-      var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
-
-      /** shorthand to the styleguide config */
-      this.compiled = compListTemplate(context);
+      this.context = context;
       return resolve(this);
     });
   }
+
+  public render(layoutContext: IComponentLayoutContext):Promise<PlainComponentList> {
+    this.layoutContext = layoutContext;
+
+    try {
+      // TODO: handle/secure this law of demeter disaster :D
+      var compListTemplate = this.styleguide.components.find('sg.plain-list-layout').view.template;
+
+      var ctx = Object.assign({}, this.layoutContext, this.context);
+
+      ctx.components = this.renderViewComponents(ctx);
+
+      /** shorthand to the styleguide config */
+      this.compiled = compListTemplate(ctx);
+      return this.writeDependendViewFiles(ctx);
+    } catch(e) {
+      return Promise.reject(e);
+    }
+  }
+
 
   /**
    * the most basic writer, that handles the resolution of how to

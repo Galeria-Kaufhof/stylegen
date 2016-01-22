@@ -12,7 +12,7 @@ import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
 import {PlainComponentList, IRelatedComponentFiles} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
-import {warn} from './Logger';
+import {warn, error} from './Logger';
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -27,6 +27,11 @@ export interface IPageConfig {
   mdRenderer?: IRenderer;
   target?: string;
   preflight?: string;
+}
+
+export interface IPageTemplateConfig {
+  root?: string;
+  cwd?: string;
 }
 
 interface IPlainComponentListBuildOptions {
@@ -45,6 +50,9 @@ export class Page {
   content: any;
   children: Page[];
   mdRenderer: IRenderer;
+  private root: string;
+  private cwd: string;
+  private componentList: PlainComponentList;
 
   constructor(private config: IPageConfig, private parent?: Page) {
     this.mdRenderer = this.config.mdRenderer;
@@ -62,6 +70,10 @@ export class Page {
       throw("No target for the styleguide specified")
     }
 
+    this.root = this.config.styleguide.config.target;
+    this.cwd = this.target;
+
+    // TODO: target should stay the folder, whereas link should be used to reference the file
     this.target = path.resolve(this.target, this.slug + '.html');
     this.link = this.target;
   }
@@ -81,26 +93,10 @@ export class Page {
     }
   }
 
-  // for component lists we want to create for each rendered view a separate file,
-  // so that we may link it inside of an iFrame.
-  private writeDependendViewFiles(plainComponentList: PlainComponentList):Promise<PlainComponentList> {
-    let rootDirectory = this.config.styleguide.config.target;
-    let dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
-
-    if (plainComponentList.dependendViews.length > 0) {
-      let filePromises = plainComponentList.dependendViews.map(relatedFile => {
-        return fsoutputfile.apply(this, [path.resolve(dependentViewFolder, `${relatedFile.slug}.html`), relatedFile.content]);
-      });
-
-      return Promise.all(filePromises).then(() => plainComponentList);
-    }
-
-    return Promise.resolve(plainComponentList);
-  }
-
   private buildComponentList(options: IPlainComponentListBuildOptions):Promise<PlainComponentList> {
-    return new PlainComponentList(this.config.styleguide).build(options)
-    .then(componentList => this.writeDependendViewFiles(componentList));
+    // options = Object.assign({}, options, { page: this.layoutContext });
+    options = Object.assign({}, options);
+    return new PlainComponentList(this.config.styleguide).build(options);
   }
 
   buildContent():Promise<Page> {
@@ -141,9 +137,13 @@ export class Page {
       return Promise.reject(e);
     }
 
-    return contentPromise.then((content: ICompilableContent) => {
+    return contentPromise.then((content: PlainComponentList) => {
       if (content !== null) {
-        this.content = content.compiled;
+        if (content instanceof PlainComponentList) {
+          this.componentList = content;
+        }
+
+        this.content = content;
       }
 
       return this;
@@ -167,17 +167,31 @@ export class Page {
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
     if (!!this.content) {
-      var pageContext:IPageLayoutContext = Object.assign({}, context);
-      pageContext.content = this.content;
+      var preparation;
 
-      /** pageroot and pagecwd are important properties for the relative link helper we made available in the handlebars engine */
-      pageContext.pageroot = this.config.styleguide.config.target;
-      pageContext.pagecwd = path.dirname(this.target);
+      var pageContext:IPageLayoutContext = Object.assign({}, context);
+      /** root and cwd are important properties for the relative link helper we made available in the handlebars engine */
+      pageContext.root = this.root;
+      pageContext.cwd = this.cwd;
+
+      if (this.content instanceof PlainComponentList) {
+        preparation = this.componentList.render(pageContext)
+        .then((plainComponentList) => {
+          pageContext.content = plainComponentList.compiled;
+        });
+      } else {
+        pageContext.content = this.content.compiled;
+        preparation = Promise.resolve(this);
+      }
 
       /** applying here, because of stupid type defintion with multiargs :/ */
-      return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+      preparation
+      .then(page => {
+        return fsoutputfile.apply(this, [this.target, layout(pageContext)]);
+      })
       .then(page => this.writeChildren(layout, context))
-      .then((file:any) => this);
+      .then((file:any) => this)
+      .catch(e => error("OMG", e.stack));
     } else {
       return Promise.resolve(this);
     }

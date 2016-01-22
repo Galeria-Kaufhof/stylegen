@@ -15,12 +15,19 @@ Handlebars.registerHelper("eq", function (a, b) {
     return a === b;
 });
 Handlebars.registerHelper("rellink", function (link, options) {
+    var absoluteLinkPath = link;
+    var options = options.data.root,
+        cwd,
+        root;
+    // console.log(link)
+    if (!options.cwd || !options.root) {
+        return link;
+    }
     try {
-        if (options.data.root.pagecwd) {
-            return path.relative(options.data.root.pagecwd, path.resolve(options.data.root.pageroot, link));
-        } else {
-            return link;
+        if (link && link[0] !== '/') {
+            absoluteLinkPath = path.resolve(options.root, link);
         }
+        return path.relative(options.cwd, absoluteLinkPath);
     } catch (e) {
         console.log(e);
         return link;

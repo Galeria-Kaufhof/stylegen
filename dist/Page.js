@@ -31,6 +31,9 @@ var Page = function () {
         } else {
             throw "No target for the styleguide specified";
         }
+        this.root = this.config.styleguide.config.target;
+        this.cwd = this.target;
+        // TODO: target should stay the folder, whereas link should be used to reference the file
         this.target = path.resolve(this.target, this.slug + '.html');
         this.link = this.target;
     }
@@ -52,39 +55,17 @@ var Page = function () {
                 return Promise.resolve(this);
             }
         }
-        // for component lists we want to create for each rendered view a separate file,
-        // so that we may link it inside of an iFrame.
-
-    }, {
-        key: 'writeDependendViewFiles',
-        value: function writeDependendViewFiles(plainComponentList) {
-            var _this2 = this;
-
-            var rootDirectory = this.config.styleguide.config.target;
-            var dependentViewFolder = path.resolve(rootDirectory, 'preview-files');
-            if (plainComponentList.dependendViews.length > 0) {
-                var filePromises = plainComponentList.dependendViews.map(function (relatedFile) {
-                    return fsoutputfile.apply(_this2, [path.resolve(dependentViewFolder, relatedFile.slug + '.html'), relatedFile.content]);
-                });
-                return Promise.all(filePromises).then(function () {
-                    return plainComponentList;
-                });
-            }
-            return Promise.resolve(plainComponentList);
-        }
     }, {
         key: 'buildComponentList',
         value: function buildComponentList(options) {
-            var _this3 = this;
-
-            return new PlainComponentList_1.PlainComponentList(this.config.styleguide).build(options).then(function (componentList) {
-                return _this3.writeDependendViewFiles(componentList);
-            });
+            // options = Object.assign({}, options, { page: this.layoutContext });
+            options = Object.assign({}, options);
+            return new PlainComponentList_1.PlainComponentList(this.config.styleguide).build(options);
         }
     }, {
         key: 'buildContent',
         value: function buildContent() {
-            var _this4 = this;
+            var _this2 = this;
 
             var contentPromise;
             // var docFactory = this.config.styleguide.docFactory;
@@ -92,7 +73,7 @@ var Page = function () {
                 switch (this.config.type) {
                     case "md":
                         contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load().then(function (doc) {
-                            var pageLayout = _this4.config.styleguide.components.find('sg.page').view.template;
+                            var pageLayout = _this2.config.styleguide.components.find('sg.page').view.template;
                             doc.compiled = pageLayout({ content: doc.compiled });
                             return doc;
                         });
@@ -103,7 +84,7 @@ var Page = function () {
                     case "components":
                         if (!!this.config.preflight) {
                             contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
-                                return _this4.buildComponentList({ label: _this4.label, components: _this4.config.content, preflight: preflight.compiled });
+                                return _this2.buildComponentList({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
                             });
                         } else {
                             contentPromise = this.buildComponentList({ label: this.label, components: this.config.content });
@@ -119,32 +100,35 @@ var Page = function () {
             }
             return contentPromise.then(function (content) {
                 if (content !== null) {
-                    _this4.content = content.compiled;
+                    if (content instanceof PlainComponentList_1.PlainComponentList) {
+                        _this2.componentList = content;
+                    }
+                    _this2.content = content;
                 }
-                return _this4;
+                return _this2;
             });
         }
     }, {
         key: 'build',
         value: function build() {
-            var _this5 = this;
+            var _this3 = this;
 
             return this.resolveChildren().then(function (page) {
-                return _this5.buildContent();
+                return _this3.buildContent();
             }).then(function () {
-                return _this5;
+                return _this3;
             });
         }
     }, {
         key: 'writeChildren',
         value: function writeChildren(layout, context) {
-            var _this6 = this;
+            var _this4 = this;
 
             if (!!this.children) {
                 return Promise.all(this.children.map(function (child) {
                     return child.write(layout, context);
                 })).then(function (children) {
-                    return _this6;
+                    return _this4;
                 });
             } else {
                 return Promise.resolve(this);
@@ -153,19 +137,31 @@ var Page = function () {
     }, {
         key: 'write',
         value: function write(layout, context) {
-            var _this7 = this;
+            var _this5 = this;
 
             if (!!this.content) {
+                var preparation;
                 var pageContext = Object.assign({}, context);
-                pageContext.content = this.content;
-                /** pageroot and pagecwd are important properties for the relative link helper we made available in the handlebars engine */
-                pageContext.pageroot = this.config.styleguide.config.target;
-                pageContext.pagecwd = path.dirname(this.target);
+                /** root and cwd are important properties for the relative link helper we made available in the handlebars engine */
+                pageContext.root = this.root;
+                pageContext.cwd = this.cwd;
+                if (this.content instanceof PlainComponentList_1.PlainComponentList) {
+                    preparation = this.componentList.render(pageContext).then(function (plainComponentList) {
+                        pageContext.content = plainComponentList.compiled;
+                    });
+                } else {
+                    pageContext.content = this.content.compiled;
+                    preparation = Promise.resolve(this);
+                }
                 /** applying here, because of stupid type defintion with multiargs :/ */
-                return fsoutputfile.apply(this, [this.target, layout(pageContext)]).then(function (page) {
-                    return _this7.writeChildren(layout, context);
+                preparation.then(function (page) {
+                    return fsoutputfile.apply(_this5, [_this5.target, layout(pageContext)]);
+                }).then(function (page) {
+                    return _this5.writeChildren(layout, context);
                 }).then(function (file) {
-                    return _this7;
+                    return _this5;
+                }).catch(function (e) {
+                    return Logger_1.error("OMG", e.stack);
                 });
             } else {
                 return Promise.resolve(this);

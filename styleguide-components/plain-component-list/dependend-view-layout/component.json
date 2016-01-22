@@ -1,0 +1,5 @@
+{
+  "id": "dependend-view-layout"
+  , "view": "dependend_view_layout_view.hbs"
+  , "namespace": "sg"
+}
