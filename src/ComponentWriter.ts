@@ -21,4 +21,5 @@ export interface IComponentWriter {
 export interface IViewComponent {
   component: Component;
   compiled?: string;
+  componentContext?: any;
 }

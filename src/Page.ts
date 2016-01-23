@@ -10,9 +10,9 @@ import {View} from './View';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
 import {IPageLayoutContext} from './PageLayout';
-import {PlainComponentList} from './PlainComponentList';
+import {PlainComponentList, IRelatedComponentFiles} from './PlainComponentList';
 import {ICompilableContent} from './CompilableContent';
-import {warn} from './Logger';
+import {warn, error} from './Logger';
 
 var fsoutputfile = denodeify(fs.outputFile);
 
@@ -29,6 +29,17 @@ export interface IPageConfig {
   preflight?: string;
 }
 
+export interface IPageTemplateConfig {
+  root?: string;
+  cwd?: string;
+}
+
+interface IPlainComponentListBuildOptions {
+  label: string;
+  tags?: string[];
+  components?: string[];
+  preflight?: string;
+}
 
 export class Page {
   id: string;
@@ -39,6 +50,9 @@ export class Page {
   content: any;
   children: Page[];
   mdRenderer: IRenderer;
+  private root: string;
+  private cwd: string;
+  private componentList: PlainComponentList;
 
   constructor(private config: IPageConfig, private parent?: Page) {
     this.mdRenderer = this.config.mdRenderer;
@@ -56,6 +70,10 @@ export class Page {
       throw("No target for the styleguide specified")
     }
 
+    this.root = this.config.styleguide.config.target;
+    this.cwd = this.target;
+
+    // TODO: target should stay the folder, whereas link should be used to reference the file
     this.target = path.resolve(this.target, this.slug + '.html');
     this.link = this.target;
   }
@@ -75,6 +93,12 @@ export class Page {
     }
   }
 
+  private buildComponentList(options: IPlainComponentListBuildOptions):Promise<PlainComponentList> {
+    // options = Object.assign({}, options, { page: this.layoutContext });
+    options = Object.assign({}, options);
+    return new PlainComponentList(this.config.styleguide).build(options);
+  }
+
   buildContent():Promise<Page> {
     var contentPromise:Promise<any>;
     // var docFactory = this.config.styleguide.docFactory;
@@ -91,17 +115,17 @@ export class Page {
           });
           break;
         case "tags":
-          contentPromise = new PlainComponentList(this.config.styleguide).build({label: this.label, tags: this.config.content});
+          contentPromise = this.buildComponentList({label: this.label, tags: this.config.content});
           break;
         case "components":
           if (!!this.config.preflight) {
             contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
               .load()
               .then((preflight) => {
-                return new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content, preflight: preflight.compiled });
+                return this.buildComponentList({ label: this.label, components: this.config.content, preflight: preflight.compiled });
               });
           } else {
-            contentPromise = new PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content});
+            contentPromise = this.buildComponentList({ label: this.label, components: this.config.content});
           }
           break;
         default:
@@ -113,9 +137,13 @@ export class Page {
       return Promise.reject(e);
     }
 
-    return contentPromise.then((content: ICompilableContent) => {
+    return contentPromise.then((content: PlainComponentList) => {
       if (content !== null) {
-        this.content = content.compiled;
+        if (content instanceof PlainComponentList) {
+          this.componentList = content;
+        }
+
+        this.content = content;
       }
 
       return this;
@@ -125,7 +153,7 @@ export class Page {
   build():Promise<Page> {
     return this.resolveChildren()
     .then((page) => this.buildContent())
-    .then(() => {return this; });
+    .then(() => { return this; });
   }
 
   writeChildren(layout: Function, context: IPageLayoutContext):Promise<Page> {
@@ -139,15 +167,31 @@ export class Page {
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
     if (!!this.content) {
+      var preparation;
+
       var pageContext:IPageLayoutContext = Object.assign({}, context);
-      pageContext.content = this.content;
-      pageContext.pageroot = this.config.styleguide.config.target;
-      pageContext.pagecwd = path.dirname(this.target);
+      /** root and cwd are important properties for the relative link helper we made available in the handlebars engine */
+      pageContext.root = this.root;
+      pageContext.cwd = this.cwd;
+
+      if (this.content instanceof PlainComponentList) {
+        preparation = this.componentList.render(pageContext)
+        .then((plainComponentList) => {
+          pageContext.content = plainComponentList.compiled;
+        });
+      } else {
+        pageContext.content = this.content.compiled;
+        preparation = Promise.resolve(this);
+      }
 
       /** applying here, because of stupid type defintion with multiargs :/ */
-      return fsoutputfile.apply(this, [this.target, layout(pageContext)])
+      preparation
+      .then(page => {
+        return fsoutputfile.apply(this, [this.target, layout(pageContext)]);
+      })
       .then(page => this.writeChildren(layout, context))
-      .then((file:any) => this);
+      .then((file:any) => this)
+      .catch(e => error("OMG", e.stack));
     } else {
       return Promise.resolve(this);
     }

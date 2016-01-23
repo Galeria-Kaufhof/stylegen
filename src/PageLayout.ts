@@ -1,11 +1,9 @@
+import {ILayoutContext} from './StructureWriter';
 import {Page} from './Page';
 
-export interface IPageLayoutContext {
-  cssDeps?: string[];
-  jsDeps?: string[];
-
+export interface IPageLayoutContext extends ILayoutContext {
   pages?: Page[];
   content?: string;
-  pagecwd?: string;
-  pageroot?: string;
+  cwd?: string;
+  root?: string;
 }

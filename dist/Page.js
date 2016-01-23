@@ -31,6 +31,9 @@ var Page = function () {
         } else {
             throw "No target for the styleguide specified";
         }
+        this.root = this.config.styleguide.config.target;
+        this.cwd = this.target;
+        // TODO: target should stay the folder, whereas link should be used to reference the file
         this.target = path.resolve(this.target, this.slug + '.html');
         this.link = this.target;
     }
@@ -53,6 +56,13 @@ var Page = function () {
             }
         }
     }, {
+        key: 'buildComponentList',
+        value: function buildComponentList(options) {
+            // options = Object.assign({}, options, { page: this.layoutContext });
+            options = Object.assign({}, options);
+            return new PlainComponentList_1.PlainComponentList(this.config.styleguide).build(options);
+        }
+    }, {
         key: 'buildContent',
         value: function buildContent() {
             var _this2 = this;
@@ -69,15 +79,15 @@ var Page = function () {
                         });
                         break;
                     case "tags":
-                        contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, tags: this.config.content });
+                        contentPromise = this.buildComponentList({ label: this.label, tags: this.config.content });
                         break;
                     case "components":
                         if (!!this.config.preflight) {
                             contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label).load().then(function (preflight) {
-                                return new PlainComponentList_1.PlainComponentList(_this2.config.styleguide).build({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
+                                return _this2.buildComponentList({ label: _this2.label, components: _this2.config.content, preflight: preflight.compiled });
                             });
                         } else {
-                            contentPromise = new PlainComponentList_1.PlainComponentList(this.config.styleguide).build({ label: this.label, components: this.config.content });
+                            contentPromise = this.buildComponentList({ label: this.label, components: this.config.content });
                         }
                         break;
                     default:
@@ -90,7 +100,10 @@ var Page = function () {
             }
             return contentPromise.then(function (content) {
                 if (content !== null) {
-                    _this2.content = content.compiled;
+                    if (content instanceof PlainComponentList_1.PlainComponentList) {
+                        _this2.componentList = content;
+                    }
+                    _this2.content = content;
                 }
                 return _this2;
             });
@@ -127,15 +140,28 @@ var Page = function () {
             var _this5 = this;
 
             if (!!this.content) {
+                var preparation;
                 var pageContext = Object.assign({}, context);
-                pageContext.content = this.content;
-                pageContext.pageroot = this.config.styleguide.config.target;
-                pageContext.pagecwd = path.dirname(this.target);
+                /** root and cwd are important properties for the relative link helper we made available in the handlebars engine */
+                pageContext.root = this.root;
+                pageContext.cwd = this.cwd;
+                if (this.content instanceof PlainComponentList_1.PlainComponentList) {
+                    preparation = this.componentList.render(pageContext).then(function (plainComponentList) {
+                        pageContext.content = plainComponentList.compiled;
+                    });
+                } else {
+                    pageContext.content = this.content.compiled;
+                    preparation = Promise.resolve(this);
+                }
                 /** applying here, because of stupid type defintion with multiargs :/ */
-                return fsoutputfile.apply(this, [this.target, layout(pageContext)]).then(function (page) {
+                preparation.then(function (page) {
+                    return fsoutputfile.apply(_this5, [_this5.target, layout(pageContext)]);
+                }).then(function (page) {
                     return _this5.writeChildren(layout, context);
                 }).then(function (file) {
                     return _this5;
+                }).catch(function (e) {
+                    return Logger_1.error("OMG", e.stack);
                 });
             } else {
                 return Promise.resolve(this);

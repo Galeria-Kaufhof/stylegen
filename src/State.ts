@@ -4,13 +4,14 @@ import {Component} from './Component';
 import * as slug from 'slug';
 
 export interface IStateConfig {
+  id?: string;
   label?: string;
   doc?: string;
   context?: any;
   slug?: string;
 }
 
-interface IState {
+export interface IState {
   id?: string;
   label?: string;
   doc?: Doc;
@@ -20,7 +21,6 @@ interface IState {
 
 
 export class State implements IState {
-  id: string;
   public label: string;
   public doc: Doc;
   public context: {}|{}[];
