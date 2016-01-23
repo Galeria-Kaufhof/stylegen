@@ -35,13 +35,13 @@ var PlainComponentList = function () {
 
             var stateContent = [];
             state.context = [].concat(state.context);
-            stateContent = state.context.map(function (context) {
+            stateContent = state.context.map(function (context, index) {
                 var stateContext = Object.assign({}, baseContext, context);
                 var renderedView = component.view.template(stateContext);
-                _this.dependendViews.push({ slug: state.slug, content: renderedView });
+                _this.dependendViews.push({ slug: state.slug + '-' + index, content: renderedView });
                 return {
                     content: renderedView,
-                    path: _this.relatedViewPath(state.slug)
+                    path: _this.relatedViewPath(state.slug + '-' + index)
                 };
             });
             return { label: state.label, slug: state.slug, doc: state.doc && state.doc.compiled, content: stateContent };

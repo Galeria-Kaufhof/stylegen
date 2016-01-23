@@ -77,16 +77,18 @@ export class PlainComponentList implements IComponentWriter {
 
   private buildStateContext(component: Component, state:IState, baseContext: {}):ITemplateState {
     var stateContent:IViewContent[] = [];
+
     state.context = [].concat(state.context);
 
-    stateContent = state.context.map((context:IComponentTemplateContext) => {
+    stateContent = state.context.map((context:IComponentTemplateContext, index: number) => {
       let stateContext = Object.assign({}, baseContext, context);
       let renderedView = component.view.template(stateContext);
-      this.dependendViews.push({ slug: state.slug, content: renderedView });
+
+      this.dependendViews.push({ slug: `${state.slug}-${index}`, content: renderedView });
 
       return {
         content: renderedView,
-        path: this.relatedViewPath(state.slug)
+        path: this.relatedViewPath(`${state.slug}-${index}`)
       };
     });
 
