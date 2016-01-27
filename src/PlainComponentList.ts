@@ -111,7 +111,6 @@ export class PlainComponentList implements IComponentWriter {
     var compTemplate = this.styleguide.components.find('sg.component').view.template;
 
     return components.map((c:IViewComponent) => {
-      // console.log(c.component)
       let ctx = Object.assign({}, context, c.componentContext);
       c.compiled = compTemplate(ctx);
 

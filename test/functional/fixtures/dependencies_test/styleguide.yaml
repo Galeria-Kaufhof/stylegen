@@ -12,3 +12,9 @@ dependencies:
       - head_template.html
       - head2_template.html
     bottom: bottom_of_page_template.html
+
+content:
+  - label: components
+    type: components
+    content:
+      - app.a

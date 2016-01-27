@@ -64,7 +64,6 @@ var PlainComponentList = function () {
             var components = context.components;
             var compTemplate = this.styleguide.components.find('sg.component').view.template;
             return components.map(function (c) {
-                // console.log(c.component)
                 var ctx = Object.assign({}, context, c.componentContext);
                 c.compiled = compTemplate(ctx);
                 return c;
