@@ -73,8 +73,9 @@ var Page = function () {
                 switch (this.config.type) {
                     case "md":
                         contentPromise = Doc_1.Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load().then(function (doc) {
+                            var ctx = Object.assign({}, _this2.config, { content: doc.compiled });
                             var pageLayout = _this2.config.styleguide.components.find('sg.page').view.template;
-                            doc.compiled = pageLayout({ content: doc.compiled });
+                            doc.compiled = pageLayout(ctx);
                             return doc;
                         });
                         break;
