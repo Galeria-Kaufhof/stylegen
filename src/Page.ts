@@ -107,9 +107,9 @@ export class Page {
         case "md":
           contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
           .then((doc) => {
-
+            let ctx = Object.assign({}, this.config, {content: doc.compiled})
             var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
-            doc.compiled = pageLayout({content: doc.compiled});
+            doc.compiled = pageLayout(ctx);
 
             return doc;
           });
