@@ -12,6 +12,7 @@ import {ContentStructureWriter} from './ContentStructureWriter';
 
 /** basic unspecific layout context */
 export interface ILayoutContext {
+  projectName?: string;
   cssDeps?: string[];
   jsDeps?: string[];
   head?: string|string[];
@@ -50,7 +51,9 @@ export class StructureWriter {
    */
   public write():Promise<StructureWriter> {
     return new Promise<StructureWriter>((resolve, reject) => {
-      var layoutContext:ILayoutContext = {};
+      var layoutContext:ILayoutContext = {
+        projectName: this.styleguide.config.name
+      };
       var type:string = 'plain';
 
       if (!!this.styleguide.config.dependencies) {
