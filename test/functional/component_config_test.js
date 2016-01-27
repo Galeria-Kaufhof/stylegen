@@ -18,8 +18,9 @@ var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
 describe('Configured Components:', function() {
-  var testResults = `${__dirname}/results/component_config_test`;
-  var testCWD = `${__dirname}/fixtures/component_config_test`;
+  var testName = "component_config_test";
+  var testResults = `${__dirname}/results/${testName}`;
+  var testCWD = `${__dirname}/fixtures/${testName}`;
 
   afterEach(function(done) {
     fs.remove(path.resolve(testResults), function() {

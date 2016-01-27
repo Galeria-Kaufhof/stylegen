@@ -18,8 +18,20 @@ var rewire = require('rewire');
 var Cli = rewire('../../dist/Cli');
 
 describe('Configuration content:', function() {
-  var testResults = `${__dirname}/results/content_test`;
-  var testCWD = `${__dirname}/fixtures/content_test`;
+  var testName = "content_test";
+  var testResults = `${__dirname}/results/${testName}`;
+  var testCWD = `${__dirname}/fixtures/${testName}`;
+  var sgPromise = null;
+
+  before(function() {
+    sgPromise = Cli.__get__('build')({ cwd: testCWD });
+    return sgPromise;
+  });
+
+  after(function(done) {
+    sgPromise = null;
+    done();
+  });
 
   describe('with configured pages', function () {
 
@@ -31,10 +43,8 @@ describe('Configuration content:', function() {
 
     describe('should create html files', function() {
       it('for each markdown page', function () {
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
         // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
           return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage.html')));
         })
         .then(res => {
@@ -42,25 +52,22 @@ describe('Configuration content:', function() {
         })
         .catch(e => { console.log(e.stack) ; throw(e) });
 
-        return assert.isFulfilled(a, "files available");
+        return assert.isFulfilled(sgPromise, "files available");
       });
 
       it('should create html files for each component list', function () {
         let a = Cli.__get__('build')({ cwd: testCWD })
 
         // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
           return Promise.resolve(fs.statSync(path.resolve(testResults, 'manualcomplisting.html')));
         });
 
-        return assert.isFulfilled(a, "files available");
+        return assert.isFulfilled(sgPromise, "files available");
       });
 
       it('should create html files for each tag page', function () {
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
-        // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
           return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms.html')));
         })
 
@@ -69,7 +76,7 @@ describe('Configuration content:', function() {
         })
         .catch(e => { console.log(e.stack) ; throw(e) });
 
-        return assert.isFulfilled(a, "files available");
+        return assert.isFulfilled(sgPromise, "files available");
       });
     });
 
@@ -77,10 +84,7 @@ describe('Configuration content:', function() {
       var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
       it('should have a nested navigation for the content structure', function () {
 
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
-        // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
             return fsreadfile(path.resolve(testResults, 'atoms.html'))
             .then((content) => {
               var $ = cheerio.load(content);
@@ -123,16 +127,13 @@ describe('Configuration content:', function() {
         })
         .catch(e => { console.log(e.stack) ; throw(e) });
 
-        return assert.isFulfilled(a, "navigation entries available");
+        return assert.isFulfilled(sgPromise, "navigation entries available");
       });
 
       it('should have a list of components in a manual configured component list', function () {
         let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
-        // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
             return fsreadfile(path.resolve(testResults, 'manualcomplisting.html'))
             .then((content) => {
               var $ = cheerio.load(content);
@@ -163,16 +164,13 @@ describe('Configuration content:', function() {
         })
         .catch(e => { console.log(e.stack) ; throw(e) });
 
-        return assert.isFulfilled(a, "navigation entries available");
+        return assert.isFulfilled(sgPromise, "navigation entries available");
       });
 
       it('should have a preflight document if it is configured for that page', function () {
         let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
-        // file  assertions!
-        .then(res => {
+        sgPromise.then(res => {
             return fsreadfile(path.resolve(testResults, 'complistingwithpreflight.html'))
             .then((content) => {
               var $ = cheerio.load(content);
@@ -191,7 +189,7 @@ describe('Configuration content:', function() {
         })
         .catch(e => { console.log(e.stack) ; throw(e) });
 
-        return assert.isFulfilled(a, "navigation entries available");
+        return assert.isFulfilled(sgPromise, "navigation entries available");
       });
     });
   });

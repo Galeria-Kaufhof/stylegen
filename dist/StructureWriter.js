@@ -48,7 +48,9 @@ var StructureWriter = function () {
             var _this2 = this;
 
             return new Promise(function (resolve, reject) {
-                var layoutContext = {};
+                var layoutContext = {
+                    projectName: _this2.styleguide.config.name
+                };
                 var type = 'plain';
                 if (!!_this2.styleguide.config.dependencies) {
                     try {
