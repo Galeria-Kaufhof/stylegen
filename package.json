@@ -22,7 +22,7 @@
     "stylegen": "bin/stylegen"
   },
   "scripts": {
-    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha --recursive --harmony"
+    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')"
   },
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
   "contributors": [

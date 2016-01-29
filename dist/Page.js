@@ -155,7 +155,7 @@ var Page = function () {
                     preparation = Promise.resolve(this);
                 }
                 /** applying here, because of stupid type defintion with multiargs :/ */
-                preparation.then(function (page) {
+                return preparation.then(function (page) {
                     return fsoutputfile.apply(_this5, [_this5.target, layout(pageContext)]);
                 }).then(function (page) {
                     return _this5.writeChildren(layout, context);
