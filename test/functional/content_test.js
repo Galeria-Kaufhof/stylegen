@@ -1,13 +1,10 @@
 "use strict";
 
 var fs = require('fs-extra');
-var denodeify = require('denodeify');
-var fsreadfile = denodeify(fs.readFile);
 
 var path = require('path');
 var chai = require('chai');
-var chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+
 var assert = require('chai').assert;
 
 var YAML = require('js-yaml');
@@ -24,172 +21,90 @@ describe('Configuration content:', function() {
   var sgPromise = null;
 
   before(function() {
-    sgPromise = Cli.__get__('build')({ cwd: testCWD });
-    return sgPromise;
+    return sgPromise = Cli.__get__('build')({ cwd: testCWD });
   });
 
-  after(function(done) {
+  after(function() {
     sgPromise = null;
-    done();
+    fs.removeSync(path.resolve(testResults));
   });
 
   describe('with configured pages', function () {
 
-    afterEach(function(done) {
-      fs.remove(path.resolve(testResults), function() {
-        return done();
-      });
-    });
-
     describe('should create html files', function() {
       it('for each markdown page', function () {
-        // file  assertions!
-        sgPromise.then(res => {
-          return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage.html')));
-        })
-        .then(res => {
-          return Promise.resolve(fs.statSync(path.resolve(testResults, 'markdownpage2.html')));
-        })
-        .catch(e => { console.log(e.stack) ; throw(e) });
-
-        return assert.isFulfilled(sgPromise, "files available");
+        assert.ok(fs.statSync(path.resolve(testResults, 'markdownpage.html')));
+        assert.ok(fs.statSync(path.resolve(testResults, 'markdownpage2.html')));
       });
 
       it('should create html files for each component list', function () {
-        let a = Cli.__get__('build')({ cwd: testCWD })
-
-        // file  assertions!
-        sgPromise.then(res => {
-          return Promise.resolve(fs.statSync(path.resolve(testResults, 'manualcomplisting.html')));
-        });
-
-        return assert.isFulfilled(sgPromise, "files available");
+        assert.ok(fs.statSync(path.resolve(testResults, 'manualcomplisting.html')));
       });
 
-      it('should create html files for each tag page', function () {
-        sgPromise.then(res => {
-          return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms.html')));
-        })
+      it('should create html files for the atom entry', function () {
+        assert.ok(fs.statSync(path.resolve(testResults, 'atoms.html')));
+      });
 
-        .then(res => {
-          return Promise.resolve(fs.statSync(path.resolve(testResults, 'atoms', 'forms.html')));
-        })
-        .catch(e => { console.log(e.stack) ; throw(e) });
-
-        return assert.isFulfilled(sgPromise, "files available");
+      it('should create html files for the form content entry', function () {
+        // assert.ok(fs.statSync(path.resolve(testResults, 'atoms', 'forms.html')));
       });
     });
-
+  //
     describe('within their content, they', function() {
       var sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
+
       it('should have a nested navigation for the content structure', function () {
 
-        sgPromise.then(res => {
-            return fsreadfile(path.resolve(testResults, 'atoms.html'))
-            .then((content) => {
-              var $ = cheerio.load(content);
+          var content = fs.readFileSync(path.resolve(testResults, 'atoms.html'));
 
-              var nav = $('.test-stylegen-main-nav');
-              var navEntries = $('.test-stylegen-main-nav > ul > li > a');
-              var childLinks = nav.find('.test-stylegen-children');
+          var $ = cheerio.load(content);
 
-              if (navEntries.length !== sgConfig.content.length) {
-                return Promise.reject(`Expected to have exactly ${sgConfig.content.length} links in first nav layer, but found ${navEntries.length}`);
-              }
+          var nav = $('.test-stylegen-main-nav');
+          var navEntries = $('.test-stylegen-main-nav > ul > li > a');
+          var childLinks = nav.find('.test-stylegen-children');
 
-              var mdPageText = 'MarkdownPage';
-              if ($(navEntries[0]).text().trim() !== mdPageText) {
-                return Promise.reject(`Expected the link to have the link text "${mdPageText}" instead it has "${navEntries.text()}"`);
-              }
+          var mdPageText = 'MarkdownPage';
+          var mdPageText2 = 'MarkdownPage2'
+          var atomsText = 'Atoms';
+          var childLinkText = 'Forms';
 
-              var mdPageText2 = 'MarkdownPage2';
-              if ($(navEntries[2]).text().trim() !== mdPageText2) {
-                return Promise.reject(`Expected the link to have the link text "${mdPageText2}" instead it has "${navEntries.text()}"`);
-              }
-
-              var atomsText = 'Atoms';
-              if ($(navEntries[1]).text().trim() !== atomsText) {
-                return Promise.reject(`Expected the link to have the link text "${atomsText}" instead it has "${navEntries.text()}"`);
-              }
-
-              if (childLinks.length !== 1) {
-                return Promise.reject("Expected to have exactly one child link in first nav layer");
-              }
-
-              var childLinkText = 'Forms';
-              if (childLinks.text().trim() !== childLinkText) {
-                return Promise.reject(`Expected the link to have the link text "${childLinkText}" instead it has "${childLinks.text().trim()}"`);
-              }
-
-              return Promise.resolve(true);
-            });
-
-        })
-        .catch(e => { console.log(e.stack) ; throw(e) });
-
-        return assert.isFulfilled(sgPromise, "navigation entries available");
+          assert.equal(navEntries.length, sgConfig.content.length, `Expected to have exactly ${sgConfig.content.length} links in first nav layer, but found ${navEntries.length}`);
+          assert.strictEqual($(navEntries[0]).text().trim(), mdPageText, `Expected the link to have the link text "${mdPageText}" instead it has "${navEntries.text()}"`);
+          assert.strictEqual($(navEntries[2]).text().trim(), mdPageText2, `Expected the link to have the link text "${mdPageText2}" instead it has "${navEntries.text()}"`);
+          assert.strictEqual($(navEntries[1]).text().trim(), atomsText, `Expected the link to have the link text "${atomsText}" instead it has "${navEntries.text()}"`);
+          assert.equal(childLinks.length, 1, "Expected to have exactly one child link in first nav layer");
+          assert.strictEqual(childLinks.text().trim(), childLinkText, `Expected the link to have the link text "${childLinkText}" instead it has "${childLinks.text().trim()}"`);
       });
 
       it('should have a list of components in a manual configured component list', function () {
         let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
-        sgPromise.then(res => {
-            return fsreadfile(path.resolve(testResults, 'manualcomplisting.html'))
-            .then((content) => {
-              var $ = cheerio.load(content);
+        var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'));
 
-              var components = $('.components > [id^="component"]');
+        var $ = cheerio.load(content);
 
-              let compListConfig = sgConfig.content.filter(c => c.label === "ManualCompListing")[0].content;
+        var components = $('.components > [id^="component"]');
 
-              if (components.length !== compListConfig.length) {
-                return Promise.reject(`Expected to have exactly ${compListConfig.length} components listed, but found ${components.length}`);
-              }
+        let compListConfig = sgConfig.content.filter(c => c.label === "ManualCompListing")[0].content;
 
-              if ($(components[0]).attr('id') !== "component-app-c") {
-                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[0]).attr('id')}"`);
-              }
-
-              if ($(components[1]).attr('id') !== "component-app-b") {
-                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[1]).attr('id')}"`);
-              }
-
-              if ($(components[2]).attr('id') !== "component-app-a") {
-                return Promise.reject(`expected Component 1 to be app.c, but found "${$(components[2]).attr('id')}"`);
-              }
-
-              return Promise.resolve(true);
-            });
-
-        })
-        .catch(e => { console.log(e.stack) ; throw(e) });
-
-        return assert.isFulfilled(sgPromise, "navigation entries available");
+        assert.equal(components.length, compListConfig.length, `Expected to have exactly ${compListConfig.length} components listed, but found ${components.length}`);
+        assert.strictEqual($(components[0]).attr('id'), "component-app-c", `expected Component 1 to be app.c, but found "${$(components[0]).attr('id')}"`);
+        assert.strictEqual($(components[1]).attr('id'), "component-app-b", `expected Component 1 to be app.c, but found "${$(components[1]).attr('id')}"`);
+        assert.strictEqual($(components[2]).attr('id'), "component-app-a", `expected Component 1 to be app.c, but found "${$(components[2]).attr('id')}"`);
       });
 
       it('should have a preflight document if it is configured for that page', function () {
         let sgConfig = YAML.safeLoad(fs.readFileSync(path.resolve(testCWD, 'styleguide.yaml')));
 
-        sgPromise.then(res => {
-            return fsreadfile(path.resolve(testResults, 'complistingwithpreflight.html'))
-            .then((content) => {
-              var $ = cheerio.load(content);
+          var content = fs.readFileSync(path.resolve(testResults, 'complistingwithpreflight.html'));
 
-              var components = $('.components > [id^="component"]');
+          var $ = cheerio.load(content);
 
-              let compListConfig = sgConfig.content.filter(c => c.label === "CompListingWithPreflight")[0].content;
+          var components = $('.components > [id^="component"]');
 
-              if ($('.test-stylegen-preflight').length !== 1) {
-                return Promise.reject(`expected preflight text to be rendered exactly once, but found "${$('.preflight-text').length}"`);
-              }
+          let compListConfig = sgConfig.content.filter(c => c.label === "CompListingWithPreflight")[0].content;
 
-              return Promise.resolve(true);
-            });
-
-        })
-        .catch(e => { console.log(e.stack) ; throw(e) });
-
-        return assert.isFulfilled(sgPromise, "navigation entries available");
+          assert.equal($('.test-stylegen-preflight').length, 1, `expected preflight text to be rendered exactly once, but found "${$('.preflight-text').length}"`);
       });
     });
   });

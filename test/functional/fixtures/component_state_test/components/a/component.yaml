@@ -1,14 +1,14 @@
 states:
   default:
     label: Default Button
-    doc: 'state_default.md'
+    doc: state_default.md
   withoutDoc:
     label: withoutDoc Button
     context:
       text: Button without any description...
   hover:
     label: Hover Button
-    doc: 'state_hover.md'
+    doc: state_hover.md
     context:
       - text: in hover state
         classes: hover
