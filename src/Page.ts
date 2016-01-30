@@ -185,12 +185,15 @@ export class Page {
       }
 
       /** applying here, because of stupid type defintion with multiargs :/ */
-      preparation
+
+      return preparation
       .then(page => {
         return fsoutputfile.apply(this, [this.target, layout(pageContext)]);
       })
       .then(page => this.writeChildren(layout, context))
-      .then((file:any) => this)
+      .then((file:any) => {
+        return this;
+      })
       .catch(e => error("OMG", e.stack));
     } else {
       return Promise.resolve(this);

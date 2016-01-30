@@ -1,13 +1,10 @@
 "use strict";
 
 var fs = require('fs-extra');
-var denodeify = require('denodeify');
-var fsreadfile = denodeify(fs.readFile);
 
 var path = require('path');
 var chai = require('chai');
-var chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+
 var assert = require('chai').assert;
 
 var cheerio = require("cheerio");
@@ -23,51 +20,25 @@ describe('Configured Components with a view:', function() {
   var sgPromise = null;
 
   before(function() {
-    sgPromise = Cli.__get__('build')({ cwd: testCWD });
-    return sgPromise;
+    return sgPromise = Cli.__get__('build')({ cwd: testCWD });
   });
 
-  after(function(done) {
+  after(function() {
     sgPromise = null;
-    done();
+    fs.removeSync(path.resolve(testResults));
   });
 
-  afterEach(function(done) {
-    fs.remove(path.resolve(testResults), function() {
-      return done();
+  describe('and a given viewContext', function() {
+    it('should provide this as context to the view', function () {
+      var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'))
+      var $ = cheerio.load(content);
+
+      var componentA = $('#component-test-a');
+      var componentB = $('#component-test-b');
+
+      // assert.strictEqual(componentA.find('.title').text(), 'TEST', `expected component a to have title set to TEST but found "${componentA.find('.title').text()}"`);
+      // assert.strictEqual(componentB.find('.title').text(), 'TEST', `expected component a to have title set to TEST, from front-matter, but found "${componentB.find('.title').text()}"`);
+      // assert.strictEqual(componentB.find('.sub-title').text(), 'SUBTEST', `expected component a to have a text set by a nested config out of front-matter "${componentB.find('.sub-title').text()}"`);
     });
   });
-
-  // describe('and a given viewContext', function() {
-  //   it('should provide this as context to the view', function () {
-  //     let a = Cli.__get__('build')({ cwd: testCWD })
-  //     .then(styleguide => {
-  //       return fsreadfile(path.resolve(testResults, 'manualcomplisting.html'))
-  //       .then((content) => {
-  //         var $ = cheerio.load(content);
-  //
-  //         var componentA = $('#component-test-a');
-  //         var componentB = $('#component-test-b');
-  //
-  //         if (componentA.find('.title').length <= 0 || componentA.find('.title').text() !== 'TEST') {
-  //           return Promise.reject(`expected component a to have title set to TEST but found "${componentA.find('.title').text()}"`);
-  //         }
-  //
-  //         if (componentB.find('.title').length <= 0 || componentB.find('.title').text() !== 'TEST') {
-  //           return Promise.reject(`expected component a to have title set to TEST, from front-matter, but found "${componentB.find('.title').text()}"`);
-  //         }
-  //
-  //         if (componentB.find('.sub-title').length <= 0 || componentB.find('.sub-title').text() !== 'SUBTEST') {
-  //           return Promise.reject(`expected component a to have a text set by a nested config out of front-matter "${componentB.find('.sub-title').text()}"`);
-  //         }
-  //
-  //         return Promise.resolve(true);
-  //       })
-  //
-  //     })
-  //     .catch(e => { console.log(e.stack) ; throw(e) });
-  //
-  //     return assert.isFulfilled(a, "component configured successfully");
-  //   });
-  // });
 });
