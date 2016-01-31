@@ -8,13 +8,13 @@ import {error} from './Logger';
 
 var fsreadfile = denodeify(fs.readFile);
 
+/**
+ * Doc wraps up all occurances of markdown documents inside the styleguide.
+ */
 export class Doc extends CompilableContent {
   load():Promise<ICompilableContent> {
-    return fsreadfile(this.filePath.toString())
-    .then((buffer) => {
-      var content:string = buffer.toString();
-      this.raw = content;
-
+    return super.load()
+    .then((doc) => {
       this.compiled = this.render();
       return this;
     })
