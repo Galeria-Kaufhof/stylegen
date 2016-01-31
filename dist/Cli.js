@@ -2,6 +2,9 @@
 
 var Styleguide_1 = require('./Styleguide');
 var Logger_1 = require('./Logger');
+/**
+ * initialize the styleguide, by reading its configuration and preprare any necessary target structure
+ */
 function setupStyleguide(options) {
     var cwd = !!options && !!options.cwd ? options.cwd : process.cwd();
     Logger_1.success('Styleguide.new:', 'initialize styleguide ...');
@@ -15,6 +18,9 @@ function setupStyleguide(options) {
         }
     });
 }
+/**
+ * reading in the actual styleguide content, components and pages
+ */
 function resolveStyleguide(options) {
     return setupStyleguide(options).then(function (styleguide) {
         Logger_1.success('Styleguide.read:', 'start reading ...');

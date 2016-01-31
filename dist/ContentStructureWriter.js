@@ -5,6 +5,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Page_1 = require('./Page');
+/**
+ * This is the writer implementation that jumps into place,
+ * when there is a "content"-Property configured in the styleguide.
+ */
 
 var ContentStructureWriter = function () {
     function ContentStructureWriter(styleguide) {
@@ -14,6 +18,8 @@ var ContentStructureWriter = function () {
     }
     /**
      * walk config, and build page objects
+     *
+     * Child page objects are initialized directly inside the Page class.
      */
 
     _createClass(ContentStructureWriter, [{
@@ -30,6 +36,10 @@ var ContentStructureWriter = function () {
                 return _this;
             });
         }
+        /**
+         * lookup the page layout and render the page objects each wrapped inside of it.
+         */
+
     }, {
         key: 'write',
         value: function write(context) {
