@@ -19,7 +19,6 @@
         "src/CompilableContent.ts",
         "src/Component.ts",
         "src/ComponentList.ts",
-        "src/ComponentRegistry.ts",
         "src/ComponentWriter.ts",
         "src/Config.ts",
         "src/ContentStructureWriter.ts",

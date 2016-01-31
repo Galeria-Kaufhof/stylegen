@@ -7,7 +7,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var fs = require('fs-extra');
 var path = require('path');
 var Logger_1 = require('./Logger');
-var ComponentRegistry_1 = require('./ComponentRegistry');
 var PlainComponentList_1 = require('./PlainComponentList');
 var ContentStructureWriter_1 = require('./ContentStructureWriter');
 /**
@@ -32,11 +31,7 @@ var StructureWriter = function () {
     _createClass(StructureWriter, [{
         key: 'setup',
         value: function setup() {
-            var _this = this;
-
-            return new ComponentRegistry_1.ComponentRegistry(this.renderer, this.nodes).setup().then(function (componentRegistry) {
-                return _this;
-            });
+            return Promise.resolve(this);
         }
         /**
          * Lets write down Components, Pages, etc.
@@ -45,43 +40,43 @@ var StructureWriter = function () {
     }, {
         key: 'write',
         value: function write() {
-            var _this2 = this;
+            var _this = this;
 
             return new Promise(function (resolve, reject) {
                 var layoutContext = {
-                    projectName: _this2.styleguide.config.name
+                    projectName: _this.styleguide.config.name
                 };
                 var type = 'plain';
-                if (!!_this2.styleguide.config.dependencies) {
+                if (!!_this.styleguide.config.dependencies) {
                     try {
-                        layoutContext.cssDeps = _this2.styleguide.config.dependencies.styles;
+                        layoutContext.cssDeps = _this.styleguide.config.dependencies.styles;
                     } catch (e) {}
                     try {
-                        layoutContext.jsDeps = _this2.styleguide.config.dependencies.js;
+                        layoutContext.jsDeps = _this.styleguide.config.dependencies.js;
                     } catch (e) {}
-                    if (!!_this2.styleguide.config.dependencies.templates) {
-                        if (!!_this2.styleguide.config.dependencies.templates.head) {
+                    if (!!_this.styleguide.config.dependencies.templates) {
+                        if (!!_this.styleguide.config.dependencies.templates.head) {
                             try {
-                                layoutContext.head = _this2.styleguide.config.dependencies.templates.head;
+                                layoutContext.head = _this.styleguide.config.dependencies.templates.head;
                                 if (typeof layoutContext.head === "string") {
                                     layoutContext.head = [layoutContext.head];
                                 }
                                 layoutContext.head = layoutContext.head.map(function (file) {
-                                    return fs.readFileSync(path.resolve(_this2.styleguide.config.cwd, file));
+                                    return fs.readFileSync(path.resolve(_this.styleguide.config.cwd, file));
                                 }).join('\n');
                             } catch (e) {
                                 Logger_1.warn("StructureWriter.write: dependencies.head", e.message);
                                 Logger_1.log(e.stack);
                             }
                         }
-                        if (!!_this2.styleguide.config.dependencies.templates.bottom) {
+                        if (!!_this.styleguide.config.dependencies.templates.bottom) {
                             try {
-                                layoutContext.bottom = _this2.styleguide.config.dependencies.templates.bottom;
+                                layoutContext.bottom = _this.styleguide.config.dependencies.templates.bottom;
                                 if (typeof layoutContext.bottom === "string") {
                                     layoutContext.bottom = [layoutContext.bottom];
                                 }
                                 layoutContext.bottom = layoutContext.bottom.map(function (file) {
-                                    return fs.readFileSync(path.resolve(_this2.styleguide.config.cwd, file));
+                                    return fs.readFileSync(path.resolve(_this.styleguide.config.cwd, file));
                                 }).join('\n');
                             } catch (e) {
                                 Logger_1.warn("StructureWriter.write: dependencies.bottom", e.message);
@@ -90,25 +85,25 @@ var StructureWriter = function () {
                         }
                     }
                 }
-                if (!!_this2.styleguide.config.content) {
+                if (!!_this.styleguide.config.content) {
                     type = "content-config";
                 }
                 var result;
                 switch (type) {
                     case "content-config":
                         /** walk config, and build page objects */
-                        result = new ContentStructureWriter_1.ContentStructureWriter(_this2.styleguide).walk(_this2.styleguide.config.content).then(function (contentStructureWriter) {
+                        result = new ContentStructureWriter_1.ContentStructureWriter(_this.styleguide).walk(_this.styleguide.config.content).then(function (contentStructureWriter) {
                             return contentStructureWriter.write(layoutContext);
                         });
                         break;
                     case "plain":
                     default:
-                        result = new PlainComponentList_1.PlainComponentList(_this2.styleguide).build().then(function (plainListWriter) {
+                        result = new PlainComponentList_1.PlainComponentList(_this.styleguide).build().then(function (plainListWriter) {
                             return plainListWriter.write(layoutContext);
                         });
                 }
                 return result.then(function () {
-                    return resolve(_this2);
+                    return resolve(_this);
                 }).catch(function (e) {
                     return reject(e);
                 });
