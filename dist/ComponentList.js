@@ -5,6 +5,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Logger_1 = require('./Logger');
+/**
+ * The ComponentList lets us build a registry, where we  may have a view
+ * options to aggregate and find components.
+ *
+ * So we have implemented the classical find and all accessors,
+ * to a possible list.
+ */
 
 var ComponentList = function () {
     function ComponentList() {

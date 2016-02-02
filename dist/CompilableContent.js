@@ -7,7 +7,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var fs = require('fs-extra');
 var denodeify = require('denodeify');
 var Logger_1 = require('./Logger');
+/** promisified readfile callback */
 var fsreadfile = denodeify(fs.readFile);
+/**
+ * CompilableContent builds the abstract wrapper for compilable files,
+ * like markdown documents, handlebars views and partials.
+ */
 
 var CompilableContent = function () {
     function CompilableContent(filePath, name) {

@@ -127,6 +127,8 @@ export class Component {
   }
 
   /**
+   * each component may have a map of documents,
+   * provided by `id: filepath`.
    */
   private buildDocs():Promise<Component> {
     var docPromises:Promise<Doc>[];
@@ -157,6 +159,19 @@ export class Component {
   }
 
   /**
+   * a Component may have several states like disabled, active and so on,
+   * while that should be options in a view, you may give each state its own render context,
+   * which will be passed to the view.
+   *
+   * So each state will result in a rendering of the original view, with this specific render context,
+   * and its label and the possibility of an additional state document, that describes the "why and what".
+   *
+   * If any states are given, the original view is not printed. If you want it to, just
+   * configure it for example as 'default' state.
+   *
+   * A state context may be an array of context objects. If so, the state view is rendered multiple times,
+   * to give rendering examples of the state in different variants. E.g. take a button, that may be active,
+   * and you want to show, how it looks for a button-tag and a link-tag with given classes.
    */
   private buildStates():Promise<Component> {
     var statePromises:Promise<State>[];

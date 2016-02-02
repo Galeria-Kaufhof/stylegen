@@ -3,6 +3,13 @@
 import {Component} from './Component';
 import {warn} from './Logger';
 
+/**
+ * The ComponentList lets us build a registry, where we  may have a view
+ * options to aggregate and find components.
+ *
+ * So we have implemented the classical find and all accessors,
+ * to a possible list.
+ */
 export class ComponentList {
   private components: {[s: string]:Component }
 

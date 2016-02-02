@@ -6,8 +6,16 @@ import * as denodeify from 'denodeify';
 import {IRenderer} from './Renderer';
 import {error} from './Logger';
 
+/** promisified readfile callback */
 var fsreadfile = denodeify(fs.readFile);
 
+
+/**
+ * the spirit of the CompilableContent class,
+ * which delivers a default implementation for loading the file content.
+ * How the compiled content is generated is mostly up to the class
+ * that inherits from CompilableContent.
+ */
 export interface ICompilableContent {
   raw: string;
   name: string;
@@ -17,6 +25,11 @@ export interface ICompilableContent {
   load():Promise<ICompilableContent>;
 }
 
+
+/**
+ * CompilableContent builds the abstract wrapper for compilable files,
+ * like markdown documents, handlebars views and partials.
+ */
 export class CompilableContent implements ICompilableContent {
   public static renderer: IRenderer;
 

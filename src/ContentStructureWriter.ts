@@ -4,6 +4,10 @@ import {Styleguide} from './Styleguide';
 import {Page, IPageConfig} from './Page';
 import {IPageLayoutContext} from './PageLayout';
 
+/**
+ * This is the writer implementation that jumps into place,
+ * when there is a "content"-Property configured in the styleguide.
+ */
 export class ContentStructureWriter {
   pages: Page[];
 
@@ -12,6 +16,8 @@ export class ContentStructureWriter {
 
   /**
    * walk config, and build page objects
+   *
+   * Child page objects are initialized directly inside the Page class.
    */
   walk(content: IPageConfig[]):Promise<ContentStructureWriter> {
     return Promise.all(content.map((pageConfig:IPageConfig) => {
@@ -26,6 +32,9 @@ export class ContentStructureWriter {
     });
   }
 
+  /**
+   * lookup the page layout and render the page objects each wrapped inside of it.
+   */
   write(context: IPageLayoutContext):Promise<ContentStructureWriter> {
     context.pages = this.pages;
 

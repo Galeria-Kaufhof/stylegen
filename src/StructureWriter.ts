@@ -6,7 +6,6 @@ import {log, warn, error} from './Logger';
 import {Node} from './Node';
 import {Styleguide} from './Styleguide';
 import {IRenderer} from './Renderer';
-import {ComponentRegistry} from './ComponentRegistry';
 import {PlainComponentList} from './PlainComponentList';
 import {ContentStructureWriter} from './ContentStructureWriter';
 
@@ -42,8 +41,7 @@ export class StructureWriter {
    * At the moment it is mainly about registering the component templates inside the renderer.
    */
   public setup():Promise<StructureWriter> {
-    return new ComponentRegistry(this.renderer, this.nodes).setup()
-    .then(componentRegistry => this);
+    return Promise.resolve(this);
   }
 
   /**

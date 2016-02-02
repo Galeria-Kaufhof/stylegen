@@ -10,6 +10,9 @@ interface IResolveOptions {
   cwd?: string;
 }
 
+/**
+ * initialize the styleguide, by reading its configuration and preprare any necessary target structure
+ */
 function setupStyleguide(options?:IResolveOptions):Promise<Styleguide> {
   let cwd:string = !!options && !!options.cwd ? options.cwd : process.cwd();
 
@@ -32,6 +35,9 @@ function setupStyleguide(options?:IResolveOptions):Promise<Styleguide> {
   });
 }
 
+/**
+ * reading in the actual styleguide content, components and pages
+ */
 function resolveStyleguide(options?:IResolveOptions):Promise<Styleguide> {
   return setupStyleguide(options)
   .then(function(styleguide) {
