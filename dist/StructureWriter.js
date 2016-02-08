@@ -28,6 +28,7 @@ var StructureWriter = function () {
      * At the moment it is mainly about registering the component templates inside the renderer.
      */
 
+
     _createClass(StructureWriter, [{
         key: 'setup',
         value: function setup() {

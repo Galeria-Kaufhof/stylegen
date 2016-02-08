@@ -42,6 +42,7 @@ var Component = function () {
      * that are reusable by other partials or view components.
      */
 
+
     _createClass(Component, [{
         key: 'buildPartials',
         value: function buildPartials() {

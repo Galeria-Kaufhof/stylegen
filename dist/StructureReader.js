@@ -24,6 +24,7 @@ var StructureReader = function () {
      * to look at the right place.
      */
 
+
     _createClass(StructureReader, [{
         key: 'fileInCWD',
         value: function fileInCWD(p) {

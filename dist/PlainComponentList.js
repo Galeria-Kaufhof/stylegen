@@ -23,6 +23,7 @@ var PlainComponentList = function () {
     }
     // TODO: this is redundant logic to the page writing process, we should unify this path lookup
 
+
     _createClass(PlainComponentList, [{
         key: 'relatedViewPath',
         value: function relatedViewPath(viewKey) {

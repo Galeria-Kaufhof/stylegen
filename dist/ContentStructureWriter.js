@@ -22,6 +22,7 @@ var ContentStructureWriter = function () {
      * Child page objects are initialized directly inside the Page class.
      */
 
+
     _createClass(ContentStructureWriter, [{
         key: 'walk',
         value: function walk(content) {

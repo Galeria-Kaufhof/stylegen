@@ -33,6 +33,7 @@ var Node = function () {
      * recursive node lookup for a component path.
      */
 
+
     _createClass(Node, [{
         key: 'nodesForDirectories',
         value: function nodesForDirectories(file, parent) {

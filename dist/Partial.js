@@ -23,6 +23,7 @@ var Partial = function (_CompilableContent_1$) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Partial).call(this, filePath, path.basename(filePath, '_partial.hbs')));
         // TODO: make template extension configurable
 
+
         _this.namespace = namespace;
         return _this;
     }

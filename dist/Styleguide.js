@@ -42,6 +42,7 @@ var Styleguide = function () {
      * to set defaults and allow to overwrite them in the styleguide.json
      */
 
+
     _createClass(Styleguide, [{
         key: 'initialize',
         value: function initialize(cwd, stylegenRoot) {
