@@ -26,10 +26,12 @@ let helpOptions = {
   }, {
     name: 'create',
     desc: 'create the styleguide'
-  }, {
-    name: 'export',
-    desc: 'exports the reusable parts of your styleguide like partials'
-  }]
+  }
+  // , {
+  //   name: 'export',
+  //   desc: 'exports the reusable parts of your styleguide like partials'
+  // }
+  ]
 };
 
 let flags = {
