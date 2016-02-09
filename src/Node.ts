@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 
+import {warn} from './Logger';
 import {Config} from './Config';
 import {Styleguide} from './Styleguide';
 import {IComponentConfig} from './Component';
@@ -39,6 +40,10 @@ export class Node {
 
     this.id = nodeName;
     this.path = nodePath;
+  }
+
+  private isRootNode() {
+    return Boolean(this.parent);
   }
 
   /**
@@ -142,6 +147,15 @@ export class Node {
      * get all files inside this node, and go on.
      */
     return fsreaddir(this.path)
+    .catch(e => {
+      if (this.isRootNode()) {
+        warn('Node.resolve', `${this.path} could not be resolved`);
+      } else {
+        warn('Styleguide.config', `component folder "${path.basename(this.path)}" not available`);
+      }
+
+      return [];
+    })
     .then((files:string[]) => {
       this.files = files;
 

@@ -7,6 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var path = require('path');
 var fs = require('fs-extra');
 var denodeify = require('denodeify');
+var Logger_1 = require('./Logger');
 var Config_1 = require('./Config');
 var Component_1 = require('./Component');
 var fsstat = denodeify(fs.stat);
@@ -29,12 +30,17 @@ var Node = function () {
         this.id = nodeName;
         this.path = nodePath;
     }
-    /**
-     * recursive node lookup for a component path.
-     */
-
 
     _createClass(Node, [{
+        key: 'isRootNode',
+        value: function isRootNode() {
+            return Boolean(this.parent);
+        }
+        /**
+         * recursive node lookup for a component path.
+         */
+
+    }, {
         key: 'nodesForDirectories',
         value: function nodesForDirectories(file, parent) {
             var _this = this;
@@ -144,7 +150,14 @@ var Node = function () {
             /**
              * get all files inside this node, and go on.
              */
-            return fsreaddir(this.path).then(function (files) {
+            return fsreaddir(this.path).catch(function (e) {
+                if (_this4.isRootNode()) {
+                    Logger_1.warn('Node.resolve', _this4.path + ' could not be resolved');
+                } else {
+                    Logger_1.warn('Styleguide.config', 'component folder "' + path.basename(_this4.path) + '" not available');
+                }
+                return [];
+            }).then(function (files) {
                 _this4.files = files;
                 /**
                  * lets resolve the component parts of this node, like component.json
