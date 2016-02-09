@@ -17,7 +17,7 @@ gulp.task("scripts", function () {
 
   return tsResult.js
   .pipe(plumber())
-  .pipe(babel())
+  .pipe(babel({presets: ['es2015']}))
   .pipe(gulp.dest('dist'));
 });
 
