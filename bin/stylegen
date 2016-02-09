@@ -8,7 +8,7 @@ let cliPackage = require('../package');
 
 let helpOptions = {
   usage: 'stylegen [options] <command>',
-  desc: 'styleguide tooling',
+  desc: `stylegen v${cliPackage.version} \n\na static styleguide generator`,
   options: {
     help: {
       alias: 'h',
