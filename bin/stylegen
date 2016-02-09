@@ -21,6 +21,9 @@ let helpOptions = {
     }
   },
   commands: [{
+    name: 'help',
+    desc: 'usage instructions'
+  }, {
     name: 'create',
     desc: 'create the styleguide'
   }, {
@@ -53,7 +56,9 @@ let validCommands = [
 
 let command = args[0];
 
-if (args.length > 0 && validCommands.indexOf(command) >= 0) {
+if (args.length > 0 && command == "help") {
+  console.log(help(helpOptions));
+} else if (args.length > 0 && validCommands.indexOf(command) >= 0) {
   args = args.slice(1);
   Cli.command(command, args)
   .catch((e) => {
