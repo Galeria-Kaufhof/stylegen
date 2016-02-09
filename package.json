@@ -1,8 +1,35 @@
 {
   "name": "stylegen",
+
   "version": "0.0.3",
+
   "description": "flexible styleguide generator",
+
   "main": "index.js",
+
+  "engines" : { "node" : ">= 4.0.0" },
+
+  "bin": {
+    "stylegen": "bin/stylegen"
+  },
+
+  "scripts": {
+    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')"
+  },
+
+  "author": "Falk Hoppe <falkhoppe81@gmail.com>",
+
+  "contributors": [
+    {
+      "name": "Rico Pfaus",
+      "email": "ricopfaus@gmail.com"
+    },
+    {
+      "name": "Falk Hoppe",
+      "email": "falkhoppe81@gmail.com"
+    }
+  ],
+
   "dependencies": {
     "atob": "^1.1.2",
     "btoa": "^1.1.2",
@@ -18,23 +45,7 @@
     "slug": "^0.9.1",
     "stylegen-flatwhite": "git+ssh://git@gitlab.gkh-setu.de:gkh/stylegen-flatwhite.git"
   },
-  "bin": {
-    "stylegen": "bin/stylegen"
-  },
-  "scripts": {
-    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')"
-  },
-  "author": "Falk Hoppe <falkhoppe81@gmail.com>",
-  "contributors": [
-    {
-      "name": "Rico Pfaus",
-      "email": "ricopfaus@gmail.com"
-    },
-    {
-      "name": "Falk Hoppe",
-      "email": "falkhoppe81@gmail.com"
-    }
-  ],
+
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "chai": "^3.4.1",
