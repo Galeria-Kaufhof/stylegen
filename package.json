@@ -14,7 +14,8 @@
   },
 
   "scripts": {
-    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')"
+    "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')",
+    "prepublish": "node_modules/.bin/gulp build"
   },
 
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
