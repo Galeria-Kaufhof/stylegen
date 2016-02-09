@@ -43,7 +43,7 @@
     "minimist": "^1.2.0",
     "remarkable": "^1.6.0",
     "slug": "^0.9.1",
-    "stylegen-flatwhite": "git+ssh://git@gitlab.gkh-setu.de:gkh/stylegen-flatwhite.git"
+    "stylegen-theme-flatwhite": "^0.0.1"
   },
 
   "devDependencies": {

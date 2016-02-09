@@ -122,7 +122,7 @@ export class Styleguide {
         this.config.target = path.resolve(cwd, this.config.target);
 
         if (!this.config.sgTemplateRoot) {
-          this.config.sgTemplateRoot = path.resolve(path.dirname(require.resolve('stylegen-flatwhite')), 'dist');
+          this.config.sgTemplateRoot = path.resolve(path.dirname(require.resolve('stylegen-theme-flatwhite')), 'dist');
         }
 
         /** each and every styleguide should have a name ;) */
