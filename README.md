@@ -26,7 +26,7 @@ stylegen help
 
 Which should result in an output like
 
-```
+```bash
 > stylegen help
 >
 > Usage: stylegen [options] <command>
@@ -47,7 +47,7 @@ At first you should create a **styleguide.yaml** file (or .json if writing brack
 And to have some starting content, lets create a markdown file in a sub-folder, that contains our static page content. So lets create a sub-folder `pages`
 and a file inside of it called `introduction.md`. On unix machines you may just run the following command:
 
-```
+```bash
 mkdir -p ./pages && printf "Some introduction text, that provides an entry to your styleguide.\n" > ./pages/introduction.md
 ```
 
@@ -235,3 +235,7 @@ To develop new features you may want to add a file structure e.g. like that:
 │   └── globals
 └── styleguide.json
 ```
+
+## LICENSE
+
+[The MIT License (MIT)](https://raw.githubusercontent.com/Galeria-Kaufhof/stylegen/master/LICENSE)
