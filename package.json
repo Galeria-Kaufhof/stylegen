@@ -7,6 +7,11 @@
 
   "main": "index.js",
 
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:Galeria-Kaufhof/stylegen.git"
+  },
+
   "engines" : { "node" : ">= 4.0.0" },
 
   "bin": {
