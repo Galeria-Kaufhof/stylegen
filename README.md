@@ -2,15 +2,63 @@
 
 **stylegen** should be an easy to use styleguide generator for arbitrary projects. There is no assumption about programming languages and only a few ones about your projects code structure.
 
-What **stylegen** ships is an executable that parses your project for **stylegen** specific configuration files, and builds a ready to deploy static styleguide.
+What **stylegen** ships is an executable that parses your project for configuration files and some templates which describe your work and builds a ready to deploy static styleguide out of it.
 
-## Usage
+## quick start
 
-install the tool, with `npm install -g stylegen`
+### prerequisites
 
-- add a styleguide.yaml or .json file to your project
-- add component.yaml or .json files to your components
-- run `stylegen` inside the project
+As **stylegen** is based upon Node.js, we have to get that installed first. So just download a [prebuild version](https://nodejs.org) or install it via your favorite package manager like [homebrew](http://brew.sh/) or something like that. After installing it your should have the commandline tools `node` and its corresponding packagemanager `npm` installed and ready.
+
+### stylegen installation
+
+**stylegen** is shipped with an executable so that can just install it globally with `npm` as usual (the --global flag assures, that the executable is linked inside your path).
+
+```bash
+npm install --global stylegen
+```
+
+After a successful installation your should have the `stylegen` command available in your commandline which we can test easily with:
+
+```
+stylegen help
+```
+
+Which should result in an output like
+
+```
+> stylegen help
+>
+> Usage: stylegen [options] <command>
+>
+> stylegen v0.x.x
+>
+> a static styleguide generator
+>
+> [...]
+```
+
+### usage
+
+To get started with a styleguide based on **stylegen** we need to setup some configurations and templates, so that the tool gets its instructions of what to build in the end.
+
+At first you should create a **styleguide.yaml** file (or .json if writing brackets is more of your taste :)). The *styleguide*-Configuration is usually expected in the folder where you will run the `stylegen create` command later on.
+
+**NOTE:** the current working directory, styleguide config path and similar can be configured in an advanced setup.
+
+Lets assume a simple basic configuration, where we define just our project name for now and a static markdown page as content for our styleguide.
+
+```yaml
+project: Example
+content:
+  - label: introduction
+    type: md
+    content: pages/introduction.md
+```
+
+
+
+---
 
 
 ### Styleguide-Config (styleguide.yaml / styleguide.json)
@@ -26,9 +74,8 @@ This file must be located in the project root and declares the project settings.
 | componentPaths            | ["components"]              | relative directory paths, in that your component configurations are located
 | target                    | "styleguide"                | the compile target for the resulting styleguide
 | dependencies              | {}                          | see "Dependencies" below
-| partials                  | []                          | list of partial libs to be included
-| assets                    | []                          | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
-| content                   | []                          | list of page configurations, take a look at "Content"
+| assets                    |                           | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
+| content                   |                           | list of page configurations, take a look at "Content"
 
 #### Dependencies
 
@@ -63,6 +110,8 @@ This file must be located in the project root and declares the project settings.
 | children                  |                             | like content itself this is a list of page configurations
 | preflight                 |                             | a preflight markdown document that is rendered in front of a component listing (so it is only "valid" for nodes of type 'tags' or 'components')  
 
+
+---
 
 
 ### Component-Config (component.yaml / component.json)
@@ -103,6 +152,8 @@ As well as for styleguides we recommend the usage of yaml as configuration langu
 |---------------------------|-----------------------------|--------------------
 | id: State                 |                             |
 
+
+---
 
 
 ## Contribution / Development
