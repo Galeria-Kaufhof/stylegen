@@ -8,7 +8,7 @@ What **stylegen** ships is an executable that parses your project for configurat
 
 ### prerequisites
 
-As **stylegen** is based upon Node.js, we have to get that installed first. So just download a [prebuild version](https://nodejs.org) or install it via your favorite package manager like [homebrew](http://brew.sh/) or something like that. After installing it your should have the commandline tools `node` and its corresponding packagemanager `npm` installed and ready.
+As **stylegen** is based upon Node.js, we have to get that installed first. So just download a [prebuilt version](https://nodejs.org) or install it via your favorite package manager like [Homebrew](http://brew.sh/) or something like that. Afterwards the command-line tools `node` and its corresponding package manager `npm` should be available.
 
 ### stylegen installation
 
