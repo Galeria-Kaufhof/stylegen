@@ -99,7 +99,7 @@ export class Config implements IAbstractConfig {
       }
 
       /** return merged configuration */
-      var result:Config = Object.assign.apply(this, configs);
+      var result:Config = Object.assign({}, this, ...configs);
       return result;
     });
   }

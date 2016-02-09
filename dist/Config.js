@@ -4,6 +4,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var fs = require('fs-extra');
@@ -103,6 +105,8 @@ var Config = function () {
             }).reverse();
             /** resolve config files */
             return Promise.all(promises).then(function (configs) {
+                var _Object;
+
                 configs = configs.filter(function (x) {
                     return !!x;
                 });
@@ -110,7 +114,7 @@ var Config = function () {
                     configs.push({});
                 }
                 /** return merged configuration */
-                var result = Object.assign.apply(this, configs);
+                var result = (_Object = Object).assign.apply(_Object, [{}, this].concat(_toConsumableArray(configs)));
                 return result;
             });
         }
