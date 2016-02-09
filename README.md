@@ -44,17 +44,48 @@ To get started with a styleguide based on **stylegen** we need to setup some con
 
 At first you should create a **styleguide.yaml** file (or .json if writing brackets is more of your taste :)). The *styleguide*-Configuration is usually expected in the folder where you will run the `stylegen create` command later on.
 
+And to have some starting content, lets create a markdown file in a sub-folder, that contains our static page content. So lets create a sub-folder `pages`
+and a file inside of it called `introduction.md`. On unix machines you may just run the following command:
+
+```
+mkdir -p ./pages && printf "Some introduction text, that provides an entry to your styleguide.\n" > ./pages/introduction.md
+```
+
+
 **NOTE:** the current working directory, styleguide config path and similar can be configured in an advanced setup.
 
-Lets assume a simple basic configuration, where we define just our project name for now and a static markdown page as content for our styleguide.
+Lets assume a simple basic configuration as a starting point:
 
 ```yaml
+# project name
 project: Example
+
+# resulting content structure
 content:
   - label: introduction
     type: md
     content: pages/introduction.md
 ```
+
+so our current content should look something like this:
+
+```
+├── pages
+│   └── introduction.md
+└── styleguide.yaml
+```
+
+No we are able to run our styleguide tool the first time with a resulting styleguide created out of the given (yes, very simple) content.
+
+So just run `stylegen create` and you should receive something like that:
+
+```
+> Cli.command create
+> […]
+> Styleguide.write: finished writing
+```
+
+And in result there should be a freshly generated folder `styleguide` inside this directory, that contains the according generated files. At the moment we can just open the `introduction.html` page, to have a first impression on what our styleguide may look like.
 
 
 
