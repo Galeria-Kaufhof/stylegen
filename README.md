@@ -4,7 +4,7 @@
 
 What **stylegen** ships is an executable that parses your project for configuration files and some templates which describe your work and builds a ready to deploy static styleguide out of it.
 
-## quick start
+## getting started
 
 ### prerequisites
 
@@ -18,7 +18,7 @@ As **stylegen** is based upon Node.js, we have to get that installed first. So j
 npm install --global stylegen
 ```
 
-After a successful installation your should have the `stylegen` command available in your commandline which we can test easily with:
+After a successful installation you should have the `stylegen` command available in your commandline which we can test easily with:
 
 ```
 stylegen help
@@ -38,9 +38,9 @@ Which should result in an output like
 > [...]
 ```
 
-### usage
+## styleguide introduction
 
-To get started with a styleguide based on **stylegen** we need to setup some configurations and templates, so that the tool gets its instructions of what to build in the end.
+Now, with the tooling at hand, lets get started with the actual styleguide. We need to setup some configurations and templates, so that the tool gets its instructions of what to build in the end.
 
 At first you should create a **styleguide.yaml** file (or .json if writing brackets is more of your taste :)). The *styleguide*-Configuration is usually expected in the folder where you will run the `stylegen create` command later on.
 
@@ -51,8 +51,7 @@ and a file inside of it called `introduction.md`. On unix machines you may just 
 mkdir -p ./pages && printf "Some introduction text, that provides an entry to your styleguide.\n" > ./pages/introduction.md
 ```
 
-
-**NOTE:** the current working directory, styleguide config path and similar can be configured in an advanced setup.
+> **NOTE:** the current working directory, styleguide config path and similar can be configured in an advanced setup.
 
 Lets assume a simple basic configuration as a starting point:
 
@@ -85,8 +84,11 @@ So just run `stylegen create` and you should receive something like that:
 > Styleguide.write: finished writing
 ```
 
-And in result there should be a freshly generated folder `styleguide` inside this directory, that contains the according generated files. At the moment we can just open the `introduction.html` page, to have a first impression on what our styleguide may look like.
+And in result there should be a freshly generated folder `styleguide` inside this directory, that contains the according generated files. At the moment you may just open the `introduction.html` page to have a first impression on what our styleguide may look like. To serve this repository with live-reload enabled so that changes appear immediately you may want to take a look at [live-server](https://www.npmjs.com/package/live-server) or something similar.
 
+> **NOTE:** Because of keeping the project scope clear and concise (it is actually about building styleguides out of files), we've decided for not adding such tooling to the executable, so you won't find file watchers or servers inside this project.
+
+Beside static content, which is a little bit boring, the core of a web-styleguide is the possibility to describe a pattern library out of your frontend components.
 
 
 ---
