@@ -1,6 +1,6 @@
 {
   "name": "stylegen",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "flexible styleguide generator",
   "main": "index.js",
   "repository": {
