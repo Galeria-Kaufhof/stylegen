@@ -39,6 +39,7 @@ content:
 
     children:
       - label: Forms
+        preflight: components/moleculars/forms/preflight.md
         type: components
         content:
           - example.button

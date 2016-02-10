@@ -1,4 +1,5 @@
 label: Simple Text Field
+id: text-field
 tags:
   - atoms
   - forms

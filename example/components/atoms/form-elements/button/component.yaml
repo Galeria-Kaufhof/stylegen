@@ -20,8 +20,8 @@ states:
       text: disabled
       disabled: true
   active:
-    label: Disabled Button
+    label: Active Button
     doc: 'state_disabled.md'
     context:
-      text: disabled
+      text: active
       classes: btn-primary active
