@@ -4,8 +4,7 @@ tags:
   - buttons
 partials:
   - button_partial.hbs
-  - button_primary_partial.hbs
-  - button_danger_partial.hbs
+
 view: view.hbs
 docs:
   business: business.md
@@ -14,9 +13,15 @@ states:
   default:
     label: Standard Button
     doc: 'state_default.md'
-  primary:
-    label: Primäre Aktion
-    doc: 'state_primary.md'
+  disabled:
+    label: Disabled Button
+    doc: 'state_disabled.md'
     context:
-      text: SO OMG!
-      classes: primary
+      text: disabled
+      disabled: true
+  active:
+    label: Disabled Button
+    doc: 'state_disabled.md'
+    context:
+      text: disabled
+      classes: btn-primary active
