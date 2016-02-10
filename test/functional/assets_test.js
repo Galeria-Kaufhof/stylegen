@@ -28,7 +28,7 @@ describe('Configuration assets:', function() {
 
   describe('with a styleguide default assets', function () {;
     it('should create a copy for each default asset in the target folder', function () {
-      assert.ok(fs.statSync(path.resolve(testResults, 'stylegen-assets', 'styles/stylegen-flatwhite.css')));
+      assert.ok(fs.statSync(path.resolve(testResults, 'stylegen-assets', 'styles/stylegen-theme-flatwhite.css')));
     });
   });
 
