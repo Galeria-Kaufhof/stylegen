@@ -7,3 +7,10 @@ partials:
 view: text_field_view.hbs
 docs:
   technical: technical.md
+states:
+  default:
+    label: without errors
+  with-errors:
+    label: with errors
+    context:
+      group_classes: has-danger
