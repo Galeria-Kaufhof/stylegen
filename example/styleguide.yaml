@@ -12,7 +12,7 @@ partials:
 content:
   - label: Globals
     type: md
-    content: assets/globals/index.md
+    content: pages/index.md
 
   - label: Atoms
     type: tags
