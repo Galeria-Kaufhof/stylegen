@@ -12,6 +12,7 @@ partials:
 content:
   - label: Globals
     type: md
+    slug: index
     content: pages/index.md
 
   - label: Atoms
