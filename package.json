@@ -41,7 +41,7 @@
     "minimist": "^1.2.0",
     "remarkable": "^1.6.0",
     "slug": "^0.9.1",
-    "stylegen-theme-flatwhite": "^0.0.2"
+    "stylegen-theme-flatwhite": "^0.0.3"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
