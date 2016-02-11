@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')",
-    "prepublish": "node_modules/.bin/gulp build"
+    "prepublish": "node_modules/.bin/tsd install ; node_modules/.bin/gulp build"
   },
   "author": "Falk Hoppe <falkhoppe81@gmail.com>",
   "contributors": [
@@ -56,6 +56,7 @@
     "gulp-typescript": "^2.10.0",
     "gulp-util": "^3.0.7",
     "mocha": "^2.3.4",
-    "rewire": "^2.5.1"
+    "rewire": "^2.5.1",
+    "tsd": "^0.6.5"
   }
 }
