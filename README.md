@@ -88,8 +88,28 @@ And in result there should be a freshly generated folder `styleguide` inside thi
 
 > **NOTE:** Because of keeping the project scope clear and concise (it is actually about building styleguides out of files), we've decided for not adding such tooling to the executable, so you won't find file watchers or servers inside this project.
 
-Beside static content, which is a little bit boring, the core of a web-styleguide is the possibility to describe a pattern library out of your frontend components.
+Beside static content, which is a little bit boring, the core of a web-styleguide is the possibility to describe a pattern library aside to your frontend components.
 
+Lets assume/create a folder structure, that contains exactly one component called 'button' so we have a simple example.
+
+```bash
+> mkdir -p components/button
+> touch components/button/component.yaml
+> printf "---\ntext: ExampleButton\n---\n<button>{{text}}</button>" > components/button/view.hbs
+```
+
+> **NOTE:** if you have an asset structure that has a component structure already, you may just lay any configurations aside to the component files.
+In case you don't have something like that, e.g. you may have only a few css/js files in a flat folder, you can lay your **stylegen** component files in
+a folder tree anywhere you think it fits in.
+
+To identify a component as such, we have to add a file called **component.yaml** (or .json) to that directory. By doing this we say, ok in this directory i describe a component. A component folder may contain "sub-components", with their own *component.yaml* files, but that does not really matter for **stylegen**. Any grouping and structuring of the resulting styleguide is done inside of the *styleguide.yaml*, so that we later on may change the file structure, without disturbing the styleguide and vise versa.
+
+A *component*-configuration may contain a variety of information, but we start with a very simple one.
+
+```yaml
+label: Button
+id: btn
+```
 
 ---
 
