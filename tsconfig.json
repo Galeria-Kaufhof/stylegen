@@ -12,7 +12,9 @@
         "**/*.ts",
         "**/*.tsx",
         "!node_modules/**",
-        "typings/*.d.ts"
+        "!typings/browser.d.ts",
+        "!typings/main/**",
+        "!typings/browser/**"
     ],
     "files": [
         "src/Cli.ts",
@@ -38,15 +40,7 @@
         "src/StructureWriter.ts",
         "src/Styleguide.ts",
         "src/View.ts",
-        "typings/chalk/chalk.d.ts",
-        "typings/denodeify/denodeify.d.ts",
-        "typings/es6-promise/es6-promise.d.ts",
-        "typings/fs-extra/fs-extra.d.ts",
-        "typings/handlebars/handlebars.d.ts",
-        "typings/js-yaml/js-yaml.d.ts",
-        "typings/mkdirp/mkdirp.d.ts",
-        "typings/node/node.d.ts",
-        "typings/tsd.d.ts"
+        "typings/main.d.ts"
     ],
     "exclude": [
         "node_modules"

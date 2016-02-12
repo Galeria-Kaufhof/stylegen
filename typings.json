@@ -1,0 +1,15 @@
+{
+  "name": "stylegen",
+  "dependencies": {
+    "mkdirp": "github:typed-typings/npm-mkdirp#c22e0a7cf2597d5fc9122ca70af19b6638886fc0"
+  },
+  "devDependencies": {},
+  "ambientDependencies": {
+    "chalk": "github:DefinitelyTyped/DefinitelyTyped/chalk/chalk.d.ts#5d4a87811a8282f01bc1cdf2156020d78515fa2e",
+    "denodeify": "github:DefinitelyTyped/DefinitelyTyped/denodeify/denodeify.d.ts#9027703c0bd831319dcdf7f3169f7a468537f448",
+    "fs-extra": "github:DefinitelyTyped/DefinitelyTyped/fs-extra/fs-extra.d.ts#72d95b38f008fed506c6cbf3af8a693bd7c3363a",
+    "handlebars": "github:DefinitelyTyped/DefinitelyTyped/handlebars/handlebars.d.ts#29171e8fbfbda8346f482ed3c54fc4f6da599af1",
+    "js-yaml": "github:DefinitelyTyped/DefinitelyTyped/js-yaml/js-yaml.d.ts#1ff6156a58d0e9002df8a2178c00d39b4886a691",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#aee0039a2d6686ec78352125010ebb38a7a7d743"
+  }
+}
