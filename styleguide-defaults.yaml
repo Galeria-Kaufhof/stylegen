@@ -1,4 +1,5 @@
 namespace: app
 componentPaths:
   - components
-target: "styleguide"
+target: styleguide
+componendDocs: .

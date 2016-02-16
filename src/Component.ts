@@ -32,6 +32,7 @@ export interface IComponentConfig {
   tags?: string[];
   viewContext?: {};
   states?: IStateConfigs[];
+  componentDocs?: string;
 }
 
 /**
@@ -163,7 +164,7 @@ export class Component {
       /** in case docs are defined just take those */
       var docs = this.config.docs;
       docPromises = Object.keys(docs).map((doc:string) => {
-        var p = path.resolve(this.path, docs[doc]);
+        var p = path.resolve(this.path, this.config.componentDocs, docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });

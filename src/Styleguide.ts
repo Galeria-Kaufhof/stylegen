@@ -54,6 +54,7 @@ export interface IStyleguideConfig {
   version?: string;
   partials?: string[];
   sgTemplateRoot?: string;
+  componentDocs?: string;
 }
 
 export class Styleguide {

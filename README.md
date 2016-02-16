@@ -129,6 +129,7 @@ This file must be located in the project root and declares the project settings.
 | dependencies              | {}                          | see "Dependencies" below
 | assets                    |                           | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
 | content                   |                           | list of page configurations, take a look at "Content"
+| componentDocs             | "."                       | path of component doc files, relative to the given component.yml
 
 #### Dependencies
 
