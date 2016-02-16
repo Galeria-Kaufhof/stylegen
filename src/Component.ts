@@ -128,6 +128,31 @@ export class Component {
   }
 
   /**
+   * documents that are named like a component state are bound to that state in case
+   * there are no configured docs for the component, so .
+   */
+  private docStateFilter():(value: string, index?: number, array?: string[]) => boolean {
+    if (!!this.config.states) {
+      let states = Object.keys(this.config.states);
+      let stateNames = Object.keys(states);
+
+      return (filename: string, index: number, array: string[]):boolean => {
+        let doc:string = path.basename(filename, '.md');
+        if (states.indexOf(doc) >= 0) {
+          return false;
+        }
+
+        return true;
+      }
+    }
+
+    // if there are no states just pipe docs through
+    return (doc: string, index: number, array: string[]):boolean => {
+      return true;
+    }
+  }
+
+  /**
    * each component may have a map of documents,
    * provided by `id: filepath`.
    */
@@ -135,9 +160,7 @@ export class Component {
     var docPromises:Promise<Doc>[];
 
     if(!!this.config.docs) {
-      /**
-       * load all Docs
-       */
+      /** in case docs are defined just take those */
       var docs = this.config.docs;
       docPromises = Object.keys(docs).map((doc:string) => {
         var p = path.resolve(this.path, docs[doc]);
@@ -146,7 +169,17 @@ export class Component {
       });
 
     } else {
-      docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc:string) => {
+      /**
+       * in case no docs are given, lets take all docs inside the component doc directory,
+       * that are not related to component states (statename.md)
+       */
+      let docNamePattern = /^.*?.md$/
+      let stateFilter = this.docStateFilter();
+
+      docPromises = this.node.files
+      .filter(x => docNamePattern.test(x))
+      .filter(x => stateFilter(x))
+      .map((doc:string) => {
         var p = path.resolve(this.path, doc);
         return Doc.create(p, doc).load();
       });
