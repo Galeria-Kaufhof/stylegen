@@ -22,6 +22,7 @@ interface IStateConfigs {
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
   id?: string;
+  slug?: string;
   partials?: string[];
   view?: View;
   path?: string;
