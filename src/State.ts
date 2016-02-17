@@ -2,6 +2,8 @@ import * as path from 'path';
 import {Doc} from './Doc';
 import {Component} from './Component';
 import * as slug from 'slug';
+import * as changeCase from 'change-case';
+
 
 export interface IStateConfig {
   id?: string;
@@ -28,21 +30,61 @@ export class State implements IState {
 
   constructor(public id:string, private component:Component, private config: IStateConfig) {
     this.label = config.label;
-    this.id = config.id || slug(this.label.toLowerCase());
+    this.id = config.id || this.id;
     this.slug = `${this.component.slug}-${this.config.slug || this.id}`;
     this.context = config.context;
   }
 
   load():Promise<State> {
+    // if state has a configured document just take it
     if (!!this.config.doc) {
-      var p = path.resolve(this.component.config.path, this.config.doc);
+      var p = path.resolve(this.component.config.path, this.component.config.componentDocs || ".", this.config.doc);
+
       return Doc.create(p, this.config.doc).load()
       .then((doc:Doc) => {
         this.doc = doc;
-        return Promise.resolve(this);
+        return this;
       });
+
+    // if there is no doc configured, lets search for a document, that is called like the state id in paramCase, snakeCase or camelCase
     } else {
-      return Promise.resolve(this);
+      return this.component.docFiles()
+      .then((files) => {
+
+        var docs = files.filter((f) => {
+          f = path.basename(f, '.md');
+
+          if (changeCase.camel(f) === this.id) {
+            return true;
+          }
+
+          if (changeCase.snake(f) === this.id) {
+            return true;
+          }
+
+          if (changeCase.paramCase(f) === this.id) {
+            return true;
+          }
+
+          return false;
+        });
+
+        if (docs.length > 0) {
+          let doc = docs[0];
+          console.log(doc)
+          let p = path.resolve(this.component.config.path, this.component.config.componentDocs || ".", doc);
+          console.log(p)
+          return Doc.create(p, doc).load()
+          .then((doc:Doc) => {
+            this.doc = doc;
+            return this;
+          });
+        } else {
+          return this;
+        }
+      })
+      .then(() => this);
+
     }
   }
 }

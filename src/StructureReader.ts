@@ -57,6 +57,10 @@ export class StructureReader {
         nodeConfig.namespace = this.styleguide.config.namespace;
       }
 
+      if (!!this.styleguide.config.componentDocs) {
+        nodeConfig.componentDocs = this.styleguide.config.componentDocs;
+      }
+
       return new Node(this.fileInCWD(p), null, nodeConfig).resolve();
     });
 

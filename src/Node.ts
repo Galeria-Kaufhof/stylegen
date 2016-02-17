@@ -19,6 +19,7 @@ var fsreaddir = denodeify(fs.readdir);
 export interface INodeOptions {
   namespace?: string;
   styleguide?: Styleguide;
+  componentDocs?: string;
 }
 
 /**
@@ -94,6 +95,10 @@ export class Node {
           config.namespace = this.options.namespace;
         } else if (!config.namespace) {
           config.namespace = 'app';
+        }
+
+        if (!config.componentDocs && !!this.options.componentDocs) {
+          config.componentDocs = this.options.componentDocs;
         }
 
         return new Component(config, this).build()

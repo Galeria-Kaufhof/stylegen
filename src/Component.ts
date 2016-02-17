@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as denodeify from 'denodeify';
 import * as slug from 'slug';
+import * as changeCase from 'change-case';
 
 var fsreaddir = denodeify(fs.readdir);
 
@@ -22,6 +23,7 @@ interface IStateConfigs {
 /** configuration structure for the component settings, aka. component.json */
 export interface IComponentConfig {
   id?: string;
+  slug?: string;
   partials?: string[];
   view?: View;
   path?: string;
@@ -31,6 +33,7 @@ export interface IComponentConfig {
   tags?: string[];
   viewContext?: {};
   states?: IStateConfigs[];
+  componentDocs?: string;
 }
 
 /**
@@ -127,34 +130,101 @@ export class Component {
   }
 
   /**
-   * each component may have a map of documents,
-   * provided by `id: filepath`.
+   * documents that are named like a component state are bound to that state in case
+   * there are no configured docs for the component, so .
    */
-  private buildDocs():Promise<Component> {
-    var docPromises:Promise<Doc>[];
+  private docStateFilter():(value: string) => boolean {
+    if (!!this.config.states) {
+      let states = Object.keys(this.config.states);
+      let stateNames = Object.keys(states);
 
+      return (filename: string):boolean => {
+        let doc:string = path.basename(filename, '.md');
+
+        if (states.indexOf(doc) >= 0) {
+          return true;
+        }
+
+        if (states.indexOf(changeCase.camel(doc)) >= 0) {
+          return true;
+        }
+
+        if (states.indexOf(changeCase.snake(doc)) >= 0) {
+          return true;
+        }
+
+        if (states.indexOf(changeCase.paramCase(doc)) >= 0) {
+          return true;
+        }
+
+        return false;
+      }
+    }
+
+    // if there are no states just pipe docs through
+    return (doc: string):boolean => {
+      return true;
+    }
+  }
+
+
+  public docFiles():Promise<string[]> {
+    let filePromise;
+    let docNamePattern = /^.*?.md$/
+
+    if (!!this.config.componentDocs) {
+      filePromise = fsreaddir(path.resolve(this.path, this.config.componentDocs))
+      .catch(e => {
+        return Promise.resolve([]);
+      });
+    } else {
+      filePromise = Promise.resolve(this.node.files);
+    }
+
+    return filePromise
+    .then(files => files.filter(x => docNamePattern.test(x)))
+  }
+
+  private resolveDocs(componentDocFiles:string[]):Promise<Doc>[] {
     if(!!this.config.docs) {
-      /**
-       * load all Docs
-       */
+      /** in case docs are defined just take those */
       var docs = this.config.docs;
-      docPromises = Object.keys(docs).map((doc:string) => {
-        var p = path.resolve(this.path, docs[doc]);
+      return Object.keys(docs).map((doc:string) => {
+        var p = path.resolve(this.path, this.config.componentDocs || ".", docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });
 
     } else {
-      docPromises = this.node.files.filter(x => new RegExp("^.*?.md$").test(x)).map((doc:string) => {
-        var p = path.resolve(this.path, doc);
+      /**
+       * in case no docs are given, lets take all docs inside the component doc directory,
+       * that are not related to component states (statename.md)
+       */
+      let stateFilter = this.docStateFilter();
+
+      return componentDocFiles
+      .filter(x => stateFilter(x))
+      .map((doc:string) => {
+        let p = path.resolve(this.path, this.config.componentDocs || ".", doc);
         return Doc.create(p, doc).load();
       });
     }
+  }
 
-    return Promise.all(docPromises)
-    .then((loadedDocs:Doc[]) => {
-      this.docs = loadedDocs;
-      return this;
+  /**
+   * each component may have a map of documents,
+   * provided by `id: filepath`.
+   */
+  private buildDocs():Promise<Component> {
+    return this.docFiles()
+    .then((componentDocFiles:string[]) => {
+      let docPromises:Promise<Doc>[] = this.resolveDocs(componentDocFiles);
+
+      return Promise.all(docPromises)
+      .then((loadedDocs:Doc[]) => {
+        this.docs = loadedDocs;
+        return this;
+      });
     });
   }
 
