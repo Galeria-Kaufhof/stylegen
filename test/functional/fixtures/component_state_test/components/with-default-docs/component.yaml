@@ -1,0 +1,21 @@
+states:
+  default:
+    label: Default Button
+  withoutDoc:
+    label: withoutDoc Button
+    context:
+      text: Button without any description...
+  onHover:
+    label: Hover Button
+    context:
+      - text: in hover state
+        classes: hover
+      - text: in hover state
+        classes: hover
+  on-select:
+    label: Hover Button
+    context:
+      - text: in hover state
+        classes: hover
+      - text: in hover state
+        classes: hover

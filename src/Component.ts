@@ -168,7 +168,7 @@ export class Component {
   }
 
 
-  private docFiles():Promise<string[]> {
+  public docFiles():Promise<string[]> {
     let filePromise;
     let docNamePattern = /^.*?.md$/
 
@@ -190,7 +190,7 @@ export class Component {
       /** in case docs are defined just take those */
       var docs = this.config.docs;
       return Object.keys(docs).map((doc:string) => {
-        var p = path.resolve(this.path, this.config.componentDocs, docs[doc]);
+        var p = path.resolve(this.path, this.config.componentDocs || ".", docs[doc]);
         /** add partial loading promise to promise collection */
         return Doc.create(p, doc).load();
       });
@@ -205,7 +205,7 @@ export class Component {
       return componentDocFiles
       .filter(x => stateFilter(x))
       .map((doc:string) => {
-        let p = path.resolve(this.path, this.config.componentDocs, doc);
+        let p = path.resolve(this.path, this.config.componentDocs || ".", doc);
         return Doc.create(p, doc).load();
       });
     }
