@@ -39,6 +39,7 @@
     "atob": "^1.1.2",
     "btoa": "^1.1.2",
     "chalk": "^1.1.1",
+    "change-case": "^2.3.1",
     "denodeify": "^1.2.1",
     "front-matter": "^2.0.4",
     "fs-extra": "^0.26.2",

@@ -127,9 +127,9 @@ This file must be located in the project root and declares the project settings.
 | componentPaths            | ["components"]              | relative directory paths, in that your component configurations are located
 | target                    | "styleguide"                | the compile target for the resulting styleguide
 | dependencies              | {}                          | see "Dependencies" below
-| assets                    |                           | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
-| content                   |                           | list of page configurations, take a look at "Content"
-| componentDocs             | "."                       | path of component doc files, relative to the given component.yml
+| assets                    |                             | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
+| content                   |                             | list of page configurations, take a look at "Content"
+| componentDocs             | "."                         | path of component doc files, relative to the given component.yml. "doc" e.g says "all documents have to be placed in a sub-directory doc adjacent to the component.yml"
 
 #### Dependencies
 

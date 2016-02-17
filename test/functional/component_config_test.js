@@ -37,31 +37,18 @@ describe('Configured Components:', function() {
     fs.removeSync(path.resolve(testResults));
   });
 
-  describe('with no view defined', function() {
-    it('should search for a view.hbs', function () {
-      console.log(sgPromise)
-      assert.equal(styleguide.components.find('test.a').docs[0].name, "test.md", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`)
-      //   if (styleguide.components.find('test.a').docs[0].name === "test.md") {
-      //     return Promise.resolve(styleguide);
-      //   } else {
-      //     return Promise.reject();
-      //   }
-      // })
-      // .then(styleguide => {
-      //   if (styleguide.components.find('test.a').view.name === "view.hbs") {
-      //     return Promise.resolve(styleguide);
-      //   } else {
-      //     return Promise.reject("default view.hbs could not be found");
-      //   }
-      // })
-      // .then(styleguide => {
-      //   if (styleguide.components.find('test.a').partials[0].name === "a") {
-      //     return Promise.resolve(styleguide);
-      //   } else {
-      //     return Promise.reject("default partial not found");
-      //   }
-      //
-      //
+  describe('by default it', function() {
+    it('should search for a *.md files in the componentPath folder, which is usually "."', function () {
+      assert.equal(styleguide.components.find('test.a').docs[0].name, "test.md", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`);
     });
+
+    it('should search for a view.hbs', function () {
+      assert.equal(styleguide.components.find('test.a').view.name, "view.hbs", `default view.hbs could not be found`);
+    });
+
+    it('should search for a _partial.hbs', function () {
+      assert.equal(styleguide.components.find('test.a').partials[0].name, "a", `default partial not found`);
+    });
+
   });
 });
