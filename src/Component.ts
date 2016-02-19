@@ -193,6 +193,15 @@ export class Component {
 
     return filePromise
     .then(files => files.filter(x => docNamePattern.test(x)))
+    .then(files => files.sort((a, b) => {
+      let aName = path.basename(a);
+      let bName = path.basename(b);
+
+      if (aName > bName) return 1;
+      if (aName < bName) return -1;
+
+      return 0;
+    }));
   }
 
   private resolveDocs(componentDocFiles:string[]):Promise<Doc>[] {

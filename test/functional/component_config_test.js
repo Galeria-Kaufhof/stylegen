@@ -34,12 +34,12 @@ describe('Configured Components:', function() {
 
   after(function() {
     sgPromise = styleguide = null;
-    fs.removeSync(path.resolve(testResults));
+    // fs.removeSync(path.resolve(testResults));
   });
 
   describe('by default it', function() {
     it('should search for a *.md files in the componentPath folder, which is usually "."', function () {
-      assert.equal(styleguide.components.find('test.a').docs[0].name, "test", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`);
+      assert.equal(styleguide.components.find('test.a').docs[0].name, "test_a", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`);
     });
 
     it('should search for a view.hbs', function () {
@@ -50,5 +50,15 @@ describe('Configured Components:', function() {
       assert.equal(styleguide.components.find('test.a').partials[0].name, "a", `default partial not found`);
     });
 
+    it('should render document links in correct order', function () {
+      var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'))
+      var $ = cheerio.load(content);
+
+      var componentADocTabs = $('#component-test-a > .tabs:first-of-type .tabs-nav-link');
+
+      assert.equal(componentADocTabs.length, 2, 'expected to have 2 document links');
+      assert.equal($(componentADocTabs[0]).text(), "test_a");
+      assert.equal($(componentADocTabs[1]).text(), "test_b");
+    });
   });
 });
