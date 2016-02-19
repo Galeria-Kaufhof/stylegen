@@ -34,7 +34,7 @@ describe('Configured Components:', function() {
 
   after(function() {
     sgPromise = styleguide = null;
-    // fs.removeSync(path.resolve(testResults));
+    fs.removeSync(path.resolve(testResults));
   });
 
   describe('by default it', function() {
