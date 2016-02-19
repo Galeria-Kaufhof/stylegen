@@ -32,7 +32,7 @@ export interface IComponentConfig {
   docs?: Doc[];
   tags?: string[];
   viewContext?: {};
-  states?: IStateConfigs[];
+  states?: State[];
   componentDocs?: string;
 }
 
@@ -135,29 +135,39 @@ export class Component {
    */
   private docStateFilter():(value: string) => boolean {
     if (!!this.config.states) {
-      let states = Object.keys(this.config.states);
-      let stateNames = Object.keys(states);
+      let stateNames = Object.keys(this.config.states);
 
       return (filename: string):boolean => {
         let doc:string = path.basename(filename, '.md');
 
-        if (states.indexOf(doc) >= 0) {
-          return true;
+        let camelized = changeCase.camel(doc);
+        let snakish = changeCase.snake(doc);
+        let parameterized = changeCase.paramCase(doc);
+
+        if (stateNames.indexOf(doc) >= 0) {
+          return false;
         }
 
-        if (states.indexOf(changeCase.camel(doc)) >= 0) {
-          return true;
+        if (stateNames.indexOf(camelized) >= 0) {
+          return false;
         }
 
-        if (states.indexOf(changeCase.snake(doc)) >= 0) {
-          return true;
+        if (stateNames.indexOf(changeCase.snake(doc)) >= 0) {
+          return false;
         }
 
-        if (states.indexOf(changeCase.paramCase(doc)) >= 0) {
-          return true;
+        if (stateNames.indexOf(changeCase.paramCase(doc)) >= 0) {
+          return false;
         }
+        if (this.states.find((x) => {
+          if (x.doc) {
+            let docName = path.basename(x.doc.filePath, '.md');
+            console.log("name", docName, doc)
+            return (docName === doc || docName === camelized || docName === snakish || docName === parameterized);
+          }
+        })) { return false; }
 
-        return false;
+        return true;
       }
     }
 
@@ -204,9 +214,11 @@ export class Component {
 
       return componentDocFiles
       .filter(x => stateFilter(x))
-      .map((doc:string) => {
-        let p = path.resolve(this.path, this.config.componentDocs || ".", doc);
-        return Doc.create(p, doc).load();
+      .map((f:string) => {
+        console.log(f)
+        let docName = path.basename(f, '.md')
+        let p = path.resolve(this.path, this.config.componentDocs || ".", f);
+        return Doc.create(p, docName).load();
       });
     }
   }

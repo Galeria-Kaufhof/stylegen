@@ -39,7 +39,7 @@ describe('Configured Components:', function() {
 
   describe('by default it', function() {
     it('should search for a *.md files in the componentPath folder, which is usually "."', function () {
-      assert.equal(styleguide.components.find('test.a').docs[0].name, "test.md", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`);
+      assert.equal(styleguide.components.find('test.a').docs[0].name, "test", `default doc could not be found, instead ${styleguide.components.find('test.a').docs[0].name} was given`);
     });
 
     it('should search for a view.hbs', function () {

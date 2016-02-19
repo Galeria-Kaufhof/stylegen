@@ -39,8 +39,9 @@ export class State implements IState {
     // if state has a configured document just take it
     if (!!this.config.doc) {
       var p = path.resolve(this.component.config.path, this.component.config.componentDocs || ".", this.config.doc);
+      let docName = path.basename(this.config.doc, '.md');
 
-      return Doc.create(p, this.config.doc).load()
+      return Doc.create(p, docName).load()
       .then((doc:Doc) => {
         this.doc = doc;
         return this;
@@ -70,10 +71,10 @@ export class State implements IState {
         });
 
         if (docs.length > 0) {
-          let doc = docs[0];
-          console.log(doc)
-          let p = path.resolve(this.component.config.path, this.component.config.componentDocs || ".", doc);
-          console.log(p)
+          let f = docs[0];
+          let doc = path.basename(f, '.md');
+          let p = path.resolve(this.component.config.path, this.component.config.componentDocs || ".", f);
+
           return Doc.create(p, doc).load()
           .then((doc:Doc) => {
             this.doc = doc;
