@@ -32,29 +32,38 @@ describe('Component States:', function() {
 
   after(function() {
     sgPromise = null;
-    // fs.removeSync(path.resolve(testResults));
+    fs.removeSync(path.resolve(testResults));
   });
 
-  describe('a component with configured states', function() {
-    it('should should look for documents named as their names by default', function () {
-      assert.equal(styleguide.components.find('test.with-default-docs').states[0].doc.name, "default.md");
-      assert.equal(styleguide.components.find('test.with-default-docs').states[2].doc.name, "on_hover.md");
-      assert.equal(styleguide.components.find('test.with-default-docs').states[3].doc.name, "onSelect.md");
+
+  describe('inside of a styleguide', function() {
+    describe('a component with configured states', function() {
+      it('should should look for documents named as their names by default', function () {
+        assert.equal(styleguide.components.find('test.with-default-docs').states[0].doc.name, "default");
+        assert.equal(styleguide.components.find('test.with-default-docs').states[2].doc.name, "on_hover");
+        assert.equal(styleguide.components.find('test.with-default-docs').states[3].doc.name, "onSelect");
+      });
     });
-  });
 
-  describe('a rendered component with states', function() {
-    it('should render the view for each state within the proper context', function () {
+    describe('a rendered component with states', function() {
+      it('should render the view for each state within the proper context', function () {
 
-      var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'))
-      var $ = cheerio.load(content);
+        var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'))
+        var $ = cheerio.load(content);
 
-      var componentA = $('#component-test-a');
+        var componentA = $('#component-test-a');
+        var componentB = $('#component-test-with-default-docs');
+        var componentBDocTabs = $('#component-test-with-default-docs > .tabs .tabs-nav-link');
 
-      assert.equal(componentA.find('.state').length, 3, `expected component a to have a view rendered for three states (and it sub state), but found "${componentA.find('.state').length}"`)
+        assert.equal(componentA.find('.state').length, 3, `expected component a to have a view rendered for three states (and it sub state), but found "${componentA.find('.state').length}"`)
+        assert.equal(componentB.find('.state').length, 4, `expected component a to have a view rendered for three states (and it sub state), but found "${componentB.find('.state').length}"`)
 
-      // TODO: re-enable testing of iframe content
-      // assert.equal(componentA.find('#test-a-hover-button-preview').length, 1, `expected component a to have a view rendered with context.text equal to "in hover state" but found "${componentA.find('#test-a-hover-button-preview').length}"`)
+        assert.equal(componentBDocTabs.length, 0, 'expected to not have any component docs, because all docs are bound to states')
+
+
+        // TODO: re-enable testing of iframe content
+        // assert.equal(componentA.find('#test-a-hover-button-preview').length, 1, `expected component a to have a view rendered with context.text equal to "in hover state" but found "${componentA.find('#test-a-hover-button-preview').length}"`)
+      });
     });
   });
 });

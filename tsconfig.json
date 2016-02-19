@@ -41,6 +41,7 @@
         "src/View.ts",
         "typings/main.d.ts",
         "typings/main/ambient/chalk/chalk.d.ts",
+        "typings/main/ambient/change-case/change-case.d.ts",
         "typings/main/ambient/denodeify/denodeify.d.ts",
         "typings/main/ambient/fs-extra/fs-extra.d.ts",
         "typings/main/ambient/handlebars/handlebars.d.ts",

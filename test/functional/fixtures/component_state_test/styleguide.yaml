@@ -6,3 +6,4 @@ content:
     type: components
     content:
       - test.a
+      - test.with-default-docs

@@ -1,3 +1,9 @@
 target: ../../results/component_config_test
 namespace: test
 componentDocs: doc
+
+content:
+  - label: ManualCompListing
+    type: components
+    content:
+      - test.a
