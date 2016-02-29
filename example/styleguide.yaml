@@ -6,8 +6,8 @@ componentPaths:
 
 target: styleguide
 
-partials:
-  - partials.js
+# partials:
+#   - partials.js
 
 content:
   - label: Globals
@@ -16,9 +16,12 @@ content:
     content: pages/index.md
 
   - label: Atoms
-    type: tags
+    preflight: pages/atom-preflight.md
+    type: components
     content:
-      - atoms
+      - example.button
+      - example.text-field
+      - example.search_form
 
     children:
       - label: Buttons
