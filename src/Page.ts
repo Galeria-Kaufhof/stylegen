@@ -53,6 +53,7 @@ export class Page {
   private root: string;
   private cwd: string;
   private componentList: PlainComponentList;
+  private notRenderable: boolean;
 
   constructor(private config: IPageConfig, private parent?: Page) {
     this.mdRenderer = this.config.mdRenderer;
@@ -99,6 +100,12 @@ export class Page {
     return new PlainComponentList(this.config.styleguide).build(options);
   }
 
+  private setupExternalLink(options: {link:string;}):Promise<Page> {
+    this.link = options.link;
+    this.notRenderable = true;
+    return Promise.resolve(this);
+  }
+
   buildContent():Promise<Page> {
     var contentPromise:Promise<any>;
     // var docFactory = this.config.styleguide.docFactory;
@@ -116,6 +123,9 @@ export class Page {
           break;
         case "tags":
           contentPromise = this.buildComponentList({label: this.label, tags: this.config.content});
+          break;
+        case "link":
+          contentPromise = this.setupExternalLink({link: this.config.content});
           break;
         case "components":
           if (!!this.config.preflight) {
@@ -166,7 +176,7 @@ export class Page {
   }
 
   write(layout: Function, context: IPageLayoutContext):Promise<Page> {
-    if (!!this.content) {
+    if (this.notRenderable || !!this.content) {
       var preparation;
 
       var pageContext:IPageLayoutContext = Object.assign({}, context);

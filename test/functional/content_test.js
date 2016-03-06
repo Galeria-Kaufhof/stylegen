@@ -26,7 +26,7 @@ describe('Configuration content:', function() {
 
   after(function() {
     sgPromise = null;
-    fs.removeSync(path.resolve(testResults));
+    // fs.removeSync(path.resolve(testResults));
   });
 
   describe('with configured pages', function () {
@@ -83,7 +83,7 @@ describe('Configuration content:', function() {
 
         var $ = cheerio.load(content);
 
-        var components = $('.components > [id^="component"]');
+        var components = $('.components-page [id^="component"]');
 
         let compListConfig = sgConfig.content.filter(c => c.label === "ManualCompListing")[0].content;
 
@@ -100,7 +100,7 @@ describe('Configuration content:', function() {
 
           var $ = cheerio.load(content);
 
-          var components = $('.components > [id^="component"]');
+          var components = $('.components-page [id^="component"]');
 
           let compListConfig = sgConfig.content.filter(c => c.label === "CompListingWithPreflight")[0].content;
 
