@@ -53,10 +53,10 @@ describe('Component States:', function() {
 
         var componentA = $('#component-test-a');
         var componentB = $('#component-test-with-default-docs');
-        var componentBDocTabs = $('#component-test-with-default-docs > .tabs .tabs-nav-link');
+        var componentBDocTabs = $('#component-test-with-default-docs .component-docs');
 
-        assert.equal(componentA.find('.state').length, 3, `expected component a to have a view rendered for three states (and it sub state), but found "${componentA.find('.state').length}"`)
-        assert.equal(componentB.find('.state').length, 4, `expected component a to have a view rendered for three states (and it sub state), but found "${componentB.find('.state').length}"`)
+        assert.equal(componentA.find('.component-state').length, 3, `expected component a to have a view rendered for three states (and it sub state), but found "${componentA.find('.state').length}"`)
+        assert.equal(componentB.find('.component-state').length, 4, `expected component a to have a view rendered for three states (and it sub state), but found "${componentB.find('.state').length}"`)
 
         assert.equal(componentBDocTabs.length, 0, 'expected to not have any component docs, because all docs are bound to states')
 

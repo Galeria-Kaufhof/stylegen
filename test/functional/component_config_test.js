@@ -54,7 +54,7 @@ describe('Configured Components:', function() {
       var content = fs.readFileSync(path.resolve(testResults, 'manualcomplisting.html'))
       var $ = cheerio.load(content);
 
-      var componentADocTabs = $('#component-test-a > .tabs:first-of-type .tabs-nav-link');
+      var componentADocTabs = $('#component-test-a .component-docs .content-group-nav-link');
 
       assert.equal(componentADocTabs.length, 2, 'expected to have 2 document links');
       assert.equal($(componentADocTabs[0]).text(), "test_a");
