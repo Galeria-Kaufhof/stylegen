@@ -2,6 +2,7 @@
 
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
+import * as url from 'url';
 import * as btoa from 'btoa';
 import * as atob from 'atob';
 
@@ -17,11 +18,17 @@ Handlebars.registerHelper("eq", function(a: {}, b: {}){
 });
 
 Handlebars.registerHelper("rellink", function(link, options){
-
   var absoluteLinkPath = link;
+  var uri = url.parse(link);
   var options =  options.data.root, cwd, root;
-  // console.log(link)
+
+  if (uri.host !== null) {
+    // we have an URL here, not a path, so just return it
+    return link;
+  }
+
   if (!options.cwd || !options.root) {
+    // we don't have enough information to resolve the path to current location
     return link;
   }
 

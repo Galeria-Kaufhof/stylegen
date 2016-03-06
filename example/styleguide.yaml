@@ -15,6 +15,10 @@ content:
     slug: index
     content: pages/index.md
 
+  - label: External Library
+    type: link
+    content: http://getbootstrap.com
+
   - label: Atoms
     preflight: pages/atom-preflight.md
     type: components
