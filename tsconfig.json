@@ -26,6 +26,8 @@
         "src/Doc.ts",
         "src/HandlebarsRenderer.ts",
         "src/lib/RemarkableStylegen.ts",
+        "src/lib/StylegenPageLinks.ts",
+        "src/LinkRegistry.ts",
         "src/Logger.ts",
         "src/MarkdownRenderer.ts",
         "src/Node.ts",
