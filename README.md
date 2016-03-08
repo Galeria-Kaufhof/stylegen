@@ -1,4 +1,4 @@
-# stylegen [![Build Status](https://travis-ci.org/Galeria-Kaufhof/stylegen.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/stylegen)
+# stylegen [![Build Status](https://travis-ci.org/Galeria-Kaufhof/stylegen.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/stylegen) [![alpha](https://img.shields.io/badge/state-alpha-yellow.svg)](https://img.shields.io/badge/state-alpha-yellow.svg) 
 
 **stylegen** should be an easy to use styleguide generator for arbitrary projects. There is no assumption about programming languages and only a few ones about your projects code structure.
 
