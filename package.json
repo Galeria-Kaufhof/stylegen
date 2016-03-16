@@ -47,6 +47,7 @@
     "handlebars": "^4.0.3",
     "js-yaml": "^3.4.3",
     "minimist": "^1.2.0",
+    "pretty": "^1.0.0",
     "remarkable": "^1.6.0",
     "slug": "^0.9.1",
     "stylegen-theme-flatwhite": "~0.0.6"

@@ -5,12 +5,17 @@ import * as path from 'path';
 import * as url from 'url';
 import * as btoa from 'btoa';
 import * as atob from 'atob';
+import * as pretty from 'pretty';
 
 import {IRenderer, IRendererOptions} from './Renderer';
 import {Component} from './Component';
 
 Handlebars.registerHelper("pp", function(object:{}){
   return new Handlebars.SafeString(JSON.stringify(object));
+});
+
+Handlebars.registerHelper("beautified", function(object:{}){
+  return pretty(object);
 });
 
 Handlebars.registerHelper("eq", function(a: {}, b: {}){
