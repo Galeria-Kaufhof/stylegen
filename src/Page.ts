@@ -50,17 +50,19 @@ export class Page {
   content: any;
   children: Page[];
   mdRenderer: IRenderer;
+  styleguide: Styleguide;
   private root: string;
   private cwd: string;
   private componentList: PlainComponentList;
   private notRenderable: boolean;
 
   constructor(private config: IPageConfig, private parent?: Page) {
-    this.mdRenderer = this.config.mdRenderer;
+    this.styleguide = this.config.styleguide;
 
+    this.mdRenderer = this.config.mdRenderer;
     this.label = this.config.label;
     this.id = this.config.id || slug(this.config.label.toLowerCase());
-    // this.slug = `${this.config.styleguide.config.namespace}-${this.config.slug || slug(this.id.toLowerCase())}`;
+    // this.slug = `${this.styleguide.config.namespace}-${this.config.slug || slug(this.id.toLowerCase())}`;
     this.slug = this.config.slug || this.id;
 
     if(!parent && this.config.target) {
@@ -71,18 +73,23 @@ export class Page {
       throw("No target for the styleguide specified")
     }
 
-    this.root = this.config.styleguide.config.target;
+    this.root = this.styleguide.config.target;
     this.cwd = this.target;
 
     // TODO: target should stay the folder, whereas link should be used to reference the file
     this.target = path.resolve(this.target, this.slug + '.html');
     this.link = this.target;
+
+    this.styleguide.linkRegistry.add(`page-${this.slug}`, this.link, {
+      root: this.root,
+      cwd: this.cwd
+    });
   }
 
   resolveChildren():Promise<Page> {
     if (!!this.config.children && this.config.children.length > 0) {
       return Promise.all(this.config.children.map((childPageConfig:IPageConfig) => {
-        childPageConfig.styleguide = this.config.styleguide;
+        childPageConfig.styleguide = this.styleguide;
         return new Page(childPageConfig, this).build();
       }))
       .then(children => {
@@ -97,7 +104,7 @@ export class Page {
   private buildComponentList(options: IPlainComponentListBuildOptions):Promise<PlainComponentList> {
     // options = Object.assign({}, options, { page: this.layoutContext });
     options = Object.assign({}, options);
-    return new PlainComponentList(this.config.styleguide).build(options);
+    return new PlainComponentList(this.styleguide).build(options);
   }
 
   private setupExternalLink(options: {link:string;}):Promise<Page> {
@@ -108,14 +115,14 @@ export class Page {
 
   buildContent():Promise<Page> {
     var contentPromise:Promise<any>;
-    // var docFactory = this.config.styleguide.docFactory;
+    // var docFactory = this.styleguide.docFactory;
     try {
       switch(this.config.type) {
         case "md":
-          contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.content), this.config.label).load()
+          contentPromise = Doc.create(path.resolve(this.styleguide.config.cwd, this.config.content), this.config.label).load()
           .then((doc) => {
             let ctx = Object.assign({}, this.config, {content: doc.compiled})
-            var pageLayout = this.config.styleguide.components.find('sg.page').view.template;
+            var pageLayout = this.styleguide.components.find('sg.page').view.template;
             doc.compiled = pageLayout(ctx);
 
             return doc;
@@ -129,7 +136,7 @@ export class Page {
           break;
         case "components":
           if (!!this.config.preflight) {
-            contentPromise = Doc.create(path.resolve(this.config.styleguide.config.cwd, this.config.preflight), this.config.label)
+            contentPromise = Doc.create(path.resolve(this.styleguide.config.cwd, this.config.preflight), this.config.label)
               .load()
               .then((preflight) => {
                 return this.buildComponentList({ label: this.label, components: this.config.content, preflight: preflight.compiled });

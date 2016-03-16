@@ -13,6 +13,7 @@ import {Node} from './Node';
 import {ComponentList} from './ComponentList';
 import {IRenderer, IRendererOptions} from './Renderer';
 import {IPageConfig} from './Page';
+import {LinkRegistry} from './LinkRegistry';
 
 import {Doc} from './Doc';
 import {Partial} from './Partial';
@@ -65,6 +66,7 @@ export class Styleguide {
   public renderer: IRenderer;
   public nodes: Node[];
   public components: ComponentList;
+  public linkRegistry: LinkRegistry;
   // public docFactory: DocFactory;
 
   constructor(private options?: IStyleguideOptions) {
@@ -150,7 +152,8 @@ export class Styleguide {
         }
 
         this.htmlRenderer = new HandlebarsRenderer(rendererConfig);
-        this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer });
+        this.linkRegistry = new LinkRegistry();
+        this.docRenderer = new MarkdownRenderer({ "htmlEngine": this.htmlRenderer, "linkRegistry": this.linkRegistry });
 
         Doc.setRenderer(this.docRenderer);
         Partial.setRenderer(this.htmlRenderer);
