@@ -188,6 +188,7 @@ export class Page {
 
       var pageContext:IPageLayoutContext = Object.assign({}, context);
       /** root and cwd are important properties for the relative link helper we made available in the handlebars engine */
+      pageContext.page = this;
       pageContext.root = this.root;
       pageContext.cwd = this.cwd;
 

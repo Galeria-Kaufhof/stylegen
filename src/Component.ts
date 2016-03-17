@@ -162,7 +162,6 @@ export class Component {
         if (this.states.find((x) => {
           if (x.doc) {
             let docName = path.basename(x.doc.filePath, '.md');
-            console.log("name", docName, doc)
             return (docName === doc || docName === camelized || docName === snakish || docName === parameterized);
           }
         })) { return false; }
