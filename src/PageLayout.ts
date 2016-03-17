@@ -6,4 +6,5 @@ export interface IPageLayoutContext extends ILayoutContext {
   content?: string;
   cwd?: string;
   root?: string;
+  page?: Page;
 }
