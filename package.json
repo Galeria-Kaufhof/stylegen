@@ -57,6 +57,7 @@
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
     "cheerio": "^0.19.0",
+    "eslint": "^2.5.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
     "gulp-mocha": "^2.2.0",
