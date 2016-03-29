@@ -1,5 +1,5 @@
-import * as path from 'path'
-import * as changeCase from 'change-case'
+import path from 'path'
+import changeCase from 'change-case'
 import { Doc } from './Doc'
 
 export class State {

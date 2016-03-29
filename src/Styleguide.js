@@ -1,8 +1,8 @@
 'use strict'
 
-import * as path from 'path'
-import * as denodeify from 'denodeify'
-import * as fs from 'fs-extra'
+import path from 'path'
+import denodeify from 'denodeify'
+import fs from 'fs-extra'
 import { success, warn, error, log } from './Logger'
 import { Config } from './Config'
 import { StructureReader } from './StructureReader'

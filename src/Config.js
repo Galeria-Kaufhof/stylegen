@@ -1,9 +1,9 @@
 'use strict'
 
-import * as fs from 'fs-extra'
-import * as path from 'path'
-import * as denodeify from 'denodeify'
-import * as YAML from 'js-yaml'
+import fs from 'fs-extra'
+import path from 'path'
+import denodeify from 'denodeify'
+import YAML from 'js-yaml'
 import { error, log } from './Logger'
 
 let fsreadfile = denodeify(fs.readFile)

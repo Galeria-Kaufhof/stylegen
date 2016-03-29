@@ -1,7 +1,7 @@
 'use strict'
 
-import * as path from 'path'
-import * as fm from 'front-matter'
+import path from 'path'
+import fm from 'front-matter'
 import { CompilableContent } from './CompilableContent'
 
 export class View extends CompilableContent {

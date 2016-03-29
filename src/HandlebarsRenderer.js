@@ -1,11 +1,11 @@
 'use strict'
 
-import * as Handlebars from 'handlebars'
-import * as path from 'path'
-import * as url from 'url'
-import * as btoa from 'btoa'
-import * as atob from 'atob'
-import * as pretty from 'pretty'
+import Handlebars from 'handlebars'
+import path from 'path'
+import url from 'url'
+import btoa from 'btoa'
+import atob from 'atob'
+import pretty from 'pretty'
 
 Handlebars.registerHelper('pp', (object) => {
   return new Handlebars.SafeString(JSON.stringify(object))

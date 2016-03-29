@@ -1,6 +1,6 @@
 'use strict'
-import * as fs from 'fs-extra'
-import * as denodeify from 'denodeify'
+import fs from 'fs-extra'
+import denodeify from 'denodeify'
 import { error } from './Logger'
 /** promisified readfile callback */
 

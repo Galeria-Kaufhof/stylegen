@@ -1,7 +1,7 @@
 'use strict'
 
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 import { log, warn } from './Logger'
 import { PlainComponentList } from './PlainComponentList'
 import { ContentStructureWriter } from './ContentStructureWriter'

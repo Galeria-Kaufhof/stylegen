@@ -1,9 +1,9 @@
 'use strict'
 
-import * as fs from 'fs-extra'
-import * as path from 'path'
-import * as slug from 'slug'
-import * as denodeify from 'denodeify'
+import fs from 'fs-extra'
+import path from 'path'
+import slug from 'slug'
+import denodeify from 'denodeify'
 import { Doc } from './Doc'
 import { PlainComponentList } from './PlainComponentList'
 import { warn, error } from './Logger'

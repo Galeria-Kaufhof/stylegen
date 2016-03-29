@@ -1,5 +1,5 @@
 'use strict'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 export function log(...args) {
   if (!process.env.MUTE_CLI_LOG) {

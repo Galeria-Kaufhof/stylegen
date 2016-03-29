@@ -1,7 +1,7 @@
 'use strict'
-import * as path from 'path'
-import * as denodeify from 'denodeify'
-import * as fs from 'fs-extra'
+import path from 'path'
+import denodeify from 'denodeify'
+import fs from 'fs-extra'
 import { error } from './Logger'
 
 let fsoutputfile = denodeify(fs.outputFile)
