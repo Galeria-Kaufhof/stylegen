@@ -1,42 +1,43 @@
-"use strict";
+'use strict'
 
-var gulp = require("gulp");
-var plumber = require('gulp-plumber');
+const gulp = require('gulp')
+const plumber = require('gulp-plumber')
+const del = require('del')
 
 // script related dependencies
-var babel = require("gulp-babel");
-var ts = require('gulp-typescript');
-var tsProject = ts.createProject('tsconfig.json');
+const  babel = require('gulp-babel')
 
-var mocha = require('gulp-mocha');
+let mocha = require('gulp-mocha')
 
+gulp.task('clean', (done) => {
+  del(['dist']).then(() => {
+    done()
+  })
+})
 
-gulp.task("scripts", function () {
-  var tsResult = tsProject.src()
-	 .pipe(ts(tsProject));
-
-  return tsResult.js
+gulp.task('scripts', ['clean'], () => {
+  gulp.src('src/**/*.js')
   .pipe(plumber())
   .pipe(babel({presets: ['es2015']}))
-  .pipe(gulp.dest('dist'));
-});
+  .pipe(gulp.dest('dist'))
+})
 
 gulp.task('test', function() {
   process.env.MUTE_CLI_LOG=true
 
   return gulp.src('test/**/*_test.js', {read: false})
     // gulp-mocha needs filepaths so you can't have any plugins before it
-    .pipe(mocha());
-});
+    .pipe(mocha())
+})
 
-gulp.task('build', ['scripts']);
+gulp.task('build', ['scripts'])
 
-gulp.task('default', ['build']);
+gulp.task('default', ['build'])
 
 gulp.task('watch', ['build'] , function() {
-  gulp.watch('src/**/*.ts', ['build']);
-});
+  gulp.watch('src/**/*.js', ['build'])
+})
 
 gulp.task('watch-test', ['test'] , function() {
-  gulp.watch(['dist/**/*', 'test/**/*'], ['test']);
-});
+  gulp.watch(['dist/**/*', 'test/**/*'], ['test'])
+})
