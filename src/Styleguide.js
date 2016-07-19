@@ -15,6 +15,8 @@ import { View } from './View'
 import { MarkdownRenderer } from './MarkdownRenderer'
 import { HandlebarsRenderer } from './HandlebarsRenderer'
 
+import theme from 'stylegen-theme-flatwhite'
+
 let fsensuredir = denodeify(fs.ensureDir)
 let fscopy = denodeify(fs.copy)
 let outputfile = denodeify(fs.outputFile)
@@ -74,11 +76,15 @@ export class Styleguide {
           this.config.cwd = cwd
           /** we sometimes need the stylegen root, e.g. for file resolvement */
           this.config.stylegenRoot = stylegenRoot
-          this.config.componentPaths.push(path.resolve(stylegenRoot, 'styleguide-components'))
+
+          if (theme.components) {
+            this.config.componentPaths.push(theme.components)
+          }
+
           this.config.target = path.resolve(cwd, this.config.target)
 
-          if (!this.config.sgTemplateRoot) {
-            this.config.sgTemplateRoot = path.resolve(path.dirname(require.resolve('stylegen-theme-flatwhite')), 'dist')
+          if (!this.config.sgTemplateRoot && theme.templates) {
+            this.config.sgTemplateRoot = theme.templates
           }
 
           /** each and every styleguide should have a name ) */
@@ -184,9 +190,10 @@ export class Styleguide {
   prepare() {
     return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
       .then(() => {
-        return fscopy(path.resolve(this.config.sgTemplateRoot, 'stylegen-assets'),
-        // TODO: make "assets" path configurable
-        path.resolve(this.config.cwd, this.config.target, 'stylegen-assets'))
+        return fscopy(theme.assets,
+          // TODO: make "assets" path configurable
+          path.resolve(this.config.cwd, this.config.target, path.basename(theme.assets))
+        )
       })
       .then(() => {
         if (this.config.assets) {
