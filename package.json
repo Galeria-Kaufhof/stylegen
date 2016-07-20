@@ -17,7 +17,7 @@
     "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')",
     "build": "gulp build",
     "watch": "gulp watch",
-    "watch-test": "gulp watch",
+    "watch-test": "gulp watch-test",
     "prepublish": "npm run build"
   },
   "keywords": [
