@@ -15,7 +15,9 @@
   },
   "scripts": {
     "test": "export MUTE_CLI_LOG=true; ./node_modules/.bin/mocha $(find test -name '*_test.js')",
-    "build": "node_modules/.bin/gulp build",
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "watch-test": "gulp watch",
     "prepublish": "npm run build"
   },
   "keywords": [
