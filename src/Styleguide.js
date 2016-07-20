@@ -15,8 +15,6 @@ import { View } from './View'
 import { MarkdownRenderer } from './MarkdownRenderer'
 import { HandlebarsRenderer } from './HandlebarsRenderer'
 
-// import theme from 'stylegen-theme-flatwhite'
-
 let fsensuredir = denodeify(fs.ensureDir)
 let fscopy = denodeify(fs.copy)
 let outputfile = denodeify(fs.outputFile)
