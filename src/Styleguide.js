@@ -15,8 +15,6 @@ import { View } from './View'
 import { MarkdownRenderer } from './MarkdownRenderer'
 import { HandlebarsRenderer } from './HandlebarsRenderer'
 
-import theme from 'stylegen-theme-flatwhite'
-
 let fsensuredir = denodeify(fs.ensureDir)
 let fscopy = denodeify(fs.copy)
 let outputfile = denodeify(fs.outputFile)
@@ -76,6 +74,9 @@ export class Styleguide {
           this.config.cwd = cwd
           /** we sometimes need the stylegen root, e.g. for file resolvement */
           this.config.stylegenRoot = stylegenRoot
+
+          const themeName = this.config.theme
+          const theme = this.config.theme = require(themeName)
 
           if (theme.components) {
             this.config.componentPaths.push(theme.components)
@@ -190,9 +191,9 @@ export class Styleguide {
   prepare() {
     return fsensuredir(path.resolve(this.config.cwd, this.config.target, 'assets'))
       .then(() => {
-        return fscopy(theme.assets,
+        return fscopy(this.config.theme.assets,
           // TODO: make "assets" path configurable
-          path.resolve(this.config.cwd, this.config.target, path.basename(theme.assets))
+          path.resolve(this.config.cwd, this.config.target, path.basename(this.config.theme.assets))
         )
       })
       .then(() => {

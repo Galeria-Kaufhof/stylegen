@@ -3,3 +3,4 @@ componentPaths:
   - components
 target: styleguide
 componendDocs: .
+theme: stylegen-theme-flatwhite
