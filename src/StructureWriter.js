@@ -50,6 +50,18 @@ export class StructureWriter {
           // do nothing
         }
 
+        if(this.styleguide.config.themes) {
+          try {
+            layoutContext.themes = this.styleguide.config.themes
+
+            if (typeof layoutContext.themes === 'string') {
+              layoutContext.themes = [layoutContext.themes]
+            }
+          } catch (e) {
+            // do nothing
+          }
+        }
+
         if (this.styleguide.config.dependencies.templates) {
           if (this.styleguide.config.dependencies.templates.head) {
             try {
