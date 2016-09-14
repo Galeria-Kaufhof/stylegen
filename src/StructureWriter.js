@@ -37,6 +37,14 @@ export class StructureWriter {
 
       let type = 'plain'
 
+      if(this.styleguide.config.assetHost) {
+        try {
+          layoutContext.assetHost = this.styleguide.config.assetHost
+        } catch (e) {
+          // do nothing
+        }
+      }
+
       if (this.styleguide.config.dependencies) {
         try {
           layoutContext.cssDeps = this.styleguide.config.dependencies.styles
@@ -50,13 +58,10 @@ export class StructureWriter {
           // do nothing
         }
 
-        if(this.styleguide.config.themes) {
+        if(this.styleguide.config.themes && this.styleguide.config.themes.length > 0 &&
+           !!this.styleguide.config.themes[0].name && !!this.styleguide.config.themes[0].src) {
           try {
             layoutContext.themes = this.styleguide.config.themes
-
-            if (typeof layoutContext.themes === 'string') {
-              layoutContext.themes = [layoutContext.themes]
-            }
           } catch (e) {
             // do nothing
           }
