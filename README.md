@@ -1,4 +1,4 @@
-# stylegen [![Build Status](https://travis-ci.org/Galeria-Kaufhof/stylegen.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/stylegen) [![alpha](https://img.shields.io/badge/state-alpha-yellow.svg)](https://img.shields.io/badge/state-alpha-yellow.svg) 
+# stylegen [![Build Status](https://travis-ci.org/Galeria-Kaufhof/stylegen.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/stylegen) [![alpha](https://img.shields.io/badge/state-alpha-yellow.svg)](https://img.shields.io/badge/state-alpha-yellow.svg)
 
 **stylegen** should be an easy to use styleguide generator for arbitrary projects. There is no assumption about programming languages and only a few ones about your projects code structure.
 
@@ -130,6 +130,8 @@ This file must be located in the project root and declares the project settings.
 | assets                    |                             | static asset files, that should be copied to the styleguide directory, head for "Assets" for further information
 | content                   |                             | list of page configurations, take a look at "Content"
 | componentDocs             | "."                         | path of component doc files, relative to the given component.yml. "doc" e.g says "all documents have to be placed in a sub-directory doc adjacent to the component.yml"
+| assetHost                 |                             | url origin for external assets
+| themes                    |                             | list of style themes, of that each defines a different themed version of the components
 
 #### Dependencies
 
@@ -164,7 +166,13 @@ This file must be located in the project root and declares the project settings.
 | children                  |                             | like content itself this is a list of page configurations
 | preflight                 |                             | a preflight markdown document that is rendered in front of a component listing (so it is only "valid" for nodes of type 'tags' or 'components')  
 
+#### Themes
 
+| Property                  | Default                     | Description
+|---------------------------|-----------------------------|--------------------
+| name                      |                             | the name of the theme *required
+| src                       |                             | path of the source file for the theme. relative to root of the styleguide or to the assetHost, if it is defined * required
+| default                   |                             | defines the default theme
 ---
 
 
