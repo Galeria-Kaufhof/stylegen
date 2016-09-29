@@ -131,7 +131,7 @@ This file must be located in the project root and declares the project settings.
 | content                   |                             | list of page configurations, take a look at "Content"
 | componentDocs             | "."                         | path of component doc files, relative to the given component.yml. "doc" e.g says "all documents have to be placed in a sub-directory doc adjacent to the component.yml"
 | assetHost                 |                             | url origin for external assets
-| themes                    |                             | list of style themes, of that each defines a different themed version of the components
+| componentThemes           |                             | list of style themes, of that each defines a different themed version of the components
 
 #### Dependencies
 

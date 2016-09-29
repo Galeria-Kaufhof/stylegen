@@ -58,10 +58,10 @@ export class StructureWriter {
           // do nothing
         }
 
-        if(this.styleguide.config.themes && this.styleguide.config.themes.length > 0 &&
-           !!this.styleguide.config.themes[0].name && !!this.styleguide.config.themes[0].src) {
+        if(this.styleguide.config.componentThemes && this.styleguide.config.componentThemes.length > 0 &&
+           !!this.styleguide.config.componentThemes[0].name && !!this.styleguide.config.componentThemes[0].src) {
           try {
-            layoutContext.themes = this.styleguide.config.themes
+            layoutContext.themes = this.styleguide.config.componentThemes
           } catch (e) {
             // do nothing
           }
